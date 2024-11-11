@@ -1,0 +1,14 @@
+{
+  "error": {
+    "auth": {
+      "title": "Error",
+      "message": "Please try again when you have a better internet connection.",
+      "buttonLabel": "Back"
+    }
+  },
+  "auth": {
+    "loginButtonLabel": "Sign in",
+    "logoutButtonLabel": "Sign out",
+    "loggedInAsHeader": "Logged in as:"
+  }
+}

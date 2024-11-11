@@ -1,37 +1,51 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import * as NavigationBar from 'expo-navigation-bar';
+import { SplashScreen } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
+import * as WebBrowser from 'expo-web-browser';
+import React, { useCallback, useEffect } from 'react';
+import { Platform } from 'react-native';
+import { BaseLayout } from '../components/Layouts/BaseLayout';
+import { DrawerContent } from '../components/organisms/DrawerContent';
+import { useAppSetup } from '../hooks/useAppSetup';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import '../style/global.css';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+WebBrowser.maybeCompleteAuthSession();
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+const setTransparentNavigationBar = () => {
+  if (Platform.OS === 'android') {
+    NavigationBar.setPositionAsync('absolute');
+    NavigationBar.setBackgroundColorAsync('#ffffff00');
+  }
+};
+
+setTransparentNavigationBar();
+
+const RootLayout = () => {
+  const { appIsReady, setupApplication } = useAppSetup();
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    setupApplication();
+  }, []);
 
-  if (!loaded) {
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <BaseLayout onLayout={onLayoutRootView}>
+      <Drawer drawerContent={DrawerContent}>
+        <Drawer.Screen name="index" options={{ headerShown: false }} />
+      </Drawer>
+    </BaseLayout>
   );
-}
+};
+
+export default RootLayout;
