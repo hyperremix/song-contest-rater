@@ -4,32 +4,41 @@ import {
 } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuthData } from '../../hooks/useAuthData';
+import colors from 'tailwindcss/colors';
 import { t, translations } from '../../i18n';
-import { auth0Client } from '../../utils/auth';
+import { useUserStore } from '../../store';
 import { Button } from '../atoms/Button';
 import { Logo } from '../atoms/Logo';
 import { Text } from '../atoms/Text';
 
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const { bottom: marginBottom } = useSafeAreaInsets();
-  const { authData, setIsAuthenticated } = useAuthData();
+  const logout = useUserStore((state) => state.logout);
+  const authData = useUserStore((state) => state.authData);
   const navigation = useNavigation();
   const { top } = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
 
   const handleLogout = async () => {
-    await auth0Client.logout();
-    setIsAuthenticated(false);
+    await logout();
     navigation.dispatch(DrawerActions.closeDrawer());
   };
 
   return (
     <DrawerContentScrollView
       {...props}
-      contentContainerClassName={`flex-1 flex-col justify-between items-center bg-white dark:bg-zinc-800`}
+      contentContainerStyle={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor:
+          colorScheme === 'dark' ? colors.zinc[800] : colors.white,
+      }}
     >
       <View
         className={`flex flex-col items-center gap-2${
@@ -37,7 +46,7 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
         }`}
       >
         <Logo />
-        <Text className="text-primary text-lg font-extrabold">
+        <Text className="text-primary dark:text-primary text-lg font-extrabold">
           Song Contest Rater
         </Text>
       </View>
@@ -57,3 +66,6 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
     </DrawerContentScrollView>
   );
 };
+function useAuthStore(arg0: (state: any) => any) {
+  throw new Error('Function not implemented.');
+}

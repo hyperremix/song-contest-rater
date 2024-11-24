@@ -1,5 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+} from 'react-native';
 import { Text } from './Text';
 
 type Variant = 'filled' | 'outlined' | 'text';
@@ -7,6 +12,7 @@ type Variant = 'filled' | 'outlined' | 'text';
 export type Props = TouchableOpacityProps & {
   label: string;
   variant?: Variant;
+  isLoading?: boolean;
 };
 
 const touchableStyles: Record<Variant, string> = {
@@ -17,19 +23,35 @@ const touchableStyles: Record<Variant, string> = {
 
 const textStyles: Record<Variant, string> = {
   filled: 'text-white',
-  outlined: 'text-primary',
-  text: 'text-primary',
+  outlined: 'text-primary dark:text-primary',
+  text: 'text-primary dark:text-primary',
 };
 
-export const Button = ({ label, variant = 'filled', ...props }: Props) => {
+export const Button = ({
+  label,
+  variant = 'filled',
+  isLoading = false,
+  className,
+  ...props
+}: Props) => {
   return (
-    <TouchableOpacity
-      className={`rounded-md py-3 px-6 border ${touchableStyles[variant]}`}
-      {...props}
-    >
-      <Text className={`font-bold ${textStyles[variant]}`}>
-        {label.toLocaleUpperCase()}
-      </Text>
-    </TouchableOpacity>
+    <View className={className}>
+      {isLoading && (
+        <View className="absolute w-full h-full rounded-md flex items-center justify-center bg-black/50 z-10">
+          <ActivityIndicator color="white" size="small" />
+        </View>
+      )}
+      <TouchableOpacity
+        className={`rounded-md border-2 ${touchableStyles[variant]}`}
+        {...props}
+        disabled={isLoading}
+      >
+        <View className="flex justify-center items-center py-3 px-6">
+          <Text className={`font-bold ${textStyles[variant]}`}>
+            {label.toLocaleUpperCase()}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };

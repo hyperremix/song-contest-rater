@@ -30,8 +30,8 @@ export const getLogoutUrl = (
   websiteUrl: string,
 ) => `${auth0Domain}/logout${getQueryParams(clientId, audience, websiteUrl)}`;
 
-export const isTokenValid = (authData: TAuthData): boolean =>
-  !authData ? false : dayjs(authData.expiresOn).isAfter(dayjs());
+export const isTokenValid = (authData?: TAuthData): boolean =>
+  !authData?.accessToken ? false : dayjs(authData.expiresOn).isAfter(dayjs());
 
 export const isCallToWebsite = (websiteUrl: string, url: string) =>
   url.startsWith(websiteUrl);

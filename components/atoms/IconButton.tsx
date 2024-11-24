@@ -8,6 +8,8 @@ type Variant = 'filled' | 'outlined' | 'text';
 export type Props = TouchableOpacityProps & {
   icon: keyof typeof Ionicons.glyphMap;
   variant?: Variant;
+  color?: string;
+  size?: number;
 };
 
 const touchableStyles: Record<Variant, string> = {
@@ -22,13 +24,24 @@ const colors: Record<Variant, string> = {
   text: color.primary,
 };
 
-export const IconButton = ({ icon, variant = 'filled', ...props }: Props) => {
+export const IconButton = ({
+  icon,
+  variant = 'filled',
+  color,
+  size = 32,
+  className,
+  ...props
+}: Props) => {
   return (
     <TouchableOpacity
-      className={`rounded-full p-3 border ${touchableStyles[variant]}`}
+      className={`rounded-full p-3 border ${touchableStyles[variant]} ${className}`}
       {...props}
     >
-      <Ionicons name={icon} size={32} color={colors[variant]} />
+      <Ionicons
+        name={icon}
+        size={size}
+        color={color ? color : colors[variant]}
+      />
     </TouchableOpacity>
   );
 };

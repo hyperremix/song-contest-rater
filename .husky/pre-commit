@@ -1,1 +1,1 @@
-yarn run checkTs && yarn run lint-staged
+yarn run ts:check && yarn run lint-staged

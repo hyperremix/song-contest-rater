@@ -1,9 +1,8 @@
-import { AxiosRequestConfig } from 'axios';
 import * as AuthSession from 'expo-auth-session';
-import { firstValueFrom, take } from 'rxjs';
+import { router } from 'expo-router';
 import { environment } from '../../environment';
+import { useUserStore } from '../../store';
 import { generateId } from '../generateId';
-import { authStorage, tokensSubject } from './authStorage';
 import { isTokenValid } from './authUtils';
 import { mapTokenResponse } from './mapTokenResponse';
 import { TAuthData } from './TAuthData';
@@ -17,8 +16,8 @@ const redirectUri = AuthSession.makeRedirectUri();
 
 export class Auth0Client {
   constructor(
-    private auth0Domain: string,
     private auth0ClientId: string,
+    private auth0Audience: string,
   ) {}
 
   public authorize = async (): Promise<TAuthData | null> => {
@@ -30,6 +29,7 @@ export class Auth0Client {
       scopes: ['openid', 'profile', 'email', 'offline_access'],
       extraParams: {
         nonce: generateId(),
+        audience: this.auth0Audience,
       },
       usePKCE: true,
     });
@@ -56,55 +56,40 @@ export class Auth0Client {
       throw new Error('Auth data is null');
     }
 
-    await authStorage.storeAuthData(authData);
+    useUserStore.setState({ authData, isAuthenticated: true });
 
     return authData;
   };
 
   public refreshToken = async (
-    refreshToken: string,
+    refreshToken?: string,
   ): Promise<TAuthData | null> => {
-    const discovery = await AuthSession.fetchDiscoveryAsync(this.auth0Domain);
+    const oldAuthData = useUserStore.getState().authData;
 
-    const authData = await AuthSession.refreshAsync(
-      {
-        clientId: this.auth0ClientId,
-        refreshToken,
-      },
-      discovery,
-    ).then(mapTokenResponse);
+    try {
+      const authData = await AuthSession.refreshAsync(
+        {
+          clientId: this.auth0ClientId,
+          refreshToken: refreshToken ? refreshToken : oldAuthData?.refreshToken,
+        },
+        discovery,
+      ).then(mapTokenResponse);
 
-    if (!authData) {
-      throw new Error('Auth data is null');
+      if (!authData) {
+        throw new Error('Auth data is null');
+      }
+
+      useUserStore.setState({ authData, isAuthenticated: true });
+
+      return authData;
+    } catch (error) {
+      this.logout();
+      return null;
     }
-
-    await authStorage.storeAuthData(authData);
-
-    return authData;
-  };
-
-  public authRequestInterceptor = async (
-    config: AxiosRequestConfig,
-  ): Promise<AxiosRequestConfig> => {
-    let authData = await this.getValidAuthData();
-
-    if (!authData?.accessToken) {
-      return config;
-    }
-
-    return {
-      ...config,
-      headers: {
-        ...config.headers,
-        Authorization: `Bearer ${authData.accessToken}`,
-      },
-    };
   };
 
   public getValidAuthData = async (): Promise<TAuthData | null> => {
-    let authData: TAuthData | null = await firstValueFrom(
-      tokensSubject.pipe(take(1)),
-    );
+    let authData = useUserStore.getState().authData;
     if (!authData) {
       return null;
     }
@@ -117,18 +102,19 @@ export class Auth0Client {
         return null;
       }
 
-      await authStorage.storeAuthData(authData);
+      useUserStore.setState({ authData, isAuthenticated: true });
     }
 
     return authData;
   };
 
   public logout = async (): Promise<void> => {
-    await authStorage.deleteAuthData();
+    useUserStore.setState({ authData: null, isAuthenticated: false });
+    router.navigate('/');
   };
 }
 
 export const auth0Client = new Auth0Client(
-  environment.auth0Domain,
   environment.auth0ClientId,
+  environment.auth0Audience,
 );

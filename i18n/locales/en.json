@@ -1,14 +1,50 @@
 {
   "error": {
-    "auth": {
+    "network": {
+      "title": "Network Error",
+      "message": "Please try again when you have a better internet connection."
+    },
+    "500": {
+      "title": "Internal Server Error",
+      "message": "An error occurred. Please contact support or try again later."
+    },
+    "404": {
+      "title": "Not Found",
+      "message": "The requested resource could not be found."
+    },
+    "403": {
+      "title": "Forbidden",
+      "message": "You do not have permission to access this resource."
+    },
+    "400": {
+      "title": "Bad Request",
+      "message": "The request was invalid. Please try again with valid input."
+    },
+    "401": {
+      "title": "Unauthorized",
+      "message": "You are not authorized to access this resource."
+    },
+    "default": {
       "title": "Error",
-      "message": "Please try again when you have a better internet connection.",
-      "buttonLabel": "Back"
+      "message": "An error occurred. Please contact support or try again later."
     }
   },
   "auth": {
     "loginButtonLabel": "Sign in",
     "logoutButtonLabel": "Sign out",
     "loggedInAsHeader": "Logged in as:"
+  },
+  "buttonLabelOkay": "Okay",
+  "homeScreenTitle": "Home",
+  "rating": {
+    "song": "Song",
+    "singing": "Singing",
+    "show": "Show",
+    "looks": "Looks",
+    "clothes": "Clothes",
+    "addRatingButtonLabel": "Add Rating",
+    "editRatingModalButtonLabel": "Save",
+    "editRatingModalTitle": "Edit Rating",
+    "addRatingModalTitle": "Add Rating"
   }
 }

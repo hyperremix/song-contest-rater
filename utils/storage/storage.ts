@@ -2,15 +2,15 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 export const storage = {
-  storeObject: async (key: string, value: any): Promise<void> => {
+  setObject: async (key: string, value: any): Promise<void> => {
     const jsonValue = JSON.stringify(value);
-    await storage.storeValue(key, jsonValue);
+    await storage.setItem(key, jsonValue);
   },
   getObject: async (key: string): Promise<any> => {
-    let jsonValue = await storage.getValue(key);
+    let jsonValue = await storage.getItem(key);
     return jsonValue !== null ? JSON.parse(jsonValue) : null;
   },
-  storeValue: async (key: string, value: string): Promise<void> => {
+  setItem: async (key: string, value: string): Promise<void> => {
     try {
       if (Platform.OS === 'web') {
         localStorage.setItem(key, value);
@@ -21,7 +21,7 @@ export const storage = {
       console.error(err);
     }
   },
-  getValue: async (key: string): Promise<string | null> => {
+  getItem: async (key: string): Promise<string | null> => {
     try {
       if (Platform.OS === 'web') {
         return localStorage.getItem(key);
@@ -32,7 +32,7 @@ export const storage = {
       return null;
     }
   },
-  deleteKey: async (key: string): Promise<void> => {
+  removeItem: async (key: string): Promise<void> => {
     try {
       if (Platform.OS === 'web') {
         localStorage.removeItem(key);

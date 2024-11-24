@@ -1,15 +1,21 @@
 import React from 'react';
-import { View, ViewProps } from 'react-native';
-import { Header } from '../molecules/Header';
+import { View } from 'react-native';
+import { Header, HeaderProps } from '../molecules/Header';
 import { BaseLayout } from './BaseLayout';
 
-type Props = ViewProps & {};
-
-export const HeaderLayout = ({ children, ...props }: Props) => {
+export const HeaderLayout = ({
+  children,
+  className,
+  headerContent,
+  withBackButton,
+  ...props
+}: HeaderProps) => {
   return (
     <BaseLayout>
-      <Header />
-      <View {...props}>{children}</View>
+      <Header headerContent={headerContent} withBackButton={withBackButton} />
+      <View className={`flex-1 px-2 pt-2 ${className}`} {...props}>
+        {children}
+      </View>
     </BaseLayout>
   );
 };
