@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
 import { Image, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { toImagekitUrl } from '../../imagekit';
+import { extractNames } from '../../utils/extractNames';
 import { Text } from './Text';
 
 export type Props = TouchableOpacityProps & {
@@ -18,18 +19,8 @@ export const Avatar = ({
   ...props
 }: Props) => {
   const initials = useMemo(() => {
-    if (!name) {
-      return undefined;
-    }
-    const nameParts = name.split(' ');
-    if (nameParts.length < 2) {
-      return undefined;
-    }
-
-    const firstname = nameParts[0];
-    const lastname = nameParts[nameParts.length - 1];
-
-    return `${firstname[0]}${lastname ? lastname[0] : ''}`;
+    const { firstname, lastname } = extractNames(name);
+    return `${firstname[0]}${lastname[0]}`;
   }, [name]);
 
   return (

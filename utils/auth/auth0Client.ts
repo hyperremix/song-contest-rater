@@ -1,8 +1,15 @@
 import * as AuthSession from 'expo-auth-session';
 import { router } from 'expo-router';
 import { environment } from '../../environment';
+import {
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserResponse,
+} from '../../protos/user';
 import { useUserStore } from '../../store';
+import { emptyFirstname, emptyLastname, extractNames } from '../extractNames';
 import { generateId } from '../generateId';
+import { httpClient, toHttpError } from '../http';
 import { isTokenValid } from './authUtils';
 import { mapTokenResponse } from './mapTokenResponse';
 import { TAuthData } from './TAuthData';
@@ -56,9 +63,106 @@ export class Auth0Client {
       throw new Error('Auth data is null');
     }
 
-    useUserStore.setState({ authData, isAuthenticated: true });
+    useUserStore.setState({ authData, isLoading: true });
+    await this.ensureUserInBackend(authData);
+    useUserStore.setState({
+      isLoading: false,
+      isAuthenticated: true,
+      getUserError: null,
+    });
 
     return authData;
+  };
+
+  private ensureUserInBackend = async (authData: TAuthData) => {
+    if (authData.profile?.email === undefined) {
+      useUserStore.setState({
+        isAuthenticated: false,
+        user: null,
+        getUserError: toHttpError(new Error('Email is undefined')),
+      });
+      return;
+    }
+
+    let { firstname, lastname } = extractNames(authData.profile?.name);
+    if (firstname === emptyFirstname && lastname === emptyLastname) {
+      firstname = authData.profile.nickname ?? emptyFirstname;
+      lastname = '';
+    }
+
+    const existingUser = await this.getUser();
+    if (existingUser) {
+      const updatedUser = await this.updateUser({
+        id: existingUser.id,
+        firstname,
+        lastname,
+        image_url: authData.profile?.picture ?? '',
+      });
+      useUserStore.setState({ user: updatedUser });
+      return;
+    }
+
+    const createdUser = await this.createUser({
+      email: authData.profile.email,
+      firstname,
+      lastname,
+      image_url: authData.profile?.picture ?? '',
+    });
+    useUserStore.setState({ user: createdUser });
+  };
+
+  private getUser = async (): Promise<UserResponse | null> => {
+    try {
+      return (await httpClient.get<UserResponse>('/users/me')).data;
+    } catch (error: unknown) {
+      const httpError = toHttpError(error);
+
+      if (httpError.status === 404) {
+        return null;
+      } else {
+        useUserStore.setState({
+          user: null,
+          isAuthenticated: false,
+          getUserError: httpError,
+        });
+      }
+
+      return null;
+    }
+  };
+
+  private createUser = async (
+    request: CreateUserRequest,
+  ): Promise<UserResponse | null> => {
+    try {
+      return (await httpClient.post<UserResponse>('users', request)).data;
+    } catch (error: unknown) {
+      const httpError = toHttpError(error);
+      useUserStore.setState({
+        user: null,
+        isAuthenticated: false,
+        getUserError: httpError,
+      });
+      return null;
+    }
+  };
+
+  private updateUser = async (
+    request: UpdateUserRequest,
+  ): Promise<UserResponse | null> => {
+    try {
+      return (
+        await httpClient.put<UserResponse>(`users/${request.id}`, request)
+      ).data;
+    } catch (error: unknown) {
+      const httpError = toHttpError(error);
+      useUserStore.setState({
+        user: null,
+        isAuthenticated: false,
+        getUserError: httpError,
+      });
+      return null;
+    }
   };
 
   public refreshToken = async (

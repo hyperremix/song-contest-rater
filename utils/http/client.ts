@@ -22,7 +22,6 @@ httpClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Add a response interceptor that logs out the user if the response status is 401 and navigates to the login page.
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {

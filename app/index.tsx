@@ -18,7 +18,6 @@ import { useCompetitionStore, useUserStore } from '../store';
 import { Permission } from '../utils/auth';
 
 const Index = () => {
-  const fetchUser = useUserStore((state) => state.fetchUser);
   const fetchCompetitions = useCompetitionStore(
     (state) => state.fetchCompetitions,
   );
@@ -29,7 +28,6 @@ const Index = () => {
   const isCompetitionsListLoading = useCompetitionStore(
     (state) => state.isLoading,
   );
-  const getUserError = useUserStore((state) => state.getUserError);
   const listCompetitionsError = useCompetitionStore(
     (state) => state.listCompetitionsError,
   );
@@ -37,7 +35,6 @@ const Index = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isListCompetitionsErrorVisible, setIsListCompetitionsErrorVisible] =
     useState(false);
-  const [isUserErrorVisible, setIsUserErrorVisible] = useState(false);
   const [isUpsertCompetitionModalVisible, setIsUpsertCompetitionModalVisible] =
     useState(false);
 
@@ -54,7 +51,7 @@ const Index = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchUser().then(() => fetchCompetitions());
+      fetchCompetitions();
     }
   }, [isAuthenticated]);
 
@@ -63,12 +60,6 @@ const Index = () => {
       setIsListCompetitionsErrorVisible(true);
     }
   }, [listCompetitionsError]);
-
-  useEffect(() => {
-    if (getUserError) {
-      setIsUserErrorVisible(true);
-    }
-  }, [getUserError]);
 
   if (!isAuthenticated) {
     return <LoginContent />;
@@ -119,13 +110,6 @@ const Index = () => {
           httpError={listCompetitionsError}
           isVisible={isListCompetitionsErrorVisible}
           onClose={() => setIsListCompetitionsErrorVisible(false)}
-        />
-      )}
-      {isUserErrorVisible && (
-        <HttpErrorModal
-          httpError={getUserError}
-          isVisible={isUserErrorVisible}
-          onClose={() => setIsUserErrorVisible(false)}
         />
       )}
       {isUpsertCompetitionModalVisible && (
