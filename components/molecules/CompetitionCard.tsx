@@ -1,12 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { Image, TouchableOpacity, View, ViewProps } from 'react-native';
+import { useEffect, useMemo, useRef } from 'react';
+import {
+  Animated,
+  Image,
+  TouchableOpacity,
+  View,
+  ViewProps,
+} from 'react-native';
+import colors from 'tailwindcss/colors';
 import { t, translations } from '../../i18n';
 import { toImagekitUrl } from '../../imagekit';
 import { CompetitionResponse } from '../../protos/competition';
 import { useCompetitionStore } from '../../store';
-import { FormatDate, isAfterNow } from '../../utils/dayjs';
+import {
+  FormatDate,
+  isAfterNow,
+  nowIsBetweenTimestampTodayAndEndOfDay,
+} from '../../utils/dayjs';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
 
@@ -30,6 +41,32 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
     [competition],
   );
 
+  const anim = useRef(new Animated.Value(1));
+
+  const isCompetitionLive = useMemo(
+    () => nowIsBetweenTimestampTodayAndEndOfDay(competition.start_time),
+    [competition],
+  );
+
+  useEffect(
+    () =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim.current, {
+            toValue: 0.5,
+            duration: 1000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(anim.current, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: false,
+          }),
+        ]),
+      ).start(),
+    [],
+  );
+
   return (
     <TouchableOpacity onPress={handlePress} disabled={!isCompetitionStarted}>
       <Card {...props}>
@@ -41,6 +78,16 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
                 {t(translations.competition.competitionNotYetStartedText)}
               </Text>
             </View>
+          </View>
+        )}
+        {isCompetitionLive && (
+          <View className="absolute top-2 right-3 flex flex-row items-center gap-1">
+            <Animated.View style={{ transform: [{ scale: anim.current }] }}>
+              <Ionicons name="ellipse" size={16} color={colors.red[500]} />
+            </Animated.View>
+            <Text className="text-red-500 dark:text-red-500">
+              {t(translations.competition.competitionLiveText)}
+            </Text>
           </View>
         )}
         <View className="flex flex-row">

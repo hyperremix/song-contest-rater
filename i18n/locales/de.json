@@ -59,7 +59,8 @@
     "countryInputLabel": "Land",
     "startTimeInputLabel": "Startzeit",
     "imageUrlInputLabel": "Bild URL",
-    "competitionNotYetStartedText": "Der Wettbewerb hat noch nicht begonnen."
+    "competitionNotYetStartedText": "Der Wettbewerb hat noch nicht begonnen.",
+    "competitionLiveText": "Live"
   },
   "act": {
     "addActButtonLabel": "Akt hinzufügen",

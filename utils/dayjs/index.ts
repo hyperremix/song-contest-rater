@@ -22,3 +22,20 @@ export const toTimestamp = (date: string): Timestamp => ({
 
 export const isAfterNow = (timestamp?: Timestamp): boolean =>
   !timestamp ? false : dayjs(timestamp.seconds).isAfter(dayjs());
+
+export const nowIsBetweenTimestampTodayAndEndOfDay = (
+  timestamp?: Timestamp,
+): boolean => {
+  if (!timestamp) {
+    return false;
+  }
+
+  const startOfDay = dayjs().startOf('day');
+  const dayAfterAt2AM = dayjs().add(1, 'day').startOf('day').add(2, 'hours');
+
+  return (
+    dayjs.unix(timestamp.seconds).isAfter(startOfDay) &&
+    dayjs().isAfter(dayjs.unix(timestamp.seconds)) &&
+    dayjs.unix(timestamp.seconds).isBefore(dayAfterAt2AM)
+  );
+};
