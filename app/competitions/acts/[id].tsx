@@ -1,16 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, RefreshControl, View } from 'react-native';
 import { Button } from '../../../components/atoms/Button';
+import { IconButton } from '../../../components/atoms/IconButton';
 import { Text } from '../../../components/atoms/Text';
 import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
-import { UpsertRatingModal } from '../../../components/molecules/EditRatingModal';
 import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
 import { RatingCard } from '../../../components/molecules/RatingCard';
+import { UpsertActModal } from '../../../components/molecules/UpsertActModal';
+import { UpsertRatingModal } from '../../../components/molecules/UpsertRatingModal';
 import { color } from '../../../constants/color';
 import { t, translations } from '../../../i18n';
 import { toImagekitUrl } from '../../../imagekit';
 import { useActStore, useCompetitionStore, useUserStore } from '../../../store';
 import { useRatingStore } from '../../../store/rating';
+import { Permission } from '../../../utils/auth';
 
 const ActScreen = () => {
   const user = useUserStore((state) => state.user);
@@ -21,6 +24,8 @@ const ActScreen = () => {
   const ratings = useRatingStore((state) => state.ratings);
   const fetchRatingError = useRatingStore((state) => state.fetchRatingsError);
   const upsertRatingError = useRatingStore((state) => state.upsertRatingError);
+  const authData = useUserStore((state) => state.authData);
+  const hasPermission = useUserStore((state) => state.hasPermission);
 
   const fetchRatings = useRatingStore((state) => state.fetchRatings);
   const dismissError = useRatingStore((state) => state.dismissError);
@@ -30,12 +35,18 @@ const ActScreen = () => {
     useState(false);
   const [isUpsertRatingErrorModalVisible, setIsUpsertRatingErrorModalVisible] =
     useState(false);
-  const [isEditRatingModalVisible, setIsEditRatingModalVisible] =
+  const [isUpsertRatingModalVisible, setIsUpsertRatingModalVisible] =
     useState(false);
+  const [isUpsertActModalVisible, setIsUpsertActModalVisible] = useState(false);
 
   const canAddRating = useMemo(
-    () => !ratings.some((rating) => rating.user?.id === user?.id),
+    () => !ratings?.some((rating) => rating.user?.id === user?.id),
     [selectedAct],
+  );
+
+  const canEditAct = useMemo(
+    () => hasPermission(Permission.WriteActs),
+    [authData],
   );
 
   useEffect(() => {
@@ -82,16 +93,25 @@ const ActScreen = () => {
           </View>
         }
         withBackButton
+        rightActionsContent={
+          canEditAct && (
+            <IconButton
+              icon="pencil"
+              variant="text"
+              onPress={() => setIsUpsertActModalVisible(true)}
+            />
+          )
+        }
       >
         <View className="flex-1 flex-col items-stretch gap-6">
           {canAddRating && (
             <Button
               label={t(translations.rating.addRatingButtonLabel)}
               className="mt-4"
-              onPress={() => setIsEditRatingModalVisible(true)}
+              onPress={() => setIsUpsertRatingModalVisible(true)}
             />
           )}
-          {ratings.length > 0 && (
+          {(ratings?.length ?? 0) > 0 && (
             <FlatList
               renderItem={({ item }) => (
                 <RatingCard key={item.id} rating={item} />
@@ -123,12 +143,19 @@ const ActScreen = () => {
           onClose={handleCloseErrorModal}
         />
       )}
-      {isEditRatingModalVisible && (
+      {isUpsertRatingModalVisible && (
         <UpsertRatingModal
           competitionId={selectedCompetition?.id}
           actId={selectedAct?.id}
-          isVisible={isEditRatingModalVisible}
-          onClose={() => setIsEditRatingModalVisible(false)}
+          isVisible={isUpsertRatingModalVisible}
+          onClose={() => setIsUpsertRatingModalVisible(false)}
+        />
+      )}
+      {isUpsertActModalVisible && (
+        <UpsertActModal
+          act={selectedAct}
+          isVisible={isUpsertActModalVisible}
+          onClose={() => setIsUpsertActModalVisible(false)}
         />
       )}
     </>

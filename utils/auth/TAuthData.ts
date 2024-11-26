@@ -1,3 +1,4 @@
+import { Permission } from './Permission';
 import { TProfile } from './TProfile';
 
 export type TAuthData = {
@@ -6,4 +7,5 @@ export type TAuthData = {
   idToken?: string;
   expiresOn: string;
   profile?: TProfile;
+  permissions: Permission[];
 };

@@ -8,8 +8,8 @@ import { ratingSum } from '../../utils/rating';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
-import { UpsertRatingModal } from './EditRatingModal';
 import { Rating } from './Rating';
+import { UpsertRatingModal } from './UpsertRatingModal';
 
 type Props = ViewProps & {
   rating: RatingResponse;

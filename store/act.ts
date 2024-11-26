@@ -1,34 +1,33 @@
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
-import { ActResponse } from '../protos/act';
-import { RatingResponse } from '../protos/rating';
+import { ActResponse, ListActsResponse } from '../protos/act';
 import { THttpError, httpClient } from '../utils/http';
 import { storage } from '../utils/storage';
 import { callApi } from './common';
 
 type ActState = {
+  acts: ActResponse[];
   selectedAct: ActResponse | null;
-  selectedActRatings: RatingResponse[];
   isLoading: boolean;
   getActError: THttpError | null;
   setSelectedAct: (act: ActResponse) => void;
+  fetchActs: () => Promise<void>;
   fetchSelectedAct: (
     competitionId: string | undefined,
     id: string,
   ) => Promise<void>;
-  fetchSelectedActRatings: (id: string) => Promise<void>;
 };
 
 export const useActStore = create<ActState>()(
   devtools(
     persist(
       (set) => ({
+        acts: [],
         selectedAct: null,
-        selectedActRatings: [],
         isLoading: false,
         getActError: null,
-        isCreateRatingLoading: false,
-        createRatingError: null,
+        isUpsertActLoading: false,
+        upsertActError: null,
         setSelectedAct: (act: ActResponse) => set({ selectedAct: act }),
         fetchSelectedAct: (competitionId: string | undefined, id: string) =>
           callApi({
@@ -45,18 +44,13 @@ export const useActStore = create<ActState>()(
             onError: (error) => set({ selectedAct: null, getActError: error }),
             onFinally: () => set({ isLoading: false }),
           }),
-        fetchSelectedActRatings: (id: string) =>
+        fetchActs: () =>
           callApi({
-            onPreCall: () => set({ isLoading: true }),
-            call: () => httpClient.get<RatingResponse[]>(`/acts/${id}/ratings`),
+            call: () => httpClient.get<ListActsResponse>('/acts'),
             onSuccess: ({ data }) =>
               set({
-                selectedActRatings: data,
-                getActError: null,
+                acts: data.acts,
               }),
-            onError: (error) =>
-              set({ selectedActRatings: [], getActError: error }),
-            onFinally: () => set({ isLoading: false }),
           }),
       }),
       {

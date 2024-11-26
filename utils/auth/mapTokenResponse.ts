@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import * as AuthSession from 'expo-auth-session';
 import { jwtDecode } from 'jwt-decode';
+import { TAccessToken } from './TAccessToken';
 import { TAuthData } from './TAuthData';
 import { TProfile } from './TProfile';
 
@@ -20,5 +21,8 @@ export const mapTokenResponse = ({
     idToken: idToken,
     refreshToken: refreshToken,
     profile: idToken ? jwtDecode<TProfile>(idToken) : undefined,
+    permissions: accessToken
+      ? jwtDecode<TAccessToken>(accessToken).permissions
+      : [],
   };
 };

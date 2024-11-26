@@ -46,5 +46,29 @@
     "editRatingModalButtonLabel": "Save",
     "editRatingModalTitle": "Edit Rating",
     "addRatingModalTitle": "Add Rating"
+  },
+  "competition": {
+    "addCompetitionButtonLabel": "Add Competition",
+    "editCompetitionModalButtonLabel": "Save",
+    "deleteCompetitionModalButtonLabel": "Delete",
+    "editCompetitionModalTitle": "Edit Competition",
+    "addCompetitionModalTitle": "Add Competition",
+    "descriptionInputLabel": "Description",
+    "cityInputLabel": "City",
+    "countryInputLabel": "Country",
+    "startTimeInputLabel": "Start Time",
+    "imageUrlInputLabel": "Image URL"
+  },
+  "act": {
+    "addActButtonLabel": "Add Act",
+    "editActModalButtonLabel": "Save",
+    "deleteParticipationModalButtonLabel": "Delete Participation",
+    "editActModalTitle": "Edit Act",
+    "addActModalTitle": "Add Act",
+    "createNewActItemLabel": "Create New Act",
+    "chooseActPickerLabel": "Choose Act",
+    "artistNameInputLabel": "Artist Name",
+    "songNameInputLabel": "Song Name",
+    "imageUrlInputLabel": "Image URL"
   }
 }

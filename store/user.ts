@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { UserResponse } from '../protos/user';
-import { auth0Client, TAuthData } from '../utils/auth';
+import { auth0Client, Permission, TAuthData } from '../utils/auth';
 import { httpClient, THttpError } from '../utils/http';
 import { storage } from '../utils/storage';
 import { callApi } from './common';
@@ -14,12 +14,13 @@ type UserState = {
   isAuthenticated: boolean;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
+  hasPermission: (permission: Permission) => boolean;
 };
 
 export const useUserStore = create<UserState>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         user: null,
         isLoading: false,
         getUserError: null,
@@ -42,6 +43,8 @@ export const useUserStore = create<UserState>()(
           await auth0Client.logout();
           set({ authData: null, isAuthenticated: false });
         },
+        hasPermission: (permission: Permission) =>
+          get().authData?.permissions?.includes(permission) ?? false,
       }),
       {
         name: 'user-store',

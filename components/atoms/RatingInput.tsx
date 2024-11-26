@@ -31,7 +31,7 @@ export const RatingInput = ({
     >
       <View className="flex flex-row items-center gap-1">
         <Ionicons name={icon} size={24} color={color} />
-        <Text>
+        <Text className="text-lg">
           {label}: {value}
         </Text>
       </View>

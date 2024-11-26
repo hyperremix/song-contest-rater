@@ -47,5 +47,29 @@
     "editRatingModalButtonLabel": "Speichern",
     "editRatingModalTitle": "Bewertung bearbeiten",
     "addRatingModalTitle": "Bewertung hinzufügen"
+  },
+  "competition": {
+    "addCompetitionButtonLabel": "Wettbewerb hinzufügen",
+    "editCompetitionModalButtonLabel": "Speichern",
+    "deleteCompetitionModalButtonLabel": "Löschen",
+    "editCompetitionModalTitle": "Wettbewerb bearbeiten",
+    "addCompetitionModalTitle": "Wettbewerb hinzufügen",
+    "descriptionInputLabel": "Beschreibung",
+    "cityInputLabel": "Stadt",
+    "countryInputLabel": "Land",
+    "startTimeInputLabel": "Startzeit",
+    "imageUrlInputLabel": "Bild URL"
+  },
+  "act": {
+    "addActButtonLabel": "Akt hinzufügen",
+    "editActModalButtonLabel": "Speichern",
+    "deleteParticipationModalButtonLabel": "Teilnahme Löschen",
+    "editActModalTitle": "Akt bearbeiten",
+    "addActModalTitle": "Akt hinzufügen",
+    "createNewActItemLabel": "Neuen Akt erstellen",
+    "chooseActPickerLabel": "Akt auswählen",
+    "artistNameInputLabel": "Künstlername",
+    "songNameInputLabel": "Liedname",
+    "imageUrlInputLabel": "Bild URL"
   }
 }

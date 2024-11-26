@@ -27,7 +27,7 @@ export const Modal = ({
         zIndex: 1000,
       }}
     >
-      <Card className="p-4 w-full" {...props}>
+      <Card className="p-4 w-full max-w-2xl" {...props}>
         <View className="absolute top-0 right-0 z-10">
           <IconButton icon="close" onPress={onClose} variant="text" />
         </View>

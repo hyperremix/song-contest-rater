@@ -12,11 +12,13 @@ import { IconButton } from '../atoms/IconButton';
 export type HeaderProps = ViewProps & {
   withBackButton?: boolean;
   headerContent?: React.ReactNode;
+  rightActionsContent?: React.ReactNode;
 };
 
 export const Header = ({
   withBackButton,
   headerContent,
+  rightActionsContent,
   ...props
 }: HeaderProps) => {
   const { top: paddingTop, left: paddingLeft } = useSafeAreaInsets();
@@ -56,7 +58,11 @@ export const Header = ({
         <View className="flex flex-row items-center">
           {!!headerContent && headerContent}
         </View>
-        {withBackButton ? (
+        {rightActionsContent ? (
+          <View className="flex flex-col items-center gap-2">
+            {rightActionsContent}
+          </View>
+        ) : withBackButton ? (
           <IconButton
             icon="arrow-back"
             variant="text"
