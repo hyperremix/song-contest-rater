@@ -9,23 +9,16 @@ dayjs.extend(LocalizedFormat);
 export const FormatDate = (
   timestamp?: Timestamp,
   format: string = 'llll',
-): string => {
-  if (!timestamp) {
-    return '';
-  }
+): string =>
+  !timestamp ? '' : dayjs.unix(timestamp.seconds).locale(locale).format(format);
 
-  return dayjs.unix(timestamp.seconds).locale(locale).format(format);
-};
-
-export const toISOString = (timestamp?: Timestamp): string | undefined => {
-  if (!timestamp) {
-    return undefined;
-  }
-
-  return dayjs.unix(timestamp.seconds).toISOString();
-};
+export const toISOString = (timestamp?: Timestamp): string | undefined =>
+  !timestamp ? undefined : dayjs.unix(timestamp.seconds).toISOString();
 
 export const toTimestamp = (date: string): Timestamp => ({
   seconds: dayjs(date).unix(),
   nanos: 0,
 });
+
+export const isAfterNow = (timestamp?: Timestamp): boolean =>
+  !timestamp ? false : dayjs(timestamp.seconds).isAfter(dayjs());

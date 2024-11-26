@@ -57,7 +57,8 @@
     "cityInputLabel": "City",
     "countryInputLabel": "Country",
     "startTimeInputLabel": "Start Time",
-    "imageUrlInputLabel": "Image URL"
+    "imageUrlInputLabel": "Image URL",
+    "competitionNotYetStartedText": "Competition has not yet started."
   },
   "act": {
     "addActButtonLabel": "Add Act",
