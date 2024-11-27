@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
+  ScrollView,
   View,
 } from 'react-native';
 import { Button } from '../components/atoms/Button';
@@ -22,6 +23,9 @@ const Index = () => {
     (state) => state.fetchCompetitions,
   );
   const competitions = useCompetitionStore((state) => state.competitions);
+  const archivedCompetitions = useCompetitionStore(
+    (state) => state.archivedCompetitions,
+  );
   const authData = useUserStore((state) => state.authData);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const hasPermission = useUserStore((state) => state.hasPermission);
@@ -74,7 +78,7 @@ const Index = () => {
           </Text>
         }
       >
-        <View className="flex-1 flex-col items-stretch gap-6">
+        <ScrollView className="flex-1 flex-col items-stretch gap-6">
           {isCompetitionsListLoading && !isRefreshing && (
             <View className="flex flex-col items-center">
               <ActivityIndicator color={color.primary} size="large" />
@@ -103,7 +107,21 @@ const Index = () => {
               }
             />
           )}
-        </View>
+          <Text
+            className={`flex flex-col items-center text-xl font-bold mb-6 ${!competitions?.length ? '' : 'mt-6'}`}
+          >
+            {t(translations.competition.archivedCompetitionsTitle)}
+          </Text>
+          {archivedCompetitions?.length > 0 && (
+            <FlatList
+              renderItem={({ item }) => (
+                <CompetitionCard key={item.id} competition={item} />
+              )}
+              data={archivedCompetitions}
+              contentContainerClassName="gap-2"
+            />
+          )}
+        </ScrollView>
       </HeaderLayout>
       {isListCompetitionsErrorVisible && (
         <HttpErrorModal

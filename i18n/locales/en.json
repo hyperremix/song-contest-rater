@@ -59,7 +59,8 @@
     "startTimeInputLabel": "Start Time",
     "imageUrlInputLabel": "Image URL",
     "competitionNotYetStartedText": "Competition has not yet started.",
-    "competitionLiveText": "Live"
+    "competitionLiveText": "Live",
+    "archivedCompetitionsTitle": "Archive"
   },
   "act": {
     "addActButtonLabel": "Add Act",

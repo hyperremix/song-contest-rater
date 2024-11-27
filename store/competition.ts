@@ -12,13 +12,15 @@ import {
   removeCompetition,
   sortedCompetitionAdd,
   sortedCompetitionUpdate,
+  splitArchivedCompetitions,
 } from '../utils/competition';
 import { httpClient, THttpError } from '../utils/http';
 import { storage } from '../utils/storage';
 import { callApi } from './common';
 
-type CompetitionState = {
+export type CompetitionState = {
   competitions: CompetitionResponse[];
+  archivedCompetitions: CompetitionResponse[];
   selectedCompetition: CompetitionResponse | null;
   isLoading: boolean;
   isFetchSelectedCompetitionLoading: boolean;
@@ -44,6 +46,7 @@ export const useCompetitionStore = create<CompetitionState>()(
     persist(
       (set, get) => ({
         competitions: [],
+        archivedCompetitions: [],
         selectedCompetition: null,
         isLoading: false,
         isFetchSelectedCompetitionLoading: false,
@@ -60,11 +63,15 @@ export const useCompetitionStore = create<CompetitionState>()(
               httpClient.get<ListCompetitionsResponse>('/competitions'),
             onSuccess: ({ data }) =>
               set({
-                competitions: data.competitions,
+                ...splitArchivedCompetitions(data.competitions),
                 listCompetitionsError: null,
               }),
             onError: (error) =>
-              set({ competitions: [], listCompetitionsError: error }),
+              set({
+                competitions: [],
+                archivedCompetitions: [],
+                listCompetitionsError: error,
+              }),
             onFinally: () => set({ isLoading: false }),
           }),
         fetchSelectedCompetition: (id: string) =>
