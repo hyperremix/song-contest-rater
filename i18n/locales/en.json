@@ -35,7 +35,7 @@
     "loggedInAsHeader": "Logged in as:"
   },
   "buttonLabelOkay": "Okay",
-  "homeScreenTitle": "Home",
+  "homeScreenTitle": "Contests",
   "rating": {
     "song": "Song",
     "singing": "Singing",
@@ -60,7 +60,8 @@
     "imageUrlInputLabel": "Image URL",
     "competitionNotYetStartedText": "Competition has not yet started.",
     "competitionLiveText": "Live",
-    "archivedCompetitionsTitle": "Archive"
+    "archivedCompetitionsTitle": "Archive",
+    "upcomingCompetitionsTitle": "Upcoming"
   },
   "act": {
     "addActButtonLabel": "Add Act",
@@ -73,6 +74,7 @@
     "artistNameInputLabel": "Artist Name",
     "songNameInputLabel": "Song Name",
     "imageUrlInputLabel": "Image URL",
-    "resultsTitle": "Results"
+    "ratedActsTitle": "Results",
+    "unratedActsTitle": "Participants"
   }
 }

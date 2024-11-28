@@ -80,10 +80,10 @@ const ActScreen = () => {
           <View className="flex flex-col items-center">
             {selectedAct?.image_url && (
               <Image
-                className="object-contain rounded-lg h-32 w-32"
+                className="object-contain rounded-lg h-32 w-32 aspect-square"
                 source={{
                   uri: toImagekitUrl(selectedAct.image_url, [
-                    { height: '256', width: '256' },
+                    { height: '256', width: '256', cropMode: 'pad_resize' },
                   ]),
                 }}
               />

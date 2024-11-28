@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   RefreshControl,
-  ScrollView,
+  SectionList,
   View,
 } from 'react-native';
 import { Button } from '../components/atoms/Button';
@@ -47,6 +46,26 @@ const Index = () => {
     [authData],
   );
 
+  const competitionSections = useMemo(() => {
+    const sections = [];
+
+    if (competitions.length > 0) {
+      sections.push({
+        title: t(translations.competition.upcomingCompetitionsTitle),
+        data: competitions,
+      });
+    }
+
+    if (archivedCompetitions.length > 0) {
+      sections.push({
+        title: t(translations.competition.archivedCompetitionsTitle),
+        data: archivedCompetitions,
+      });
+    }
+
+    return sections;
+  }, [competitions, archivedCompetitions]);
+
   const refresh = async () => {
     setIsRefreshing(true);
     await fetchCompetitions();
@@ -78,7 +97,7 @@ const Index = () => {
           </Text>
         }
       >
-        <ScrollView className="flex-1 flex-col items-stretch gap-6">
+        <View className="flex-1 flex-col items-stretch gap-6">
           {isCompetitionsListLoading && !isRefreshing && (
             <View className="flex flex-col items-center">
               <ActivityIndicator color={color.primary} size="large" />
@@ -91,37 +110,26 @@ const Index = () => {
               onPress={() => setIsUpsertCompetitionModalVisible(true)}
             />
           )}
-          {competitions?.length > 0 && (
-            <FlatList
-              renderItem={({ item }) => (
-                <CompetitionCard key={item.id} competition={item} />
-              )}
-              data={competitions}
-              contentContainerClassName="gap-2"
-              refreshControl={
-                <RefreshControl
-                  onRefresh={refresh}
-                  refreshing={isRefreshing}
-                  tintColor={color.primary}
-                />
-              }
-            />
-          )}
-          <Text
-            className={`flex flex-col items-center text-xl font-bold mb-6 ${!competitions?.length ? '' : 'mt-6'}`}
-          >
-            {t(translations.competition.archivedCompetitionsTitle)}
-          </Text>
-          {archivedCompetitions?.length > 0 && (
-            <FlatList
-              renderItem={({ item }) => (
-                <CompetitionCard key={item.id} competition={item} />
-              )}
-              data={archivedCompetitions}
-              contentContainerClassName="gap-2"
-            />
-          )}
-        </ScrollView>
+          <SectionList
+            sections={competitionSections}
+            renderItem={({ item }) => (
+              <CompetitionCard key={item.id} competition={item} />
+            )}
+            ItemSeparatorComponent={() => <View className="h-2" />}
+            renderSectionHeader={({ section: { title } }) => (
+              <View className="flex flex-col items-center mb-2">
+                <Text className="text-xl font-bold">{title}</Text>
+              </View>
+            )}
+            refreshControl={
+              <RefreshControl
+                onRefresh={refresh}
+                refreshing={isRefreshing}
+                tintColor={color.primary}
+              />
+            }
+          />
+        </View>
       </HeaderLayout>
       {isListCompetitionsErrorVisible && (
         <HttpErrorModal

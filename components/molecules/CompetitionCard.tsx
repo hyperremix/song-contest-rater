@@ -93,10 +93,10 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
         <View className="flex flex-row">
           {competition.image_url && (
             <Image
-              className="object-contain rounded-l-lg min-h-full w-32"
+              className="object-contain rounded-l-lg min-h-fit w-32"
               source={{
                 uri: toImagekitUrl(competition.image_url, [
-                  { height: '512', width: '512' },
+                  { height: '256', width: '256', focus: 'auto' },
                 ]),
               }}
             />

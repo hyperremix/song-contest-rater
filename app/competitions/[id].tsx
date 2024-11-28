@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Image,
   RefreshControl,
+  SectionList,
   View,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Button } from '../../components/atoms/Button';
 import { IconButton } from '../../components/atoms/IconButton';
 import { Text } from '../../components/atoms/Text';
@@ -55,7 +54,7 @@ const CompetitionScreen = () => {
     [authData],
   );
 
-  const { ratedActs, unratedActs } = useMemo(
+  const actSections = useMemo(
     () => splitRatedActs(selectedCompetition?.acts),
     [selectedCompetition],
   );
@@ -76,20 +75,23 @@ const CompetitionScreen = () => {
     <>
       <HeaderLayout
         headerContent={
-          isFetchSelectedCompetitionLoading ? (
-            <ActivityIndicator
-              color={color.primary}
-              size="large"
-              style={{ height: 177, width: 177 }}
-            />
-          ) : (
-            <View className="flex flex-col items-center">
+          <View>
+            {isFetchSelectedCompetitionLoading && (
+              <ActivityIndicator
+                color={color.primary}
+                size="large"
+                className="absolute flex items-center justify-center h-full w-full z-10"
+              />
+            )}
+            <View
+              className={`flex flex-col items-center ${isFetchSelectedCompetitionLoading ? 'opacity-0' : ''}`}
+            >
               {selectedCompetition?.image_url && (
                 <Image
                   className="object-contain rounded-lg h-32 w-32"
                   source={{
                     uri: toImagekitUrl(selectedCompetition.image_url, [
-                      { height: '256', width: '256' },
+                      { height: '256', width: '256', focus: 'auto' },
                     ]),
                   }}
                 />
@@ -101,7 +103,7 @@ const CompetitionScreen = () => {
                 {selectedCompetition?.city}, {selectedCompetition?.country}
               </Text>
             </View>
-          )
+          </View>
         }
         withBackButton
         rightActionsContent={
@@ -114,7 +116,7 @@ const CompetitionScreen = () => {
           )
         }
       >
-        <ScrollView className="flex-1 flex-col items-stretch gap-6">
+        <View className="flex-1 flex-col items-stretch gap-6">
           {canAddAct && (
             <Button
               label={t(translations.act.addActButtonLabel)}
@@ -129,40 +131,26 @@ const CompetitionScreen = () => {
               ))}
             </View>
           ) : (
-            <>
-              {unratedActs.length > 0 && (
-                <FlatList
-                  renderItem={({ item }) => (
-                    <ActCard key={item.id} act={item} />
-                  )}
-                  data={unratedActs}
-                  contentContainerClassName="gap-2"
-                  refreshControl={
-                    <RefreshControl
-                      onRefresh={onRefresh}
-                      refreshing={isRefreshing}
-                      tintColor={color.primary}
-                    />
-                  }
-                />
+            <SectionList
+              sections={actSections}
+              renderItem={({ item }) => <ActCard key={item.id} act={item} />}
+              ItemSeparatorComponent={() => <View className="h-2" />}
+              renderSectionHeader={({ section: { title } }) => (
+                <View className="flex flex-col items-center mb-2">
+                  <Text className="text-xl font-bold">{title}</Text>
+                </View>
               )}
-              <Text
-                className={`flex flex-col items-center text-xl font-bold mb-6 ${!unratedActs?.length ? '' : 'mt-6'}`}
-              >
-                {t(translations.act.resultsTitle)}
-              </Text>
-              {ratedActs?.length > 0 && (
-                <FlatList
-                  renderItem={({ item }) => (
-                    <ActCard key={item.id} act={item} />
-                  )}
-                  data={ratedActs}
-                  contentContainerClassName="gap-2"
+              SectionSeparatorComponent={() => <View className="h-2" />}
+              refreshControl={
+                <RefreshControl
+                  onRefresh={onRefresh}
+                  refreshing={isRefreshing}
+                  tintColor={color.primary}
                 />
-              )}
-            </>
+              }
+            />
           )}
-        </ScrollView>
+        </View>
       </HeaderLayout>
       {isErrorVisible && (
         <HttpErrorModal

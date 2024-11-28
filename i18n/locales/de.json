@@ -35,7 +35,7 @@
     "loggedInAsHeader": "Angemeldet als:"
   },
   "buttonLabelOkay": "Okay",
-  "homeScreenTitle": "Startseite",
+  "homeScreenTitle": "Wettbewerbe",
   "addRatingButtonLabel": "Bewertung hinzufügen",
   "rating": {
     "song": "Lied",
@@ -61,7 +61,8 @@
     "imageUrlInputLabel": "Bild URL",
     "competitionNotYetStartedText": "Der Wettbewerb hat noch nicht begonnen.",
     "competitionLiveText": "Live",
-    "archivedCompetitionsTitle": "Archiv"
+    "archivedCompetitionsTitle": "Archiv",
+    "upcomingCompetitionsTitle": "Kommende"
   },
   "act": {
     "addActButtonLabel": "Akt hinzufügen",
@@ -74,6 +75,7 @@
     "artistNameInputLabel": "Künstlername",
     "songNameInputLabel": "Liedname",
     "imageUrlInputLabel": "Bild URL",
-    "resultsTitle": "Ergebnisse"
+    "ratedActsTitle": "Ergebnisse",
+    "unratedActsTitle": "Teilnehmer"
   }
 }

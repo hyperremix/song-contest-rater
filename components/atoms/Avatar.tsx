@@ -1,6 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { Image, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+} from 'react-native';
 import { toImagekitUrl } from '../../imagekit';
 import { extractNames } from '../../utils/extractNames';
 import { Text } from './Text';
@@ -16,6 +21,7 @@ export const Avatar = ({
   className,
   name,
   size = 'size-12',
+  onPress,
   ...props
 }: Props) => {
   const initials = useMemo(() => {
@@ -23,23 +29,34 @@ export const Avatar = ({
     return `${firstname[0]}${lastname[0]}`;
   }, [name]);
 
+  const component = src ? (
+    <Image
+      source={{
+        uri: toImagekitUrl(src, [{ height: '128', width: '128' }]),
+      }}
+      className={`${size} rounded-full ${onPress ? '' : className}`}
+    />
+  ) : initials ? (
+    <View
+      className={`flex flex-row items-center justify-center rounded-full bg-gray-500 ${size}`}
+    >
+      <Text className="text-lg text-black dark:text-black">{initials}</Text>
+    </View>
+  ) : (
+    <Ionicons name="person" size={32} color="white" />
+  );
+
+  if (!onPress) {
+    return component;
+  }
+
   return (
     <TouchableOpacity
       className={`rounded-full bg-gray-500 ${size} flex justify-center items-center ${className}`}
+      onPress={onPress}
       {...props}
     >
-      {src ? (
-        <Image
-          source={{
-            uri: toImagekitUrl(src, [{ height: '128', width: '128' }]),
-          }}
-          className={`${size} rounded-full`}
-        />
-      ) : initials ? (
-        <Text className="font-extrabold text-lg text-black">{initials}</Text>
-      ) : (
-        <Ionicons name="person" size={32} color="white" />
-      )}
+      {component}
     </TouchableOpacity>
   );
 };
