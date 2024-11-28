@@ -100,7 +100,8 @@ const CompetitionScreen = () => {
                 {selectedCompetition?.description}
               </Text>
               <Text className="text-gray-700 dark:text-gray-500">
-                {selectedCompetition?.city}, {selectedCompetition?.country}
+                {selectedCompetition?.city},{' '}
+                {t(`countries.${selectedCompetition?.country.toLowerCase()}`)}
               </Text>
             </View>
           </View>

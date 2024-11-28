@@ -76,5 +76,10 @@
     "imageUrlInputLabel": "Image URL",
     "ratedActsTitle": "Results",
     "unratedActsTitle": "Participants"
+  },
+  "countries": {
+    "sweden": "Sweden",
+    "switzerland": "Switzerland",
+    "germany": "Germany"
   }
 }

@@ -106,7 +106,8 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
               {competition.description}
             </Text>
             <Text className="text-gray-700 dark:text-gray-500">
-              {competition.city}, {competition.country}
+              {competition.city},{' '}
+              {t(`countries.${competition.country.toLowerCase()}`)}
             </Text>
             <Text className="text-gray-700 dark:text-gray-500">
               {FormatDate(competition.start_time)}
