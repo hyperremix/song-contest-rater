@@ -63,7 +63,10 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
 
   const handleSave = () => {
     if (selectedActId !== 'new') {
-      createParticipation(acts.find((a) => a.id === selectedActId)!);
+      createParticipation(
+        acts.find((a) => a.id === selectedActId)!,
+        selectedCompetition?.acts.length ?? 0,
+      );
     } else if (!act) {
       createAct({
         artist_name: artistName,

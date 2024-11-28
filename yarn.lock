@@ -1614,10 +1614,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.1.tgz#9a96ce501bc62df46c4031fbd970e3cc6b10f07b"
   integrity sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==
 
-"@hyperremix/song-contest-rater-proto@1.0.24":
-  version "1.0.24"
-  resolved "https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/1.0.24/80069817a3155312cbafdb471600252708796862#80069817a3155312cbafdb471600252708796862"
-  integrity sha512-Yg93w4c6iOLMk1K80RgczVhbL/rM431nmvTfmR4jjJHkzzYWp3pv1Wib0WgG9um1KhwIzWTY6EgsGQa1s+1iCQ==
+"@hyperremix/song-contest-rater-proto@1.0.26":
+  version "1.0.26"
+  resolved "https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/1.0.26/1582d407b7fa71e6dc73bcfd5146866f842ca33e#1582d407b7fa71e6dc73bcfd5146866f842ca33e"
+  integrity sha512-jUPmyoxMwAIcsod1UWwIxYcjIXUCxCo9rJuuPzXgUjntrc9DWf5MAYSaK84lfwlVX6i2Y/FjONpM5ScY7Vkgmg==
 
 "@improbable-eng/grpc-web@^0.15.0":
   version "0.15.0"

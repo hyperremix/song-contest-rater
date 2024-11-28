@@ -37,7 +37,7 @@ export type CompetitionState = {
   deleteCompetition: (id: string) => Promise<void>;
   createAct: (request: CreateActRequest) => Promise<void>;
   updateAct: (request: UpdateActRequest) => Promise<void>;
-  createParticipation: (act: ActResponse) => Promise<void>;
+  createParticipation: (act: ActResponse, order: number) => Promise<void>;
   deleteParticipation: (actId: string) => Promise<void>;
 };
 
@@ -170,12 +170,13 @@ export const useCompetitionStore = create<CompetitionState>()(
             onError: (error) =>
               set({ isUpsertActLoading: false, upsertActError: error }),
           }),
-        createParticipation: (act: ActResponse) =>
+        createParticipation: (act: ActResponse, order: number) =>
           callApi({
             call: () =>
               httpClient.post(`/participations`, {
                 competition_id: get().selectedCompetition!.id,
                 act_id: act.id,
+                order,
               }),
             onSuccess: () =>
               set(() => ({

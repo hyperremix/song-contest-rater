@@ -6,6 +6,7 @@ import {
   RefreshControl,
   View,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Button } from '../../components/atoms/Button';
 import { IconButton } from '../../components/atoms/IconButton';
 import { Text } from '../../components/atoms/Text';
@@ -19,6 +20,7 @@ import { color } from '../../constants/color';
 import { t, translations } from '../../i18n';
 import { toImagekitUrl } from '../../imagekit';
 import { useCompetitionStore, useUserStore } from '../../store';
+import { splitRatedActs } from '../../utils/act';
 import { Permission } from '../../utils/auth';
 
 const CompetitionScreen = () => {
@@ -51,6 +53,11 @@ const CompetitionScreen = () => {
   const canAddAct = useMemo(
     () => hasPermission(Permission.WriteActs),
     [authData],
+  );
+
+  const { ratedActs, unratedActs } = useMemo(
+    () => splitRatedActs(selectedCompetition?.acts),
+    [selectedCompetition],
   );
 
   useEffect(() => {
@@ -107,7 +114,7 @@ const CompetitionScreen = () => {
           )
         }
       >
-        <View className="flex-1 flex-col items-stretch gap-6">
+        <ScrollView className="flex-1 flex-col items-stretch gap-6">
           {canAddAct && (
             <Button
               label={t(translations.act.addActButtonLabel)}
@@ -122,23 +129,40 @@ const CompetitionScreen = () => {
               ))}
             </View>
           ) : (
-            selectedCompetition?.acts &&
-            selectedCompetition.acts.length > 0 && (
-              <FlatList
-                renderItem={({ item }) => <ActCard key={item.id} act={item} />}
-                data={selectedCompetition.acts}
-                contentContainerClassName="gap-2"
-                refreshControl={
-                  <RefreshControl
-                    onRefresh={onRefresh}
-                    refreshing={isRefreshing}
-                    tintColor={color.primary}
-                  />
-                }
-              />
-            )
+            <>
+              {unratedActs.length > 0 && (
+                <FlatList
+                  renderItem={({ item }) => (
+                    <ActCard key={item.id} act={item} />
+                  )}
+                  data={unratedActs}
+                  contentContainerClassName="gap-2"
+                  refreshControl={
+                    <RefreshControl
+                      onRefresh={onRefresh}
+                      refreshing={isRefreshing}
+                      tintColor={color.primary}
+                    />
+                  }
+                />
+              )}
+              <Text
+                className={`flex flex-col items-center text-xl font-bold mb-6 ${!unratedActs?.length ? '' : 'mt-6'}`}
+              >
+                {t(translations.act.resultsTitle)}
+              </Text>
+              {ratedActs?.length > 0 && (
+                <FlatList
+                  renderItem={({ item }) => (
+                    <ActCard key={item.id} act={item} />
+                  )}
+                  data={ratedActs}
+                  contentContainerClassName="gap-2"
+                />
+              )}
+            </>
           )}
-        </View>
+        </ScrollView>
       </HeaderLayout>
       {isErrorVisible && (
         <HttpErrorModal

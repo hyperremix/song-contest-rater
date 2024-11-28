@@ -73,6 +73,7 @@
     "chooseActPickerLabel": "Akt auswählen",
     "artistNameInputLabel": "Künstlername",
     "songNameInputLabel": "Liedname",
-    "imageUrlInputLabel": "Bild URL"
+    "imageUrlInputLabel": "Bild URL",
+    "resultsTitle": "Ergebnisse"
   }
 }
