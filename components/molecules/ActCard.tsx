@@ -4,7 +4,7 @@ import { toImagekitUrl } from '../../imagekit';
 import { ActResponse } from '../../protos/act';
 import { useActStore } from '../../store';
 import { useRatingStore } from '../../store/rating';
-import { manyRatingsSum } from '../../utils/rating';
+import { ratingSum } from '../../utils/rating';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
 
@@ -29,7 +29,7 @@ export const ActCard = ({ act, ...props }: Props) => {
         <View className="flex flex-row">
           <View className="absolute top-0 right-0 p-2 rounded-tr-md rounded-bl-md w-11 flex flex-col items-center bg-primary">
             <Text className="text-white text-xl font-bold">
-              {manyRatingsSum(act.ratings)}
+              {ratingSum(act.ratings)}
             </Text>
           </View>
           {act.image_url && (

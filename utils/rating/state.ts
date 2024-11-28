@@ -1,5 +1,4 @@
 import { RatingResponse } from '../../protos/rating';
-import { ratingSum } from './ratingSum';
 
 export const sortedRatingUpdate = (
   ratings: RatingResponse[],
@@ -11,7 +10,7 @@ export const sortedRatingAdd = (
   ratings: RatingResponse[],
   rating: RatingResponse,
 ): RatingResponse[] => {
-  const index = ratings.findIndex((r) => ratingSum(r) < ratingSum(rating));
+  const index = ratings.findIndex((r) => r.total < rating.total);
   if (index === -1) {
     return [...ratings, rating];
   }

@@ -1,6 +1,6 @@
 import { sortRatedActs, sortUnratedActs } from '.';
 import { ActResponse } from '../../protos/act';
-import { manyRatingsSum } from '../rating';
+import { ratingSum } from '../rating';
 
 type SplitActs = { ratedActs: ActResponse[]; unratedActs: ActResponse[] };
 
@@ -26,5 +26,4 @@ export const splitRatedActs = (acts?: ActResponse[]): SplitActs => {
   return splitActs;
 };
 
-const isRatedAct = (act: ActResponse): boolean =>
-  manyRatingsSum(act.ratings) !== 0;
+const isRatedAct = (act: ActResponse): boolean => ratingSum(act.ratings) !== 0;

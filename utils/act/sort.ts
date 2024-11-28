@@ -1,5 +1,5 @@
 import { ActResponse } from '../../protos/act';
-import { manyRatingsSum } from '../rating';
+import { ratingSum } from '../rating';
 
 export const sortUnratedActs = (acts?: ActResponse[]): ActResponse[] =>
   acts
@@ -23,20 +23,14 @@ export const sortUnratedActs = (acts?: ActResponse[]): ActResponse[] =>
 export const sortRatedActs = (acts?: ActResponse[]): ActResponse[] =>
   acts
     ? acts.sort((a, b) => {
-        if (
-          manyRatingsSum(a.ratings) !== 0 &&
-          manyRatingsSum(b.ratings) === 0
-        ) {
+        if (ratingSum(a.ratings) !== 0 && ratingSum(b.ratings) === 0) {
           return -1;
         }
 
-        if (
-          manyRatingsSum(a.ratings) === 0 &&
-          manyRatingsSum(b.ratings) !== 0
-        ) {
+        if (ratingSum(a.ratings) === 0 && ratingSum(b.ratings) !== 0) {
           return 1;
         }
 
-        return manyRatingsSum(b.ratings) - manyRatingsSum(a.ratings);
+        return ratingSum(b.ratings) - ratingSum(a.ratings);
       })
     : [];

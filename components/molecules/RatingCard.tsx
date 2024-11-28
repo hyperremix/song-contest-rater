@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, ViewProps } from 'react-native';
 import { RatingResponse } from '../../protos/rating';
 import { useUserStore } from '../../store';
-import { ratingSum } from '../../utils/rating';
 import { Avatar } from '../atoms/Avatar';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
@@ -46,7 +45,7 @@ export const RatingCard = ({ rating, ...props }: Props) => {
           <View className="absolute top-0 right-0 flex flex-col items-center">
             <View className="p-2 rounded-tr-md rounded-bl-md w-11 flex flex-col items-center bg-primary">
               <Text className="text-white text-xl font-bold">
-                {ratingSum(rating)}
+                {rating.total}
               </Text>
             </View>
             {user?.id === rating.user?.id && (
