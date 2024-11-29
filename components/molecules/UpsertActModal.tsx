@@ -36,7 +36,7 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
     (state) => state.isUpsertActLoading,
   );
 
-  const actAutocompleteData = useMemo(
+  const actData = useMemo(
     () => [
       {
         label: t(translations.act.createNewActItemLabel),
@@ -100,7 +100,7 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
       {!act?.id && (
         <Picker
           label={t(translations.act.chooseActPickerLabel)}
-          data={actAutocompleteData}
+          data={actData}
           selectedValue={selectedActId}
           onValueChange={(value) => setSelectedActId(value.toString())}
         />

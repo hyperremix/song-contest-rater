@@ -97,7 +97,7 @@ const CompetitionScreen = () => {
                 />
               )}
               <Text className="text-2xl font-bold">
-                {selectedCompetition?.description}
+                {t(`competition.heat.${selectedCompetition?.heat}`)}
               </Text>
               <Text className="text-gray-700 dark:text-gray-500">
                 {selectedCompetition?.city},{' '}

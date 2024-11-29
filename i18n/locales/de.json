@@ -54,7 +54,7 @@
     "deleteCompetitionModalButtonLabel": "Löschen",
     "editCompetitionModalTitle": "Wettbewerb bearbeiten",
     "addCompetitionModalTitle": "Wettbewerb hinzufügen",
-    "descriptionInputLabel": "Beschreibung",
+    "heatInputLabel": "Wettbewerbsrunde",
     "cityInputLabel": "Stadt",
     "countryInputLabel": "Land",
     "startTimeInputLabel": "Startzeit",
@@ -62,7 +62,19 @@
     "competitionNotYetStartedText": "Der Wettbewerb hat noch nicht begonnen.",
     "competitionLiveText": "Live",
     "archivedCompetitionsTitle": "Archiv",
-    "upcomingCompetitionsTitle": "Kommende"
+    "upcomingCompetitionsTitle": "Kommende",
+    "heat": {
+      "0": "Unspezifizierte Runde",
+      "1": "Semi-Finale",
+      "2": "Finale",
+      "3": "Teilwettbewerb 1",
+      "4": "Teilwettbewerb 2",
+      "5": "Teilwettbewerb 3",
+      "6": "Teilwettbewerb 4",
+      "7": "Teilwettbewerb 5",
+      "8": "Finalqualifikation",
+      "-1": "Unbekannte Wettbewerbsrunde"
+    }
   },
   "act": {
     "addActButtonLabel": "Akt hinzufügen",

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { t, translations } from '../../i18n';
 import { CompetitionResponse } from '../../protos/competition';
@@ -7,6 +7,7 @@ import { useCompetitionStore } from '../../store';
 import { toISOString, toTimestamp } from '../../utils/dayjs';
 import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
+import { Picker } from '../atoms/Picker';
 import { Text } from '../atoms/Text';
 import { Modal, ModalProps } from './Modal';
 
@@ -33,9 +34,7 @@ export const UpsertCompetitionModal = ({
     (state) => state.isUpsertCompetitionLoading,
   );
 
-  const [description, setDescription] = useState(
-    competition?.description || '',
-  );
+  const [heat, setHeat] = useState(competition?.heat ?? 0);
   const [city, setCity] = useState(competition?.city ?? '');
   const [country, setCountry] = useState(competition?.country ?? '');
   const [startTime, setStartTime] = useState(
@@ -49,10 +48,21 @@ export const UpsertCompetitionModal = ({
   );
   const [imageUrl, setImageUrl] = useState(competition?.image_url ?? '');
 
+  const competitionHeatData = useMemo(
+    () =>
+      Object.entries(translations.competition.heat)
+        .filter(([key]) => key !== '0' && key !== '-1')
+        .map(([key, value]) => ({
+          label: t(value),
+          value: key,
+        })),
+    [],
+  );
+
   const handleSave = () => {
     if (!competition) {
       createCompetition({
-        description,
+        heat,
         city,
         country,
         start_time: toTimestamp(startTime),
@@ -61,7 +71,7 @@ export const UpsertCompetitionModal = ({
     } else {
       updateCompetition({
         id: competition.id,
-        description,
+        heat,
         city,
         country,
         start_time: toTimestamp(startTime),
@@ -78,10 +88,11 @@ export const UpsertCompetitionModal = ({
           ? t(translations.competition.editCompetitionModalTitle)
           : t(translations.competition.addCompetitionModalTitle)}
       </Text>
-      <Input
-        label={t(translations.competition.descriptionInputLabel)}
-        value={description}
-        onChangeText={setDescription}
+      <Picker
+        label={t(translations.competition.heatInputLabel)}
+        data={competitionHeatData}
+        selectedValue={heat}
+        onValueChange={(value) => setHeat(value as number)}
       />
       <Input
         label={t(translations.competition.cityInputLabel)}

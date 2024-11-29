@@ -103,7 +103,7 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
           )}
           <View className="flex flex-col p-4 gap-2">
             <Text className="text-2xl font-bold">
-              {competition.description}
+              {t(`competition.heat.${competition.heat}`)}
             </Text>
             <Text className="text-gray-700 dark:text-gray-500">
               {competition.city},{' '}
