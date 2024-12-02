@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "ts:check": "tsc --noEmit",
-    "proto:generate": "protoc -I=./node_modules/@hyperremix/song-contest-rater-proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=useDate=false --ts_proto_opt=snakeToCamel=false --ts_proto_out=./protos  ./node_modules/@hyperremix/song-contest-rater-proto/*.proto",
+    "proto:generate": "protoc -I=./node_modules/@hyperremix/song-contest-rater-proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=useDate=false --ts_proto_opt=snakeToCamel=false --ts_proto_opt=unrecognizedEnum=false --ts_proto_opt=useNumericEnumForJson=true --ts_proto_out=./protos  ./node_modules/@hyperremix/song-contest-rater-proto/*.proto",
     "prepare": "husky"
   },
   "dependencies": {

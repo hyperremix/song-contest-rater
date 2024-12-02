@@ -92,7 +92,7 @@ export const UpsertCompetitionModal = ({
         label={t(translations.competition.heatInputLabel)}
         data={competitionHeatData}
         selectedValue={heat}
-        onValueChange={(value) => setHeat(value as number)}
+        onValueChange={(value) => setHeat(+value)}
       />
       <Input
         label={t(translations.competition.cityInputLabel)}
