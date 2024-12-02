@@ -48,17 +48,17 @@
     "addRatingModalTitle": "Add Rating"
   },
   "competition": {
-    "addCompetitionButtonLabel": "Add Competition",
+    "addCompetitionButtonLabel": "Add Contest",
     "editCompetitionModalButtonLabel": "Save",
     "deleteCompetitionModalButtonLabel": "Delete",
-    "editCompetitionModalTitle": "Edit Competition",
-    "addCompetitionModalTitle": "Add Competition",
+    "editCompetitionModalTitle": "Edit Contest",
+    "addCompetitionModalTitle": "Add Contest",
     "heatInputLabel": "Heat",
     "cityInputLabel": "City",
     "countryInputLabel": "Country",
     "startTimeInputLabel": "Start Time",
     "imageUrlInputLabel": "Image URL",
-    "competitionNotYetStartedText": "Competition has not yet started.",
+    "competitionNotYetStartedText": "Contest has not yet started.",
     "competitionLiveText": "Live",
     "archivedCompetitionsTitle": "Archive",
     "upcomingCompetitionsTitle": "Upcoming",
@@ -73,7 +73,8 @@
       "7": "Heat 5",
       "8": "Final Qualifier",
       "-1": "Unrecognized Heat"
-    }
+    },
+    "noCompetitionsFound": "No contests were found. 🫣"
   },
   "act": {
     "addActButtonLabel": "Add Act",

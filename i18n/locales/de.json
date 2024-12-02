@@ -74,7 +74,8 @@
       "7": "Teilwettbewerb 5",
       "8": "Finalqualifikation",
       "-1": "Unbekannte Wettbewerbsrunde"
-    }
+    },
+    "noCompetitionsFound": "Es wurden keine Wettbewerbe gefunden. 🫣"
   },
   "act": {
     "addActButtonLabel": "Akt hinzufügen",

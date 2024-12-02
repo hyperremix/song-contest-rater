@@ -110,25 +110,31 @@ const Index = () => {
               onPress={() => setIsUpsertCompetitionModalVisible(true)}
             />
           )}
-          <SectionList
-            sections={competitionSections}
-            renderItem={({ item }) => (
-              <CompetitionCard key={item.id} competition={item} />
-            )}
-            ItemSeparatorComponent={() => <View className="h-2" />}
-            renderSectionHeader={({ section: { title } }) => (
-              <View className="flex flex-col items-center mb-2">
-                <Text className="text-xl font-bold">{title}</Text>
-              </View>
-            )}
-            refreshControl={
-              <RefreshControl
-                onRefresh={refresh}
-                refreshing={isRefreshing}
-                tintColor={color.primary}
-              />
-            }
-          />
+          {competitionSections.length > 0 ? (
+            <SectionList
+              sections={competitionSections}
+              renderItem={({ item }) => (
+                <CompetitionCard key={item.id} competition={item} />
+              )}
+              ItemSeparatorComponent={() => <View className="h-2" />}
+              renderSectionHeader={({ section: { title } }) => (
+                <View className="flex flex-col items-center mb-2">
+                  <Text className="text-xl font-bold">{title}</Text>
+                </View>
+              )}
+              refreshControl={
+                <RefreshControl
+                  onRefresh={refresh}
+                  refreshing={isRefreshing}
+                  tintColor={color.primary}
+                />
+              }
+            />
+          ) : (
+            <Text className="text-center text-2xl font-bold">
+              {t(translations.competition.noCompetitionsFound)}
+            </Text>
+          )}
         </View>
       </HeaderLayout>
       {isListCompetitionsErrorVisible && (

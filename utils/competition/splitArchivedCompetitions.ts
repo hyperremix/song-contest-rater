@@ -8,19 +8,21 @@ type SplitCompetitions = Pick<
 >;
 
 export const splitArchivedCompetitions = (
-  competition: CompetitionResponse[],
+  competitions?: CompetitionResponse[],
 ): SplitCompetitions =>
-  competition.reduce(
-    (acc: SplitCompetitions, competition: CompetitionResponse) => {
-      if (isArchivedCompetition(competition)) {
-        acc.archivedCompetitions.unshift(competition);
-      } else {
-        acc.competitions.push(competition);
-      }
-      return acc;
-    },
-    { competitions: [], archivedCompetitions: [] },
-  );
+  competitions
+    ? competitions.reduce(
+        (acc: SplitCompetitions, competition: CompetitionResponse) => {
+          if (isArchivedCompetition(competition)) {
+            acc.archivedCompetitions.unshift(competition);
+          } else {
+            acc.competitions.push(competition);
+          }
+          return acc;
+        },
+        { competitions: [], archivedCompetitions: [] },
+      )
+    : { competitions: [], archivedCompetitions: [] };
 
 const isArchivedCompetition = (competition: CompetitionResponse): boolean =>
   !competition.start_time

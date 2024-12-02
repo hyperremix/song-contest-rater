@@ -14,6 +14,7 @@ import { isTokenValid } from './authUtils';
 import { mapTokenResponse } from './mapTokenResponse';
 import { TAuthData } from './TAuthData';
 
+//https://song-contest-rater.eu.auth0.com/.well-known/openid-configuration
 const discovery = {
   authorizationEndpoint: `https://${environment.auth0Domain}/authorize`,
   tokenEndpoint: `https://${environment.auth0Domain}/oauth/token`,
