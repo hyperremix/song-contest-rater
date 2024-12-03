@@ -1,7 +1,8 @@
 {
-  "name": "song-contest-rater",
+  "name": "@hyperremix/song-contest-rater",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "author": "Fredrik Pettersson <fredrik.pettersson.89@gmail.com>",
   "license": "MIT",
   "scripts": {
     "start": "expo start",
