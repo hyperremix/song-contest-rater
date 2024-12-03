@@ -6,21 +6,21 @@ import {
   SectionList,
   View,
 } from 'react-native';
-import { Button } from '../../components/atoms/Button';
-import { IconButton } from '../../components/atoms/IconButton';
-import { Text } from '../../components/atoms/Text';
-import { HeaderLayout } from '../../components/Layouts/HeaderLayout';
-import { ActCard } from '../../components/molecules/ActCard';
-import { HttpErrorModal } from '../../components/molecules/HttpErrorModal';
-import { LoadingCard } from '../../components/molecules/LoadingCard';
-import { UpsertActModal } from '../../components/molecules/UpsertActModal';
-import { UpsertCompetitionModal } from '../../components/molecules/UpsertCompetitionModal';
-import { color } from '../../constants/color';
-import { t, translations } from '../../i18n';
-import { toImagekitUrl } from '../../imagekit';
-import { useCompetitionStore, useUserStore } from '../../store';
-import { splitRatedActs } from '../../utils/act';
-import { Permission } from '../../utils/auth';
+import { Button } from '../../../components/atoms/Button';
+import { IconButton } from '../../../components/atoms/IconButton';
+import { Text } from '../../../components/atoms/Text';
+import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
+import { ActCard } from '../../../components/molecules/ActCard';
+import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
+import { LoadingCard } from '../../../components/molecules/LoadingCard';
+import { UpsertActModal } from '../../../components/molecules/UpsertActModal';
+import { UpsertCompetitionModal } from '../../../components/molecules/UpsertCompetitionModal';
+import { color } from '../../../constants/color';
+import { t, translations } from '../../../i18n';
+import { toImagekitUrl } from '../../../imagekit';
+import { useCompetitionStore, useUserStore } from '../../../store';
+import { splitRatedActs } from '../../../utils/act';
+import { Permission } from '../../../utils/auth';
 
 const CompetitionScreen = () => {
   const selectedCompetition = useCompetitionStore(
@@ -36,7 +36,6 @@ const CompetitionScreen = () => {
   const isFetchSelectedCompetitionLoading = useCompetitionStore(
     (state) => state.isFetchSelectedCompetitionLoading,
   );
-  // TODO: Handle loading state
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [isErrorVisible, setIsErrorVisible] = useState(false);

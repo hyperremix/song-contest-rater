@@ -1,5 +1,5 @@
 import { Slot } from 'expo-router';
-import { BaseLayout } from '../../../components/Layouts/BaseLayout';
+import { BaseLayout } from '../../../../components/Layouts/BaseLayout';
 
 const ActLayout = () => (
   <BaseLayout>

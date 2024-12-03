@@ -20,7 +20,7 @@ export const ActCard = ({ act, ...props }: Props) => {
   const setRatings = useRatingStore((state) => state.setRatings);
 
   const handlePress = () => {
-    router.navigate(`/competitions/acts/${act.id}`);
+    router.navigate(`./acts/${act.id}`, { relativeToDirectory: true });
     setSelectedAct(act);
     setRatings(act.ratings);
   };

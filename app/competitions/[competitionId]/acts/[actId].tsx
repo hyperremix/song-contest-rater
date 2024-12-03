@@ -1,19 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, RefreshControl, View } from 'react-native';
-import { Button } from '../../../components/atoms/Button';
-import { IconButton } from '../../../components/atoms/IconButton';
-import { Text } from '../../../components/atoms/Text';
-import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
-import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
-import { RatingCard } from '../../../components/molecules/RatingCard';
-import { UpsertActModal } from '../../../components/molecules/UpsertActModal';
-import { UpsertRatingModal } from '../../../components/molecules/UpsertRatingModal';
-import { color } from '../../../constants/color';
-import { t, translations } from '../../../i18n';
-import { toImagekitUrl } from '../../../imagekit';
-import { useActStore, useCompetitionStore, useUserStore } from '../../../store';
-import { useRatingStore } from '../../../store/rating';
-import { Permission } from '../../../utils/auth';
+import { Button } from '../../../../components/atoms/Button';
+import { IconButton } from '../../../../components/atoms/IconButton';
+import { Text } from '../../../../components/atoms/Text';
+import { HeaderLayout } from '../../../../components/Layouts/HeaderLayout';
+import { HttpErrorModal } from '../../../../components/molecules/HttpErrorModal';
+import { RatingCard } from '../../../../components/molecules/RatingCard';
+import { UpsertActModal } from '../../../../components/molecules/UpsertActModal';
+import { UpsertRatingModal } from '../../../../components/molecules/UpsertRatingModal';
+import { color } from '../../../../constants/color';
+import { t, translations } from '../../../../i18n';
+import { toImagekitUrl } from '../../../../imagekit';
+import {
+  useActStore,
+  useCompetitionStore,
+  useUserStore,
+} from '../../../../store';
+import { useRatingStore } from '../../../../store/rating';
+import { Permission } from '../../../../utils/auth';
 
 const ActScreen = () => {
   const user = useUserStore((state) => state.user);
