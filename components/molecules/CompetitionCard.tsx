@@ -53,13 +53,13 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(anim.current, {
-            toValue: 0.5,
-            duration: 1000,
+            toValue: 2,
+            duration: 2000,
             useNativeDriver: false,
           }),
           Animated.timing(anim.current, {
             toValue: 1,
-            duration: 1000,
+            duration: 500,
             useNativeDriver: false,
           }),
         ]),
@@ -82,9 +82,22 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
         )}
         {isCompetitionLive && (
           <View className="absolute top-2 right-3 flex flex-row items-center gap-1">
-            <Animated.View style={{ transform: [{ scale: anim.current }] }}>
-              <Ionicons name="ellipse" size={16} color={colors.red[500]} />
-            </Animated.View>
+            <View>
+              <Animated.View style={{ transform: [{ scale: anim.current }] }}>
+                <Ionicons
+                  name="ellipse"
+                  size={8}
+                  color={colors.red[500]}
+                  className="opacity-40"
+                />
+              </Animated.View>
+              <Ionicons
+                name="ellipse"
+                size={8}
+                color={colors.red[500]}
+                className="absolute"
+              />
+            </View>
             <Text className="text-red-500 dark:text-red-500">
               {t(translations.competition.competitionLiveText)}
             </Text>
