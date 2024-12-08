@@ -13,7 +13,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#27272a"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.hyperremix.songcontestrater",
@@ -29,7 +31,9 @@
       },
       "package": "com.hyperremix.songcontestrater",
       "versionCode": 10000,
-      "permissions": ["READ_EXTERNAL_STORAGE"],
+      "permissions": [
+        "READ_EXTERNAL_STORAGE"
+      ],
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
@@ -53,6 +57,7 @@
       "eas": {
         "projectId": "180ce81e-b8e4-498d-a7b7-b4e892bbfcfd"
       }
-    }
+    },
+    "owner": "hyperremix"
   }
 }
