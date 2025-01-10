@@ -1,14 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useEffect, useMemo, useRef } from 'react';
-import {
-  Animated,
-  Image,
-  TouchableOpacity,
-  View,
-  ViewProps,
-} from 'react-native';
-import colors from 'tailwindcss/colors';
+import { useMemo } from 'react';
+import { Image, TouchableOpacity, View, ViewProps } from 'react-native';
 import { t, translations } from '../../i18n';
 import { toImagekitUrl } from '../../imagekit';
 import { CompetitionResponse } from '../../protos/competition';
@@ -41,30 +34,9 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
     [competition],
   );
 
-  const anim = useRef(new Animated.Value(1));
-
   const isCompetitionLive = useMemo(
     () => nowIsBetweenTimestampTodayAndEndOfDay(competition.start_time),
     [competition],
-  );
-
-  useEffect(
-    () =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(anim.current, {
-            toValue: 2,
-            duration: 2000,
-            useNativeDriver: false,
-          }),
-          Animated.timing(anim.current, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: false,
-          }),
-        ]),
-      ).start(),
-    [],
   );
 
   return (
@@ -81,22 +53,10 @@ export const CompetitionCard = ({ competition, ...props }: Props) => {
           </View>
         )}
         {isCompetitionLive && (
-          <View className="absolute top-2 right-3 flex flex-row items-center gap-1">
-            <View>
-              <Animated.View style={{ transform: [{ scale: anim.current }] }}>
-                <Ionicons
-                  name="ellipse"
-                  size={8}
-                  color={colors.red[500]}
-                  className="opacity-40"
-                />
-              </Animated.View>
-              <Ionicons
-                name="ellipse"
-                size={8}
-                color={colors.red[500]}
-                className="absolute"
-              />
+          <View className="absolute top-2 right-3 flex flex-row items-center gap-3">
+            <View className="relative flex h-3 w-3">
+              <View className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></View>
+              <View className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></View>
             </View>
             <Text className="text-red-500 dark:text-red-500">
               {t(translations.competition.competitionLiveText)}
