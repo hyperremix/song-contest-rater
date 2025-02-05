@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { t, translations } from '../../i18n';
+import { toImagekitUrl } from '../../imagekit';
 import { ActResponse } from '../../protos/act';
 import { useActStore, useCompetitionStore } from '../../store';
 import { getComplementSet } from '../../utils/getComplementSet';
@@ -129,7 +130,15 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
       {selectedActId === 'new' && imageUrl && (
         <Image
           className="object-contain rounded-lg h-32 w-32"
-          source={{ uri: imageUrl }}
+          source={{
+            uri: toImagekitUrl(imageUrl, [
+              {
+                height: '256',
+                width: '256',
+                cropMode: 'pad_resize',
+              },
+            ]),
+          }}
         />
       )}
       <View className="flex flex-row items-center gap-2 mt-6">

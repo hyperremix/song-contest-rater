@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Image, View } from 'react-native';
 import { t, translations } from '../../i18n';
+import { toImagekitUrl } from '../../imagekit';
 import { UserResponse } from '../../protos/user';
 import { useUserStore } from '../../store';
 import { Button } from '../atoms/Button';
@@ -52,7 +53,11 @@ export const UpdateUserModal = ({ user, onClose, ...props }: Props) => {
       {imageUrl && (
         <Image
           className="object-contain rounded-lg h-32 w-32"
-          source={{ uri: imageUrl }}
+          source={{
+            uri: toImagekitUrl(imageUrl, [
+              { height: '128', width: '128', focus: 'auto' },
+            ]),
+          }}
         />
       )}
       <View className="flex flex-row items-center gap-2 mt-6">

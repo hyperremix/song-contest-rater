@@ -32,7 +32,9 @@ export const Avatar = ({
   const component = src ? (
     <Image
       source={{
-        uri: toImagekitUrl(src, [{ height: '128', width: '128' }]),
+        uri: toImagekitUrl(src, [
+          { height: '128', width: '128', focus: 'auto' },
+        ]),
       }}
       className={`${size} rounded-full ${onPress ? '' : className}`}
     />

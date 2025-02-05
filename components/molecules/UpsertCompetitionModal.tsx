@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { t, translations } from '../../i18n';
+import { toImagekitUrl } from '../../imagekit';
 import { CompetitionResponse } from '../../protos/competition';
 import { useCompetitionStore } from '../../store';
 import { toISOString, toTimestamp } from '../../utils/dayjs';
@@ -117,7 +118,11 @@ export const UpsertCompetitionModal = ({
       {imageUrl && (
         <Image
           className="object-contain rounded-lg h-32 w-32"
-          source={{ uri: imageUrl }}
+          source={{
+            uri: toImagekitUrl(imageUrl, [
+              { height: '256', width: '256', focus: 'auto' },
+            ]),
+          }}
         />
       )}
       <View className="flex flex-row items-center gap-2 mt-6">
