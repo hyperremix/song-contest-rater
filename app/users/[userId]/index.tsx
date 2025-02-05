@@ -15,6 +15,7 @@ import { useUserStore } from '../../../store';
 import { Permission } from '../../../utils/auth';
 
 const UserScreen = () => {
+  const appUser = useUserStore((state) => state.appUser);
   const selectedUser = useUserStore((state) => state.selectedUser);
   const getUserError = useUserStore((state) => state.getUserError);
   const updateUserError = useUserStore((state) => state.updateUserError);
@@ -33,7 +34,7 @@ const UserScreen = () => {
     useState(false);
 
   const canEditUser = useMemo(
-    () => hasPermission(Permission.WriteUsers),
+    () => hasPermission(Permission.WriteUsers) || appUser?.id === params.userId,
     [authData],
   );
 
