@@ -1,11 +1,7 @@
 import * as AuthSession from 'expo-auth-session';
 import { router } from 'expo-router';
 import { environment } from '../../environment';
-import {
-  CreateUserRequest,
-  UpdateUserRequest,
-  UserResponse,
-} from '../../protos/user';
+import { CreateUserRequest, UserResponse } from '../../protos/user';
 import { useUserStore } from '../../store';
 import { emptyFirstname, emptyLastname, extractNames } from '../extractNames';
 import { generateId } from '../generateId';
@@ -79,7 +75,7 @@ export class Auth0Client {
     if (authData.profile?.email === undefined) {
       useUserStore.setState({
         isAuthenticated: false,
-        user: null,
+        appUser: null,
         getUserError: toHttpError(new Error('Email is undefined')),
       });
       return;
@@ -93,13 +89,7 @@ export class Auth0Client {
 
     const existingUser = await this.getUser();
     if (existingUser) {
-      const updatedUser = await this.updateUser({
-        id: existingUser.id,
-        firstname,
-        lastname,
-        image_url: authData.profile?.picture ?? '',
-      });
-      useUserStore.setState({ user: updatedUser });
+      useUserStore.setState({ appUser: existingUser });
       return;
     }
 
@@ -109,7 +99,7 @@ export class Auth0Client {
       lastname,
       image_url: authData.profile?.picture ?? '',
     });
-    useUserStore.setState({ user: createdUser });
+    useUserStore.setState({ appUser: createdUser });
   };
 
   private getUser = async (): Promise<UserResponse | null> => {
@@ -122,7 +112,7 @@ export class Auth0Client {
         return null;
       } else {
         useUserStore.setState({
-          user: null,
+          appUser: null,
           isAuthenticated: false,
           getUserError: httpError,
         });
@@ -140,25 +130,7 @@ export class Auth0Client {
     } catch (error: unknown) {
       const httpError = toHttpError(error);
       useUserStore.setState({
-        user: null,
-        isAuthenticated: false,
-        getUserError: httpError,
-      });
-      return null;
-    }
-  };
-
-  private updateUser = async (
-    request: UpdateUserRequest,
-  ): Promise<UserResponse | null> => {
-    try {
-      return (
-        await httpClient.put<UserResponse>(`users/${request.id}`, request)
-      ).data;
-    } catch (error: unknown) {
-      const httpError = toHttpError(error);
-      useUserStore.setState({
-        user: null,
+        appUser: null,
         isAuthenticated: false,
         getUserError: httpError,
       });
@@ -214,7 +186,11 @@ export class Auth0Client {
   };
 
   public logout = async (): Promise<void> => {
-    useUserStore.setState({ authData: null, isAuthenticated: false });
+    useUserStore.setState({
+      appUser: null,
+      authData: null,
+      isAuthenticated: false,
+    });
     router.navigate('/');
   };
 }

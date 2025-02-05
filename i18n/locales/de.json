@@ -94,5 +94,17 @@
     "sweden": "Schweden",
     "switzerland": "Schweiz",
     "germany": "Deutschland"
+  },
+  "drawer": {
+    "viewProfileButtonLabel": "Profil ansehen"
+  },
+  "user": {
+    "firstNameInputLabel": "Vorname",
+    "lastNameInputLabel": "Nachname",
+    "emailInputLabel": "Email",
+    "imageUrlInputLabel": "Bild URL",
+    "profilePictureLabel": "Profilbild",
+    "editProfileButtonLabel": "Profil bearbeiten",
+    "updateProfileButtonLabel": "Speichern"
   }
 }

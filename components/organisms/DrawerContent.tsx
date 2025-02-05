@@ -3,7 +3,7 @@ import {
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
 import { DrawerActions } from '@react-navigation/native';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { View } from 'react-native';
@@ -18,8 +18,9 @@ import { Text } from '../atoms/Text';
 export const DrawerContent = (props: DrawerContentComponentProps) => {
   const { bottom: marginBottom } = useSafeAreaInsets();
   const logout = useUserStore((state) => state.logout);
-  const authData = useUserStore((state) => state.authData);
+  const appUser = useUserStore((state) => state.appUser);
   const navigation = useNavigation();
+  const router = useRouter();
   const { top } = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
 
@@ -35,7 +36,6 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        alignItems: 'center',
         backgroundColor:
           colorScheme === 'dark' ? colors.zinc[800] : colors.white,
       }}
@@ -50,18 +50,24 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
           Song Contest Rater
         </Text>
       </View>
-      <View className="flex flex-col items-center">
-        <Text>{t(translations.auth.loggedInAsHeader)}</Text>
-        {authData?.profile?.name !== authData?.profile?.email && (
-          <Text>{authData?.profile?.name}</Text>
-        )}
-        <Text>{authData?.profile?.email}</Text>
+      <View className="flex flex-col gap-2">
         <Button
           variant="text"
-          label={t(translations.auth.logoutButtonLabel)}
-          onPress={handleLogout}
-          style={{ marginBottom }}
+          label={t(translations.drawer.viewProfileButtonLabel)}
+          onPress={() => router.navigate(`/users/${appUser?.id}`)}
+          leftIcon="person-outline"
         />
+        <View className="flex flex-col items-center">
+          <Text>{t(translations.auth.loggedInAsHeader)}</Text>
+          <Text>{`${appUser?.firstname} ${appUser?.lastname}`}</Text>
+          <Text>{appUser?.email}</Text>
+          <Button
+            variant="text"
+            label={t(translations.auth.logoutButtonLabel)}
+            onPress={handleLogout}
+            style={{ marginBottom }}
+          />
+        </View>
       </View>
     </DrawerContentScrollView>
   );

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -5,11 +6,13 @@ import {
   TouchableOpacityProps,
   View,
 } from 'react-native';
+import { color } from '../../constants/color';
 import { Text } from './Text';
 
 type Variant = 'filled' | 'outlined' | 'text';
 
 export type Props = TouchableOpacityProps & {
+  leftIcon?: keyof typeof Ionicons.glyphMap;
   label: string;
   variant?: Variant;
   isLoading?: boolean;
@@ -27,7 +30,14 @@ const textStyles: Record<Variant, string> = {
   text: 'text-primary dark:text-primary',
 };
 
+const iconColor: Record<Variant, string> = {
+  filled: 'white',
+  outlined: color.primary,
+  text: color.primary,
+};
+
 export const Button = ({
+  leftIcon,
   label,
   variant = 'filled',
   isLoading = false,
@@ -46,7 +56,10 @@ export const Button = ({
         {...props}
         disabled={isLoading}
       >
-        <View className="flex justify-center items-center py-3 px-6">
+        <View className="flex flex-row justify-center items-center gap-2 py-3 px-6">
+          {leftIcon && (
+            <Ionicons name={leftIcon} size={24} color={iconColor[variant]} />
+          )}
           <Text className={`font-bold ${textStyles[variant]}`}>
             {label.toLocaleUpperCase()}
           </Text>

@@ -8,8 +8,8 @@ import { environment } from '../environment';
 const imagekit = new ImageKit({ urlEndpoint: environment.imagekitUrlEndpoint });
 
 export const toImagekitUrl = (
-  path: string,
-  transformation: Transformation[],
+  path: string | undefined = '',
+  transformation: Transformation[] = [],
   transformationPosition?: TransformationPosition,
 ) =>
   imagekit.url({

@@ -20,7 +20,7 @@ import { useRatingStore } from '../../../../store/rating';
 import { Permission } from '../../../../utils/auth';
 
 const ActScreen = () => {
-  const user = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.appUser);
   const selectedCompetition = useCompetitionStore(
     (state) => state.selectedCompetition,
   );

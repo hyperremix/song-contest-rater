@@ -1,7 +1,7 @@
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color } from '../../constants/color';
@@ -23,12 +23,17 @@ export const Header = ({
 }: HeaderProps) => {
   const { top: paddingTop, left: paddingLeft } = useSafeAreaInsets();
   const navigation = useNavigation();
-  const authData = useUserStore((state) => state.authData);
+  const appUser = useUserStore((state) => state.appUser);
   const isLoading = useUserStore((state) => state.isLoading);
   const { colorScheme } = useColorScheme();
 
+  const fetchAppUser = useUserStore((state) => state.fetchAppUser);
   const openDrawer = () => navigation.dispatch(DrawerActions.toggleDrawer());
   const handleBack = () => navigation.goBack();
+
+  useEffect(() => {
+    fetchAppUser();
+  }, []);
 
   return (
     <View
@@ -50,8 +55,8 @@ export const Header = ({
           ) : (
             <Avatar
               onPress={openDrawer}
-              src={authData?.profile?.picture}
-              name={authData?.profile?.name}
+              src={appUser?.image_url}
+              name={`${appUser?.firstname} ${appUser?.lastname}`}
             />
           )}
         </View>
@@ -72,8 +77,8 @@ export const Header = ({
         ) : (
           <Avatar
             onPress={openDrawer}
-            src={authData?.profile?.picture}
-            name={authData?.profile?.name}
+            src={appUser?.image_url}
+            name={`${appUser?.firstname} ${appUser?.lastname}`}
             className="opacity-0"
           />
         )}

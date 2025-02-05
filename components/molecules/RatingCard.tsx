@@ -15,7 +15,7 @@ type Props = ViewProps & {
 };
 
 export const RatingCard = ({ rating, ...props }: Props) => {
-  const user = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.appUser);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const { colorScheme } = useColorScheme();
 
