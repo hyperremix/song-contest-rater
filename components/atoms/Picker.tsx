@@ -7,7 +7,7 @@ import { Text } from './Text';
 export type TPickerData = { label: string; value: string };
 
 type Props = PickerProps & {
-  label: string;
+  label?: string;
   data: TPickerData[];
 };
 
@@ -16,7 +16,7 @@ export const Picker = ({ label, data, className, ...props }: Props) => {
 
   return (
     <View className={`flex flex-col gap-1 ${className}`}>
-      <Text className="text-lg">{label}</Text>
+      {label && <Text className="text-lg">{label}</Text>}
       <RNPicker
         className="bg-white dark:bg-zinc-900 text-black dark:text-white border border-black dark:border-white rounded-md p-3"
         placeholder={label}
@@ -33,6 +33,7 @@ export const Picker = ({ label, data, className, ...props }: Props) => {
             key={value}
             label={label}
             value={value}
+            enabled={value !== 'none'}
           />
         ))}
       </RNPicker>

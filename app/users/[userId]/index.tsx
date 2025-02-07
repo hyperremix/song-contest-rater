@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Button } from '../../../components/atoms/Button';
 import { Card } from '../../../components/atoms/Card';
 import { Text } from '../../../components/atoms/Text';
@@ -8,6 +9,7 @@ import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
 import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
 import { LoadingCard } from '../../../components/molecules/LoadingCard';
 import { UpdateUserModal } from '../../../components/molecules/UpdateUserModal';
+import { UploadProfilePictureModal } from '../../../components/molecules/UploadProfilePictureModal';
 import { color } from '../../../constants/color';
 import { t, translations } from '../../../i18n';
 import { toImagekitUrl } from '../../../imagekit';
@@ -19,6 +21,9 @@ const UserScreen = () => {
   const selectedUser = useUserStore((state) => state.selectedUser);
   const getUserError = useUserStore((state) => state.getUserError);
   const updateUserError = useUserStore((state) => state.updateUserError);
+  const updateProfilePictureError = useUserStore(
+    (state) => state.uploadProfilePictureError,
+  );
   const authData = useUserStore((state) => state.authData);
   const hasPermission = useUserStore((state) => state.hasPermission);
   const params = useLocalSearchParams();
@@ -30,8 +35,16 @@ const UserScreen = () => {
   const [isGetUserErrorVisible, setIsGetUserErrorVisible] = useState(false);
   const [isUpdateUserErrorVisible, setIsUpdateUserErrorVisible] =
     useState(false);
-  const [isUpsertUserModalVisible, setIsUpsertUserModalVisible] =
+  const [
+    isUploadProfilePictureErrorVisible,
+    setIsUploadProfilePictureErrorVisible,
+  ] = useState(false);
+  const [isUpdateUserModalVisible, setIsUpdateUserModalVisible] =
     useState(false);
+  const [
+    isUploadProfilePictureModalVisible,
+    setIsUploadProfilePictureModalVisible,
+  ] = useState(false);
 
   const canEditUser = useMemo(
     () => hasPermission(Permission.WriteUsers) || appUser?.id === params.userId,
@@ -53,6 +66,12 @@ const UserScreen = () => {
       setIsUpdateUserErrorVisible(true);
     }
   }, [updateUserError]);
+
+  useEffect(() => {
+    if (updateProfilePictureError) {
+      setIsUploadProfilePictureErrorVisible(true);
+    }
+  }, [updateProfilePictureError]);
 
   return (
     <>
@@ -90,7 +109,7 @@ const UserScreen = () => {
         }
         withBackButton
       >
-        <View className="flex-1 flex-col items-stretch gap-2">
+        <ScrollView className="flex-1 flex-col items-stretch gap-2">
           {isFetchSelectedUserLoading ? (
             <View className="flex flex-col gap-2">
               {[0].map((i) => (
@@ -98,28 +117,40 @@ const UserScreen = () => {
               ))}
             </View>
           ) : (
-            <Card className="flex flex-col gap-2 p-4">
-              <View className="flex flex-row gap-2">
-                <Text className="font-bold">
-                  {t(translations.user.firstNameInputLabel)}:
+            <View className="flex flex-col gap-2">
+              <Card className="flex flex-col gap-2 p-4">
+                <Text className="text-lg font-bold">
+                  {t(translations.user.personalInformationTitle)}
                 </Text>
-                <Text>{selectedUser?.firstname}</Text>
-              </View>
-              <View className="flex flex-row gap-2">
-                <Text className="font-bold">
-                  {t(translations.user.lastNameInputLabel)}:
-                </Text>
-                <Text>{selectedUser?.lastname}</Text>
-              </View>
-              <View className="flex flex-row gap-2">
-                <Text className="font-bold">
-                  {t(translations.user.emailInputLabel)}:
-                </Text>
-                <Text>{selectedUser?.email}</Text>
-              </View>
-              <View className="flex flex-row gap-2">
-                <Text className="font-bold">
-                  {t(translations.user.profilePictureLabel)}:
+                <View className="flex flex-row gap-2">
+                  <Text className="font-bold">
+                    {t(translations.user.firstNameInputLabel)}:
+                  </Text>
+                  <Text>{selectedUser?.firstname}</Text>
+                </View>
+                <View className="flex flex-row gap-2">
+                  <Text className="font-bold">
+                    {t(translations.user.lastNameInputLabel)}:
+                  </Text>
+                  <Text>{selectedUser?.lastname}</Text>
+                </View>
+                <View className="flex flex-row gap-2">
+                  <Text className="font-bold">
+                    {t(translations.user.emailInputLabel)}:
+                  </Text>
+                  <Text>{selectedUser?.email}</Text>
+                </View>
+                {canEditUser && (
+                  <Button
+                    label={t(translations.user.editProfileButtonLabel)}
+                    className="mt-4"
+                    onPress={() => setIsUpdateUserModalVisible(true)}
+                  />
+                )}
+              </Card>
+              <Card className="flex flex-col gap-2 p-4">
+                <Text className="text-lg font-bold">
+                  {t(translations.user.profilePictureLabel)}
                 </Text>
                 <Image
                   className="object-contain rounded-lg h-32 w-32"
@@ -129,17 +160,17 @@ const UserScreen = () => {
                     ]),
                   }}
                 />
-              </View>
-            </Card>
+                {canEditUser && (
+                  <Button
+                    label={t(translations.user.editProfileButtonLabel)}
+                    className="mt-4"
+                    onPress={() => setIsUploadProfilePictureModalVisible(true)}
+                  />
+                )}
+              </Card>
+            </View>
           )}
-          {canEditUser && (
-            <Button
-              label={t(translations.user.editProfileButtonLabel)}
-              className="mt-4"
-              onPress={() => setIsUpsertUserModalVisible(true)}
-            />
-          )}
-        </View>
+        </ScrollView>
       </HeaderLayout>
       {isGetUserErrorVisible && (
         <HttpErrorModal
@@ -155,11 +186,25 @@ const UserScreen = () => {
           onClose={() => setIsUpdateUserErrorVisible(false)}
         />
       )}
-      {isUpsertUserModalVisible && selectedUser && (
+      {isUploadProfilePictureErrorVisible && (
+        <HttpErrorModal
+          httpError={updateProfilePictureError}
+          isVisible={isUploadProfilePictureErrorVisible}
+          onClose={() => setIsUploadProfilePictureErrorVisible(false)}
+        />
+      )}
+      {isUploadProfilePictureModalVisible && selectedUser && (
+        <UploadProfilePictureModal
+          user={selectedUser}
+          isVisible={isUploadProfilePictureModalVisible}
+          onClose={() => setIsUploadProfilePictureModalVisible(false)}
+        />
+      )}
+      {isUpdateUserModalVisible && selectedUser && (
         <UpdateUserModal
           user={selectedUser}
-          isVisible={isUpsertUserModalVisible}
-          onClose={() => setIsUpsertUserModalVisible(false)}
+          isVisible={isUpdateUserModalVisible}
+          onClose={() => setIsUpdateUserModalVisible(false)}
         />
       )}
     </>

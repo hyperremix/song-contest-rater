@@ -1677,10 +1677,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.1.tgz#9a96ce501bc62df46c4031fbd970e3cc6b10f07b"
   integrity sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==
 
-"@hyperremix/song-contest-rater-proto@1.0.28":
-  version "1.0.28"
-  resolved "https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/1.0.28/677262cde207b607c3ff623283caad4e0d7dbb8d#677262cde207b607c3ff623283caad4e0d7dbb8d"
-  integrity sha512-TauouTo7bBePBMcv3z4rBvFAVJO/PKzJnGgl4SgPw5g8awgYCAPFDw0W7cjZXeNlbSg4nUxOxRnuwzUZFeSq+A==
+"@hyperremix/song-contest-rater-proto@1.0.32":
+  version "1.0.32"
+  resolved "https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/1.0.32/e59dc05d63493e8fa086e2aac47dbf448946225c#e59dc05d63493e8fa086e2aac47dbf448946225c"
+  integrity sha512-wo/YwcIzgUy38HMzEm4GpZYyGHX0tShCDq0P0BNwrZhnDO9FvpzuMo9reskvj0w/mrW/0TkFp5mmxBsuxlWqrg==
 
 "@improbable-eng/grpc-web@^0.15.0":
   version "0.15.0"
@@ -4557,6 +4557,25 @@ expo-font@~13.0.1:
   integrity sha512-8JE47B+6cLeKWr5ql8gU6YsPHjhrz1vMrTqYMm72No/8iW8Sb/uL4Oc0dpmbjq3hLLXBY0xPBQOgU7FQ6Y04Vg==
   dependencies:
     fontfaceobserver "^2.1.0"
+
+expo-image-loader@~5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/expo-image-loader/-/expo-image-loader-5.0.0.tgz#4f58a21ab26e40d6fccc211b664fd9fe21a5dcb8"
+  integrity sha512-Eg+5FHtyzv3Jjw9dHwu2pWy4xjf8fu3V0Asyy42kO+t/FbvW/vjUixpTjPtgKQLQh+2/9Nk4JjFDV6FwCnF2ZA==
+
+expo-image-manipulator@~13.0.6:
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/expo-image-manipulator/-/expo-image-manipulator-13.0.6.tgz#a6d5504ec0df34c8caa53a62eac7253b2267fab9"
+  integrity sha512-Rz8Kcfx1xYm0AsIDi6zfKYUDnwCP8edgYXWb00KAkzOF8bDxwzTrnvESWhCiveM4IB3fojjLpNeENME34p3bzA==
+  dependencies:
+    expo-image-loader "~5.0.0"
+
+expo-image-picker@~16.0.5:
+  version "16.0.5"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-16.0.5.tgz#fefb08f1a35980015122499fb388f2cfcbf08485"
+  integrity sha512-Rkc4vihqPN/48PV3QJkrG10Lg5s1LonKmpVnGwBSlHjRR5ngqJH++DYFndgD69hLaWrJukzCYpP3CyTMAAatWg==
+  dependencies:
+    expo-image-loader "~5.0.0"
 
 expo-image@~2.0.3:
   version "2.0.3"

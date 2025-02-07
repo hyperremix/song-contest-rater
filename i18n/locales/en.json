@@ -35,6 +35,7 @@
     "loggedInAsHeader": "Logged in as:"
   },
   "buttonLabelOkay": "Okay",
+  "buttonLabelCancel": "Cancel",
   "homeScreenTitle": "Contests",
   "rating": {
     "song": "Song",
@@ -103,7 +104,15 @@
     "emailInputLabel": "Email",
     "imageUrlInputLabel": "Image URL",
     "profilePictureLabel": "Profile Picture",
-    "editProfileButtonLabel": "Edit Profile",
-    "updateProfileButtonLabel": "Save"
+    "editProfileButtonLabel": "Update",
+    "updateProfileButtonLabel": "Save",
+    "updateProfilePictureModalTitle": "Update Profile Picture",
+    "chooseProfilePictureButtonLabel": "Choose From Library",
+    "useProfilePictureButtonLabel": "Use Profile Picture",
+    "profilePicturePreviewLabel": "Preview:",
+    "profilePictureSourceImageUrl": "Image URL",
+    "profilePictureSourceLibrary": "Library",
+    "profilePictureSourceNone": "Choose a source",
+    "personalInformationTitle": "Personal Information"
   }
 }

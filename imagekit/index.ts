@@ -12,9 +12,11 @@ export const toImagekitUrl = (
   transformation: Transformation[] = [],
   transformationPosition?: TransformationPosition,
 ) =>
-  imagekit.url({
-    urlEndpoint: environment.imagekitUrlEndpoint,
-    path,
-    transformation,
-    transformationPosition,
-  });
+  path?.includes(environment.imagekitUrlEndpoint)
+    ? path
+    : imagekit.url({
+        urlEndpoint: environment.imagekitUrlEndpoint,
+        path,
+        transformation,
+        transformationPosition,
+      });

@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Image, View } from 'react-native';
+import { View } from 'react-native';
 import { t, translations } from '../../i18n';
-import { toImagekitUrl } from '../../imagekit';
 import { UserResponse } from '../../protos/user';
 import { useUserStore } from '../../store';
 import { Button } from '../atoms/Button';
@@ -21,14 +20,13 @@ export const UpdateUserModal = ({ user, onClose, ...props }: Props) => {
 
   const [firstName, setFirstName] = useState(user?.firstname ?? '');
   const [lastName, setLastName] = useState(user?.lastname ?? '');
-  const [imageUrl, setImageUrl] = useState(user?.image_url ?? '');
 
   const handleSave = () => {
     updateUser({
       id: user.id,
       firstname: firstName,
       lastname: lastName,
-      image_url: imageUrl,
+      image_url: user.image_url,
     });
     onClose();
   };
@@ -45,21 +43,6 @@ export const UpdateUserModal = ({ user, onClose, ...props }: Props) => {
         value={lastName}
         onChangeText={setLastName}
       />
-      <Input
-        label={t(translations.user.imageUrlInputLabel)}
-        value={imageUrl}
-        onChangeText={setImageUrl}
-      />
-      {imageUrl && (
-        <Image
-          className="object-contain rounded-lg h-32 w-32"
-          source={{
-            uri: toImagekitUrl(imageUrl, [
-              { height: '128', width: '128', focus: 'auto' },
-            ]),
-          }}
-        />
-      )}
       <View className="flex flex-row items-center gap-2 mt-6">
         <Button
           label={t(translations.user.updateProfileButtonLabel)}
