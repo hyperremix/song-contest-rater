@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useProfilePictureSelection } from '../../hooks/useProfilePictureSelection';
 import { t, translations } from '../../i18n';
@@ -10,6 +10,7 @@ import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
 import { Picker } from '../atoms/Picker';
 import { Text } from '../atoms/Text';
+import { HttpErrorModal } from './HttpErrorModal';
 import { Modal, ModalProps } from './Modal';
 
 type Props = ModalProps & {
@@ -27,11 +28,25 @@ export const UploadProfilePictureModal = ({
   const uploadProfilePicture = useUserStore(
     (state) => state.uploadProfilePicture,
   );
-  const updateUser = useUserStore((state) => state.updateUser);
-
   const isUploadProfilePictureLoading = useUserStore(
     (state) => state.isUploadProfilePictureLoading,
   );
+  const uploadProfilePictureError = useUserStore(
+    (state) => state.uploadProfilePictureError,
+  );
+  const confirmUploadProfilePictureError = useUserStore(
+    (state) => state.confirmUploadProfilePictureError,
+  );
+
+  const updateUser = useUserStore((state) => state.updateUser);
+  const isUpdateUserLoading = useUserStore(
+    (state) => state.isUpdateUserLoading,
+  );
+  const updateUserError = useUserStore((state) => state.updateUserError);
+  const confirmUpdateUserError = useUserStore(
+    (state) => state.confirmUpdateUserError,
+  );
+
   const [profilePictureSource, setProfilePictureSource] =
     useState<TProfilePictureSource>('none');
   const [imageUrl, setImageUrl] = useState<string>(user?.image_url ?? '');
@@ -77,74 +92,90 @@ export const UploadProfilePictureModal = ({
   };
 
   return (
-    <Modal {...props} onClose={onClose} className={`${className} pt-10`}>
-      <Text className="text-2xl font-bold">
-        {t(translations.user.updateProfilePictureModalTitle)}
-      </Text>
-      <Picker
-        data={profilePictureSourcePickerData}
-        selectedValue={profilePictureSource}
-        onValueChange={(value) => {
-          setProfilePictureSource(value as TProfilePictureSource);
-        }}
-      />
-      {profilePictureSource === 'library' && (
-        <>
+    <>
+      <Modal {...props} onClose={onClose} className={`${className} pt-10`}>
+        <Text className="text-2xl font-bold">
+          {t(translations.user.updateProfilePictureModalTitle)}
+        </Text>
+        <Picker
+          data={profilePictureSourcePickerData}
+          selectedValue={profilePictureSource}
+          onValueChange={(value) => {
+            setProfilePictureSource(value as TProfilePictureSource);
+          }}
+        />
+        {profilePictureSource === 'library' && (
+          <>
+            <Button
+              leftIcon="images"
+              label={t(translations.user.chooseProfilePictureButtonLabel)}
+              onPress={handleChooseProfilePicture}
+              isLoading={isUploadProfilePictureLoading}
+            />
+            {selection && (
+              <View className="flex flex-row items-center gap-2">
+                <Text>{t(translations.user.profilePicturePreviewLabel)}</Text>
+                <Image
+                  className="object-contain rounded-lg h-32 w-32"
+                  source={{
+                    uri: selection.uri,
+                  }}
+                />
+              </View>
+            )}
+          </>
+        )}
+        {profilePictureSource === 'imageUrl' && (
+          <>
+            <Input
+              label={t(translations.user.imageUrlInputLabel)}
+              value={imageUrl}
+              onChangeText={setImageUrl}
+            />
+            {imageUrl && (
+              <View className="flex flex-row items-center gap-2">
+                <Text>{t(translations.user.profilePicturePreviewLabel)}</Text>
+                <Image
+                  className="object-contain rounded-lg h-32 w-32"
+                  source={{
+                    uri: toImagekitUrl(imageUrl, [
+                      { height: '128', width: '128', focus: 'auto' },
+                    ]),
+                  }}
+                />
+              </View>
+            )}
+          </>
+        )}
+        <View className="flex flex-row items-center gap-2 mt-6">
           <Button
-            leftIcon="images"
-            label={t(translations.user.chooseProfilePictureButtonLabel)}
-            onPress={handleChooseProfilePicture}
-            isLoading={isUploadProfilePictureLoading}
+            label={t(translations.buttonLabelCancel)}
+            onPress={onClose}
+            className="grow"
+            variant="outlined"
           />
-          {selection && (
-            <View className="flex flex-row items-center gap-2">
-              <Text>{t(translations.user.profilePicturePreviewLabel)}</Text>
-              <Image
-                className="object-contain rounded-lg h-32 w-32"
-                source={{
-                  uri: selection.uri,
-                }}
-              />
-            </View>
-          )}
-        </>
-      )}
-      {profilePictureSource === 'imageUrl' && (
-        <>
-          <Input
-            label={t(translations.user.imageUrlInputLabel)}
-            value={imageUrl}
-            onChangeText={setImageUrl}
+          <Button
+            label={t(translations.user.useProfilePictureButtonLabel)}
+            onPress={handleSave}
+            isLoading={isUploadProfilePictureLoading || isUpdateUserLoading}
+            className="grow"
           />
-          {imageUrl && (
-            <View className="flex flex-row items-center gap-2">
-              <Text>{t(translations.user.profilePicturePreviewLabel)}</Text>
-              <Image
-                className="object-contain rounded-lg h-32 w-32"
-                source={{
-                  uri: toImagekitUrl(imageUrl, [
-                    { height: '128', width: '128', focus: 'auto' },
-                  ]),
-                }}
-              />
-            </View>
-          )}
-        </>
+        </View>
+      </Modal>
+      {uploadProfilePictureError && (
+        <HttpErrorModal
+          httpError={uploadProfilePictureError}
+          isVisible={!!uploadProfilePictureError}
+          onClose={confirmUploadProfilePictureError}
+        />
       )}
-      <View className="flex flex-row items-center gap-2 mt-6">
-        <Button
-          label={t(translations.buttonLabelCancel)}
-          onPress={onClose}
-          className="grow"
-          variant="outlined"
+      {updateUserError && (
+        <HttpErrorModal
+          httpError={updateUserError}
+          isVisible={!!updateUserError}
+          onClose={confirmUpdateUserError}
         />
-        <Button
-          label={t(translations.user.useProfilePictureButtonLabel)}
-          onPress={handleSave}
-          isLoading={isUploadProfilePictureLoading}
-          className="grow"
-        />
-      </View>
-    </Modal>
+      )}
+    </>
   );
 };

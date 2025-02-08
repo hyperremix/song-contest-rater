@@ -8,7 +8,7 @@ type Props = ViewProps & {
 export const BaseLayout = ({ children, className, ...props }: Props) => {
   return (
     <View
-      className={`flex-1 bg-zinc-400 dark:bg-zinc-800 ${className}`}
+      className={`flex-1 bg-zinc-200 dark:bg-zinc-800 ${className}`}
       {...props}
     >
       {children}

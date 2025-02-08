@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, Image, RefreshControl, View } from 'react-native';
 import { Button } from '../../../../components/atoms/Button';
 import { IconButton } from '../../../../components/atoms/IconButton';
@@ -28,17 +28,18 @@ const ActScreen = () => {
   const ratings = useRatingStore((state) => state.ratings);
   const fetchRatingError = useRatingStore((state) => state.fetchRatingsError);
   const upsertRatingError = useRatingStore((state) => state.upsertRatingError);
+  const confirmUpsertRatingError = useRatingStore(
+    (state) => state.confirmUpsertRatingError,
+  );
   const authData = useUserStore((state) => state.authData);
   const hasPermission = useUserStore((state) => state.hasPermission);
 
   const fetchRatings = useRatingStore((state) => state.fetchRatings);
-  const dismissError = useRatingStore((state) => state.dismissError);
+  const confirmFetchRatingsError = useRatingStore(
+    (state) => state.confirmFetchRatingsError,
+  );
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isFetchErrorModalVisible, setIsFetchErrorModalVisible] =
-    useState(false);
-  const [isUpsertRatingErrorModalVisible, setIsUpsertRatingErrorModalVisible] =
-    useState(false);
   const [isUpsertRatingModalVisible, setIsUpsertRatingModalVisible] =
     useState(false);
   const [isUpsertActModalVisible, setIsUpsertActModalVisible] = useState(false);
@@ -53,28 +54,10 @@ const ActScreen = () => {
     [authData],
   );
 
-  useEffect(() => {
-    if (fetchRatingError) {
-      setIsFetchErrorModalVisible(true);
-    }
-  }, [fetchRatingError]);
-
-  useEffect(() => {
-    if (upsertRatingError) {
-      setIsUpsertRatingErrorModalVisible(true);
-    }
-  }, [upsertRatingError]);
-
   const refresh = async () => {
     setIsRefreshing(true);
     await fetchRatings(selectedAct!.id);
     setIsRefreshing(false);
-  };
-
-  const handleCloseErrorModal = () => {
-    setIsFetchErrorModalVisible(false);
-    setIsUpsertRatingErrorModalVisible(false);
-    dismissError();
   };
 
   return (
@@ -133,18 +116,18 @@ const ActScreen = () => {
           )}
         </View>
       </HeaderLayout>
-      {isFetchErrorModalVisible && (
+      {fetchRatingError && (
         <HttpErrorModal
           httpError={fetchRatingError}
-          isVisible={isFetchErrorModalVisible}
-          onClose={handleCloseErrorModal}
+          isVisible={!!fetchRatingError}
+          onClose={confirmFetchRatingsError}
         />
       )}
-      {isUpsertRatingErrorModalVisible && (
+      {upsertRatingError && (
         <HttpErrorModal
           httpError={upsertRatingError}
-          isVisible={isUpsertRatingErrorModalVisible}
-          onClose={handleCloseErrorModal}
+          isVisible={!!upsertRatingError}
+          onClose={confirmUpsertRatingError}
         />
       )}
       {isUpsertRatingModalVisible && (

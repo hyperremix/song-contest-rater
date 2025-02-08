@@ -11,7 +11,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import colors from 'tailwindcss/colors';
 import { t, translations } from '../../i18n';
 import { useUserStore } from '../../store';
+import { Avatar } from '../atoms/Avatar';
 import { Button } from '../atoms/Button';
+import { Divider } from '../atoms/Divider';
 import { Logo } from '../atoms/Logo';
 import { Text } from '../atoms/Text';
 
@@ -46,32 +48,37 @@ export const DrawerContent = (props: DrawerContentComponentProps) => {
         }`}
       >
         <Logo />
-        <Text className="text-primary dark:text-primary text-lg font-extrabold">
-          Song Contest Rater
-        </Text>
-      </View>
-      <View className="flex flex-col gap-2">
+        <View className="flex flex-row items-center gap-2 py-2">
+          <Avatar
+            src={appUser?.image_url}
+            name={`${appUser?.firstname} ${appUser?.lastname}`}
+          />
+          <View className="flex flex-col">
+            <Text className="text-lg font-bold">
+              {`${appUser?.firstname} ${appUser?.lastname}`}
+            </Text>
+            <Text className="text-sm text-zinc-500 dark:text-zinc-500">
+              {appUser?.email}
+            </Text>
+          </View>
+        </View>
+        <Divider />
         <Button
           variant="text"
           label={t(translations.drawer.viewProfileButtonLabel)}
           onPress={() => router.navigate(`/users/${appUser?.id}`)}
           leftIcon="person-outline"
         />
-        <View className="flex flex-col items-center">
-          <Text>{t(translations.auth.loggedInAsHeader)}</Text>
-          <Text>{`${appUser?.firstname} ${appUser?.lastname}`}</Text>
-          <Text>{appUser?.email}</Text>
-          <Button
-            variant="text"
-            label={t(translations.auth.logoutButtonLabel)}
-            onPress={handleLogout}
-            style={{ marginBottom }}
-          />
-        </View>
+      </View>
+      <View className="flex flex-col gap-2">
+        <Divider />
+        <Button
+          variant="text"
+          label={t(translations.auth.logoutButtonLabel)}
+          onPress={handleLogout}
+          style={{ marginBottom }}
+        />
       </View>
     </DrawerContentScrollView>
   );
 };
-function useAuthStore(arg0: (state: any) => any) {
-  throw new Error('Function not implemented.');
-}

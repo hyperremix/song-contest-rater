@@ -8,6 +8,7 @@ import { color } from '../../constants/color';
 import { useUserStore } from '../../store';
 import { Avatar } from '../atoms/Avatar';
 import { IconButton } from '../atoms/IconButton';
+import { HttpErrorModal } from './HttpErrorModal';
 
 export type HeaderProps = ViewProps & {
   withBackButton?: boolean;
@@ -24,7 +25,13 @@ export const Header = ({
   const { top: paddingTop, left: paddingLeft } = useSafeAreaInsets();
   const navigation = useNavigation();
   const appUser = useUserStore((state) => state.appUser);
-  const isLoading = useUserStore((state) => state.isLoading);
+  const isFetchAppUserLoading = useUserStore(
+    (state) => state.isFetchAppUserLoading,
+  );
+  const fetchAppUserError = useUserStore((state) => state.fetchAppUserError);
+  const confirmFetchAppUserError = useUserStore(
+    (state) => state.confirmFetchAppUserError,
+  );
   const { colorScheme } = useColorScheme();
 
   const fetchAppUser = useUserStore((state) => state.fetchAppUser);
@@ -50,7 +57,7 @@ export const Header = ({
               onPress={handleBack}
               color={colorScheme === 'dark' ? 'white' : 'black'}
             />
-          ) : isLoading ? (
+          ) : isFetchAppUserLoading ? (
             <ActivityIndicator color={color.primary} className="p-3" />
           ) : (
             <Avatar
@@ -83,6 +90,13 @@ export const Header = ({
           />
         )}
       </View>
+      {fetchAppUserError && (
+        <HttpErrorModal
+          httpError={fetchAppUserError}
+          isVisible={!!fetchAppUserError}
+          onClose={confirmFetchAppUserError}
+        />
+      )}
     </View>
   );
 };

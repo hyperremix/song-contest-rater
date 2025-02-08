@@ -19,10 +19,11 @@ import { Permission } from '../../../utils/auth';
 const UserScreen = () => {
   const appUser = useUserStore((state) => state.appUser);
   const selectedUser = useUserStore((state) => state.selectedUser);
-  const getUserError = useUserStore((state) => state.getUserError);
-  const updateUserError = useUserStore((state) => state.updateUserError);
-  const updateProfilePictureError = useUserStore(
-    (state) => state.uploadProfilePictureError,
+  const fetchSelectedUserError = useUserStore(
+    (state) => state.fetchSelectedUserError,
+  );
+  const confirmFetchSelectedUserError = useUserStore(
+    (state) => state.confirmFetchSelectedUserError,
   );
   const authData = useUserStore((state) => state.authData);
   const hasPermission = useUserStore((state) => state.hasPermission);
@@ -32,13 +33,6 @@ const UserScreen = () => {
     (state) => state.isFetchSelectedUserLoading,
   );
 
-  const [isGetUserErrorVisible, setIsGetUserErrorVisible] = useState(false);
-  const [isUpdateUserErrorVisible, setIsUpdateUserErrorVisible] =
-    useState(false);
-  const [
-    isUploadProfilePictureErrorVisible,
-    setIsUploadProfilePictureErrorVisible,
-  ] = useState(false);
   const [isUpdateUserModalVisible, setIsUpdateUserModalVisible] =
     useState(false);
   const [
@@ -54,24 +48,6 @@ const UserScreen = () => {
   useEffect(() => {
     fetchSelectedUser(params.userId as string);
   }, []);
-
-  useEffect(() => {
-    if (getUserError) {
-      setIsGetUserErrorVisible(true);
-    }
-  }, [getUserError]);
-
-  useEffect(() => {
-    if (updateUserError) {
-      setIsUpdateUserErrorVisible(true);
-    }
-  }, [updateUserError]);
-
-  useEffect(() => {
-    if (updateProfilePictureError) {
-      setIsUploadProfilePictureErrorVisible(true);
-    }
-  }, [updateProfilePictureError]);
 
   return (
     <>
@@ -172,25 +148,11 @@ const UserScreen = () => {
           )}
         </ScrollView>
       </HeaderLayout>
-      {isGetUserErrorVisible && (
+      {fetchSelectedUserError && (
         <HttpErrorModal
-          httpError={getUserError}
-          isVisible={isGetUserErrorVisible}
-          onClose={() => setIsGetUserErrorVisible(false)}
-        />
-      )}
-      {isUpdateUserErrorVisible && (
-        <HttpErrorModal
-          httpError={updateUserError}
-          isVisible={isUpdateUserErrorVisible}
-          onClose={() => setIsUpdateUserErrorVisible(false)}
-        />
-      )}
-      {isUploadProfilePictureErrorVisible && (
-        <HttpErrorModal
-          httpError={updateProfilePictureError}
-          isVisible={isUploadProfilePictureErrorVisible}
-          onClose={() => setIsUploadProfilePictureErrorVisible(false)}
+          httpError={fetchSelectedUserError}
+          isVisible={!!fetchSelectedUserError}
+          onClose={confirmFetchSelectedUserError}
         />
       )}
       {isUploadProfilePictureModalVisible && selectedUser && (

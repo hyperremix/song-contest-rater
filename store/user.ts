@@ -12,10 +12,10 @@ import { callApi } from './common';
 
 type UserState = {
   appUser: UserResponse | null;
-  isLoading: boolean;
-  getUserError: THttpError | null;
   authData: TAuthData | null;
   isAuthenticated: boolean;
+  isFetchAppUserLoading: boolean;
+  fetchAppUserError: THttpError | null;
   selectedUser: UserResponse | null;
   isFetchSelectedUserLoading: boolean;
   fetchSelectedUserError: THttpError | null;
@@ -33,6 +33,10 @@ type UserState = {
     blob: Blob,
     mime: string,
   ) => Promise<void>;
+  confirmUpdateUserError: () => void;
+  confirmUploadProfilePictureError: () => void;
+  confirmFetchSelectedUserError: () => void;
+  confirmFetchAppUserError: () => void;
 };
 
 export const useUserStore = create<UserState>()(
@@ -40,10 +44,10 @@ export const useUserStore = create<UserState>()(
     persist(
       (set, get) => ({
         appUser: null,
-        isLoading: false,
-        getUserError: null,
         authData: null,
         isAuthenticated: false,
+        isFetchAppUserLoading: false,
+        fetchAppUserError: null,
         selectedUser: null,
         isFetchSelectedUserLoading: false,
         fetchSelectedUserError: null,
@@ -76,8 +80,11 @@ export const useUserStore = create<UserState>()(
           }),
         fetchAppUser: async () =>
           callApi({
+            onPreCall: () => set({ isFetchAppUserLoading: true }),
             call: () => httpClient.get<UserResponse>('/users/me'),
             onSuccess: ({ data }) => set({ appUser: data }),
+            onError: (error) => set({ fetchAppUserError: error }),
+            onFinally: () => set({ isFetchAppUserLoading: false }),
           }),
         uploadProfilePicture: async (
           fileName: string,
@@ -121,6 +128,12 @@ export const useUserStore = create<UserState>()(
             onError: (error) => set({ uploadProfilePictureError: error }),
             onFinally: () => set({ isUploadProfilePictureLoading: false }),
           }),
+        confirmUpdateUserError: () => set({ updateUserError: null }),
+        confirmUploadProfilePictureError: () =>
+          set({ uploadProfilePictureError: null }),
+        confirmFetchSelectedUserError: () =>
+          set({ fetchSelectedUserError: null }),
+        confirmFetchAppUserError: () => set({ fetchAppUserError: null }),
       }),
       {
         name: 'user-store',

@@ -17,6 +17,10 @@ export const UpdateUserModal = ({ user, onClose, ...props }: Props) => {
   const isUpdateUserLoading = useUserStore(
     (state) => state.isUpdateUserLoading,
   );
+  const updateUserError = useUserStore((state) => state.updateUserError);
+  const confirmUpdateUserError = useUserStore(
+    (state) => state.confirmUpdateUserError,
+  );
 
   const [firstName, setFirstName] = useState(user?.firstname ?? '');
   const [lastName, setLastName] = useState(user?.lastname ?? '');

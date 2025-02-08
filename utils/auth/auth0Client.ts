@@ -60,12 +60,12 @@ export class Auth0Client {
       throw new Error('Auth data is null');
     }
 
-    useUserStore.setState({ authData, isLoading: true });
+    useUserStore.setState({ authData, isFetchAppUserLoading: true });
     await this.ensureUserInBackend(authData);
     useUserStore.setState({
-      isLoading: false,
+      isFetchAppUserLoading: false,
       isAuthenticated: true,
-      getUserError: null,
+      fetchAppUserError: null,
     });
 
     return authData;
@@ -76,7 +76,7 @@ export class Auth0Client {
       useUserStore.setState({
         isAuthenticated: false,
         appUser: null,
-        getUserError: toHttpError(new Error('Email is undefined')),
+        fetchAppUserError: toHttpError(new Error('Email is undefined')),
       });
       return;
     }
@@ -114,7 +114,7 @@ export class Auth0Client {
         useUserStore.setState({
           appUser: null,
           isAuthenticated: false,
-          getUserError: httpError,
+          fetchAppUserError: httpError,
         });
       }
 
@@ -132,7 +132,7 @@ export class Auth0Client {
       useUserStore.setState({
         appUser: null,
         isAuthenticated: false,
-        getUserError: httpError,
+        fetchAppUserError: httpError,
       });
       return null;
     }

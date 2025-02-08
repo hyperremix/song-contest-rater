@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { t, translations } from '../../i18n';
 import { useUserStore } from '../../store';
@@ -8,21 +8,18 @@ import { Logo } from '../atoms/Logo';
 import { HttpErrorModal } from '../molecules/HttpErrorModal';
 
 export const LoginContent = () => {
-  const getUserError = useUserStore((state) => state.getUserError);
-  const isLoading = useUserStore((state) => state.isLoading);
-
-  const [isUserErrorVisible, setIsUserErrorVisible] = useState(false);
-
-  useEffect(() => {
-    if (getUserError) {
-      setIsUserErrorVisible(true);
-    }
-  }, [getUserError]);
+  const fetchAppUserError = useUserStore((state) => state.fetchAppUserError);
+  const isFetchAppUserLoading = useUserStore(
+    (state) => state.isFetchAppUserLoading,
+  );
+  const confirmFetchAppUserError = useUserStore(
+    (state) => state.confirmFetchAppUserError,
+  );
 
   return (
     <>
       <View className="flex-1 justify-center items-center gap-4 dark:bg-zinc-800">
-        {isLoading && (
+        {isFetchAppUserLoading && (
           <View className="absolute w-full h-full rounded-md flex items-center justify-center bg-black/50 z-10">
             <ActivityIndicator color="white" size="large" />
           </View>
@@ -33,11 +30,11 @@ export const LoginContent = () => {
           onPress={() => auth0Client.authorize()}
         />
       </View>
-      {isUserErrorVisible && (
+      {fetchAppUserError && (
         <HttpErrorModal
-          httpError={getUserError}
-          isVisible={isUserErrorVisible}
-          onClose={() => setIsUserErrorVisible(false)}
+          httpError={fetchAppUserError}
+          isVisible={!!fetchAppUserError}
+          onClose={confirmFetchAppUserError}
         />
       )}
     </>

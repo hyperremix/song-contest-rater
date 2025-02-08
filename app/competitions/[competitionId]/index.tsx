@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -26,7 +26,12 @@ const CompetitionScreen = () => {
   const selectedCompetition = useCompetitionStore(
     (state) => state.selectedCompetition,
   );
-  const error = useCompetitionStore((state) => state.getCompetitionError);
+  const fetchCompetitionError = useCompetitionStore(
+    (state) => state.fetchCompetitionError,
+  );
+  const confirmFetchCompetitionError = useCompetitionStore(
+    (state) => state.confirmFetchCompetitionError,
+  );
   const authData = useUserStore((state) => state.authData);
   const hasPermission = useUserStore((state) => state.hasPermission);
 
@@ -38,7 +43,6 @@ const CompetitionScreen = () => {
   );
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const [isErrorVisible, setIsErrorVisible] = useState(false);
   const [isUpsertCompetitionModalVisible, setIsUpsertCompetitionModalVisible] =
     useState(false);
   const [isUpsertActModalVisible, setIsUpsertActModalVisible] = useState(false);
@@ -57,12 +61,6 @@ const CompetitionScreen = () => {
     () => splitRatedActs(selectedCompetition?.acts),
     [selectedCompetition],
   );
-
-  useEffect(() => {
-    if (error) {
-      setIsErrorVisible(true);
-    }
-  }, [error]);
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -152,11 +150,11 @@ const CompetitionScreen = () => {
           )}
         </View>
       </HeaderLayout>
-      {isErrorVisible && (
+      {fetchCompetitionError && (
         <HttpErrorModal
-          httpError={error}
-          isVisible={isErrorVisible}
-          onClose={() => setIsErrorVisible(false)}
+          httpError={fetchCompetitionError}
+          isVisible={!!fetchCompetitionError}
+          onClose={confirmFetchCompetitionError}
         />
       )}
       {isUpsertCompetitionModalVisible && (

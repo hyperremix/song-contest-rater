@@ -28,16 +28,17 @@ const Index = () => {
   const authData = useUserStore((state) => state.authData);
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const hasPermission = useUserStore((state) => state.hasPermission);
-  const isCompetitionsListLoading = useCompetitionStore(
-    (state) => state.isLoading,
+  const isFetchCompetitionsLoading = useCompetitionStore(
+    (state) => state.isFetchCompetitionsLoading,
   );
-  const listCompetitionsError = useCompetitionStore(
-    (state) => state.listCompetitionsError,
+  const fetchCompetitionsError = useCompetitionStore(
+    (state) => state.fetchCompetitionsError,
+  );
+  const confirmFetchCompetitionsError = useCompetitionStore(
+    (state) => state.confirmFetchCompetitionsError,
   );
 
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isListCompetitionsErrorVisible, setIsListCompetitionsErrorVisible] =
-    useState(false);
   const [isUpsertCompetitionModalVisible, setIsUpsertCompetitionModalVisible] =
     useState(false);
 
@@ -78,12 +79,6 @@ const Index = () => {
     }
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    if (listCompetitionsError) {
-      setIsListCompetitionsErrorVisible(true);
-    }
-  }, [listCompetitionsError]);
-
   if (!isAuthenticated) {
     return <LoginContent />;
   }
@@ -98,7 +93,7 @@ const Index = () => {
         }
       >
         <View className="flex-1 flex-col items-stretch gap-6">
-          {isCompetitionsListLoading && !isRefreshing && (
+          {isFetchCompetitionsLoading && !isRefreshing && (
             <View className="flex flex-col items-center">
               <ActivityIndicator color={color.primary} size="large" />
             </View>
@@ -137,11 +132,11 @@ const Index = () => {
           )}
         </View>
       </HeaderLayout>
-      {isListCompetitionsErrorVisible && (
+      {fetchCompetitionsError && (
         <HttpErrorModal
-          httpError={listCompetitionsError}
-          isVisible={isListCompetitionsErrorVisible}
-          onClose={() => setIsListCompetitionsErrorVisible(false)}
+          httpError={fetchCompetitionsError}
+          isVisible={!!fetchCompetitionsError}
+          onClose={confirmFetchCompetitionsError}
         />
       )}
       {isUpsertCompetitionModalVisible && (

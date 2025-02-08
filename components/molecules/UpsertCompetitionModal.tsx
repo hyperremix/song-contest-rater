@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
 import { t, translations } from '../../i18n';
 import { toImagekitUrl } from '../../imagekit';
@@ -10,6 +10,7 @@ import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
 import { Picker } from '../atoms/Picker';
 import { Text } from '../atoms/Text';
+import { HttpErrorModal } from './HttpErrorModal';
 import { Modal, ModalProps } from './Modal';
 
 type Props = ModalProps & {
@@ -29,6 +30,12 @@ export const UpsertCompetitionModal = ({
   );
   const deleteCompetition = useCompetitionStore(
     (state) => state.deleteCompetition,
+  );
+  const upsertCompetitionError = useCompetitionStore(
+    (state) => state.upsertCompetitionError,
+  );
+  const confirmUpsertCompetitionError = useCompetitionStore(
+    (state) => state.confirmUpsertCompetitionError,
   );
 
   const isUpsertCompetitionLoading = useCompetitionStore(
@@ -83,67 +90,76 @@ export const UpsertCompetitionModal = ({
   };
 
   return (
-    <Modal onClose={onClose} {...props}>
-      <Text className="text-2xl font-bold">
-        {competition?.id
-          ? t(translations.competition.editCompetitionModalTitle)
-          : t(translations.competition.addCompetitionModalTitle)}
-      </Text>
-      <Picker
-        label={t(translations.competition.heatInputLabel)}
-        data={competitionHeatData}
-        selectedValue={heat}
-        onValueChange={(value) => setHeat(+value)}
-      />
-      <Input
-        label={t(translations.competition.cityInputLabel)}
-        value={city}
-        onChangeText={setCity}
-      />
-      <Input
-        label={t(translations.competition.countryInputLabel)}
-        value={country}
-        onChangeText={setCountry}
-      />
-      <Input
-        label={t(translations.competition.startTimeInputLabel)}
-        value={startTime}
-        onChangeText={setStartTime}
-      />
-      <Input
-        label={t(translations.competition.imageUrlInputLabel)}
-        value={imageUrl}
-        onChangeText={setImageUrl}
-      />
-      {imageUrl && (
-        <Image
-          className="object-contain rounded-lg h-32 w-32"
-          source={{
-            uri: toImagekitUrl(imageUrl, [
-              { height: '256', width: '256', focus: 'auto' },
-            ]),
-          }}
+    <>
+      <Modal onClose={onClose} {...props}>
+        <Text className="text-2xl font-bold">
+          {competition?.id
+            ? t(translations.competition.editCompetitionModalTitle)
+            : t(translations.competition.addCompetitionModalTitle)}
+        </Text>
+        <Picker
+          label={t(translations.competition.heatInputLabel)}
+          data={competitionHeatData}
+          selectedValue={heat}
+          onValueChange={(value) => setHeat(+value)}
         />
-      )}
-      <View className="flex flex-row items-center gap-2 mt-6">
-        {competition?.id && (
-          <Button
-            label={t(
-              translations.competition.deleteCompetitionModalButtonLabel,
-            )}
-            onPress={() => deleteCompetition(competition.id)}
-            isLoading={isUpsertCompetitionLoading}
-            className="grow"
-            variant="outlined"
+        <Input
+          label={t(translations.competition.cityInputLabel)}
+          value={city}
+          onChangeText={setCity}
+        />
+        <Input
+          label={t(translations.competition.countryInputLabel)}
+          value={country}
+          onChangeText={setCountry}
+        />
+        <Input
+          label={t(translations.competition.startTimeInputLabel)}
+          value={startTime}
+          onChangeText={setStartTime}
+        />
+        <Input
+          label={t(translations.competition.imageUrlInputLabel)}
+          value={imageUrl}
+          onChangeText={setImageUrl}
+        />
+        {imageUrl && (
+          <Image
+            className="object-contain rounded-lg h-32 w-32"
+            source={{
+              uri: toImagekitUrl(imageUrl, [
+                { height: '256', width: '256', focus: 'auto' },
+              ]),
+            }}
           />
         )}
-        <Button
-          label={t(translations.competition.editCompetitionModalButtonLabel)}
-          onPress={handleSave}
-          isLoading={isUpsertCompetitionLoading}
-          className="grow"
+        <View className="flex flex-row items-center gap-2 mt-6">
+          {competition?.id && (
+            <Button
+              label={t(
+                translations.competition.deleteCompetitionModalButtonLabel,
+              )}
+              onPress={() => deleteCompetition(competition.id)}
+              isLoading={isUpsertCompetitionLoading}
+              className="grow"
+              variant="outlined"
+            />
+          )}
+          <Button
+            label={t(translations.competition.editCompetitionModalButtonLabel)}
+            onPress={handleSave}
+            isLoading={isUpsertCompetitionLoading}
+            className="grow"
+          />
+        </View>
+      </Modal>
+      {upsertCompetitionError && (
+        <HttpErrorModal
+          httpError={upsertCompetitionError}
+          isVisible={!!upsertCompetitionError}
+          onClose={confirmUpsertCompetitionError}
         />
-      </View>
-    </Modal>
+      )}
+    </>
   );
 };
