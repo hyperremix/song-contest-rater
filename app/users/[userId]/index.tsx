@@ -13,7 +13,6 @@ import { UploadProfilePictureModal } from '../../../components/molecules/UploadP
 import { color } from '../../../constants/color';
 import { t, translations } from '../../../i18n';
 import { toImagekitUrl } from '../../../imagekit';
-import { CriticType } from '../../../protos/stat';
 import { useUserStore } from '../../../store';
 import { useStatsStore } from '../../../store/stats';
 import { Permission } from '../../../utils/auth';
@@ -211,8 +210,7 @@ const UserScreen = () => {
                     <Text>
                       {t(
                         `statistics.criticType.${
-                          appUserStats?.critic_type ??
-                          CriticType.CRITIC_TYPE_UNSPECIFIED
+                          appUserStats?.critic_type ?? 0
                         }`,
                       )}
                     </Text>
