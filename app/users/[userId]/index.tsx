@@ -13,7 +13,9 @@ import { UploadProfilePictureModal } from '../../../components/molecules/UploadP
 import { color } from '../../../constants/color';
 import { t, translations } from '../../../i18n';
 import { toImagekitUrl } from '../../../imagekit';
+import { CriticType } from '../../../protos/stat';
 import { useUserStore } from '../../../store';
+import { useStatsStore } from '../../../store/stats';
 import { Permission } from '../../../utils/auth';
 
 const UserScreen = () => {
@@ -32,6 +34,29 @@ const UserScreen = () => {
   const isFetchSelectedUserLoading = useUserStore(
     (state) => state.isFetchSelectedUserLoading,
   );
+  const appUserStats = useStatsStore((state) => state.appUserStats);
+  const fetchAppUserStats = useStatsStore((state) => state.fetchAppUserStats);
+  const isFetchAppUserStatsLoading = useStatsStore(
+    (state) => state.isFetchAppUserStatsLoading,
+  );
+  const fetchAppUserStatsError = useStatsStore(
+    (state) => state.fetchAppUserStatsError,
+  );
+  const confirmFetchAppUserStatsError = useStatsStore(
+    (state) => state.confirmFetchAppUserStatsError,
+  );
+
+  const globalStats = useStatsStore((state) => state.globalStats);
+  const fetchGlobalStats = useStatsStore((state) => state.fetchGlobalStats);
+  const isFetchGlobalStatsLoading = useStatsStore(
+    (state) => state.isFetchGlobalStatsLoading,
+  );
+  const fetchGlobalStatsError = useStatsStore(
+    (state) => state.fetchGlobalStatsError,
+  );
+  const confirmFetchGlobalStatsError = useStatsStore(
+    (state) => state.confirmFetchGlobalStatsError,
+  );
 
   const [isUpdateUserModalVisible, setIsUpdateUserModalVisible] =
     useState(false);
@@ -47,6 +72,8 @@ const UserScreen = () => {
 
   useEffect(() => {
     fetchSelectedUser(params.userId as string);
+    fetchAppUserStats();
+    fetchGlobalStats();
   }, []);
 
   return (
@@ -144,6 +171,54 @@ const UserScreen = () => {
                   />
                 )}
               </Card>
+              {isFetchAppUserStatsLoading || isFetchGlobalStatsLoading ? (
+                <View className="flex flex-col gap-2">
+                  <LoadingCard />
+                </View>
+              ) : (
+                <Card className="flex flex-col gap-2 p-4">
+                  <Text className="text-lg font-bold">
+                    {t(translations.statistics.statisticsTitle)}
+                  </Text>
+                  <View className="flex flex-row gap-2">
+                    <Text className="font-bold">
+                      {t(translations.statistics.ratingsCountLabel)}:
+                    </Text>
+                    <Text>{appUserStats?.total_ratings ?? 0}</Text>
+                  </View>
+                  <View className="flex flex-row gap-2">
+                    <Text className="font-bold">
+                      {t(translations.statistics.ratingAvgLabel)}:
+                    </Text>
+                    <Text>{appUserStats?.user_rating_avg ?? 0}</Text>
+                  </View>
+                  <View className="flex flex-row gap-2">
+                    <Text className="font-bold">
+                      {t(translations.statistics.globalRatingAvgLabel)}:
+                    </Text>
+                    <Text>{globalStats?.global_rating_avg ?? 0}</Text>
+                  </View>
+                  <View className="flex flex-row gap-2">
+                    <Text className="font-bold">
+                      {t(translations.statistics.ratingBiasLabel)}:
+                    </Text>
+                    <Text>{appUserStats?.rating_bias ?? 0}</Text>
+                  </View>
+                  <View className="flex flex-row gap-2">
+                    <Text className="font-bold">
+                      {t(translations.statistics.criticTypeLabel)}:
+                    </Text>
+                    <Text>
+                      {t(
+                        `statistics.criticType.${
+                          appUserStats?.critic_type ??
+                          CriticType.CRITIC_TYPE_UNSPECIFIED
+                        }`,
+                      )}
+                    </Text>
+                  </View>
+                </Card>
+              )}
             </View>
           )}
         </ScrollView>
@@ -153,6 +228,20 @@ const UserScreen = () => {
           httpError={fetchSelectedUserError}
           isVisible={!!fetchSelectedUserError}
           onClose={confirmFetchSelectedUserError}
+        />
+      )}
+      {fetchAppUserStatsError && (
+        <HttpErrorModal
+          httpError={fetchAppUserStatsError}
+          isVisible={!!fetchAppUserStatsError}
+          onClose={confirmFetchAppUserStatsError}
+        />
+      )}
+      {fetchGlobalStatsError && (
+        <HttpErrorModal
+          httpError={fetchGlobalStatsError}
+          isVisible={!!fetchGlobalStatsError}
+          onClose={confirmFetchGlobalStatsError}
         />
       )}
       {isUploadProfilePictureModalVisible && selectedUser && (
