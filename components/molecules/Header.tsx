@@ -39,8 +39,10 @@ export const Header = ({
   const handleBack = () => navigation.goBack();
 
   useEffect(() => {
-    fetchAppUser();
-  }, []);
+    if (!withBackButton && !appUser) {
+      fetchAppUser();
+    }
+  }, [appUser, withBackButton]);
 
   return (
     <View
