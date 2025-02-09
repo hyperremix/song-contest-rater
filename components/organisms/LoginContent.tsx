@@ -30,7 +30,7 @@ export const LoginContent = () => {
           onPress={() => auth0Client.authorize()}
         />
       </View>
-      {fetchAppUserError && (
+      {!!fetchAppUserError && (
         <HttpErrorModal
           httpError={fetchAppUserError}
           isVisible={!!fetchAppUserError}

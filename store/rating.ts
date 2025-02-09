@@ -41,8 +41,7 @@ export const useRatingStore = create<RatingState>()(
               httpClient.get<RatingResponse[]>(`/acts/${actId}/ratings`),
             onSuccess: ({ data }) =>
               set({
-                ratings: data,
-                fetchRatingsError: null,
+                ratings: data ?? [],
               }),
             onError: (error) => set({ ratings: [], fetchRatingsError: error }),
             onFinally: () => set({ isFetchRatingsLoading: false }),
@@ -54,7 +53,6 @@ export const useRatingStore = create<RatingState>()(
             onSuccess: ({ data }) =>
               set({
                 ratings: sortedRatingAdd(get().ratings, data),
-                upsertRatingError: null,
               }),
             onError: (error) => set({ upsertRatingError: error }),
             onFinally: () => set({ isUpsertRatingLoading: false }),
@@ -67,7 +65,6 @@ export const useRatingStore = create<RatingState>()(
             onSuccess: ({ data }) =>
               set({
                 ratings: sortedRatingUpdate(get().ratings, data),
-                upsertRatingError: null,
               }),
             onError: (error) => set({ upsertRatingError: error }),
             onFinally: () => set({ isUpsertRatingLoading: false }),
@@ -78,6 +75,9 @@ export const useRatingStore = create<RatingState>()(
       {
         name: 'rating-store',
         storage: createJSONStorage(() => storage),
+        partialize: (state) => ({
+          ratings: state.ratings,
+        }),
       },
     ),
   ),

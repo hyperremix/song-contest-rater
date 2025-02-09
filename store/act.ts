@@ -30,7 +30,7 @@ export const useActStore = create<ActState>()(
             call: () => httpClient.get<ListActsResponse>('/acts'),
             onSuccess: ({ data }) =>
               set({
-                acts: data.acts,
+                acts: data.acts ?? [],
               }),
             onError: (error) => set({ fetchActsError: error }),
             onFinally: () => set({ isFetchActsLoading: false }),
@@ -40,6 +40,10 @@ export const useActStore = create<ActState>()(
       {
         name: 'act-store',
         storage: createJSONStorage(() => storage),
+        partialize: (state) => ({
+          acts: state.acts,
+          selectedAct: state.selectedAct,
+        }),
       },
     ),
   ),

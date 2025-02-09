@@ -7,9 +7,13 @@ export const sortedRatingUpdate = (
   sortedRatingAdd(removeRating(ratings, rating.id), rating);
 
 export const sortedRatingAdd = (
-  ratings: RatingResponse[],
+  ratings: RatingResponse[] | undefined,
   rating: RatingResponse,
 ): RatingResponse[] => {
+  if (!ratings) {
+    return [rating];
+  }
+
   const index = ratings.findIndex((r) => r.total < rating.total);
   if (index === -1) {
     return [...ratings, rating];

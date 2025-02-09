@@ -148,7 +148,7 @@ const UserScreen = () => {
           )}
         </ScrollView>
       </HeaderLayout>
-      {fetchSelectedUserError && (
+      {!!fetchSelectedUserError && (
         <HttpErrorModal
           httpError={fetchSelectedUserError}
           isVisible={!!fetchSelectedUserError}

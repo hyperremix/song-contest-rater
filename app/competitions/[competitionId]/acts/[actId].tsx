@@ -116,14 +116,14 @@ const ActScreen = () => {
           )}
         </View>
       </HeaderLayout>
-      {fetchRatingError && (
+      {!!fetchRatingError && (
         <HttpErrorModal
           httpError={fetchRatingError}
           isVisible={!!fetchRatingError}
           onClose={confirmFetchRatingsError}
         />
       )}
-      {upsertRatingError && (
+      {!!upsertRatingError && (
         <HttpErrorModal
           httpError={upsertRatingError}
           isVisible={!!upsertRatingError}

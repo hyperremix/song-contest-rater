@@ -112,7 +112,7 @@ export const UpsertRatingModal = ({
           isLoading={isUpsertRatingLoading}
         />
       </Modal>
-      {upsertRatingError && (
+      {!!upsertRatingError && (
         <HttpErrorModal
           httpError={upsertRatingError}
           isVisible={!!upsertRatingError}

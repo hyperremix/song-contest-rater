@@ -132,7 +132,7 @@ const Index = () => {
           )}
         </View>
       </HeaderLayout>
-      {fetchCompetitionsError && (
+      {!!fetchCompetitionsError && (
         <HttpErrorModal
           httpError={fetchCompetitionsError}
           isVisible={!!fetchCompetitionsError}

@@ -150,7 +150,7 @@ const CompetitionScreen = () => {
           )}
         </View>
       </HeaderLayout>
-      {fetchCompetitionError && (
+      {!!fetchCompetitionError && (
         <HttpErrorModal
           httpError={fetchCompetitionError}
           isVisible={!!fetchCompetitionError}

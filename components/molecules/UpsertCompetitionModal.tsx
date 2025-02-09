@@ -153,7 +153,7 @@ export const UpsertCompetitionModal = ({
           />
         </View>
       </Modal>
-      {upsertCompetitionError && (
+      {!!upsertCompetitionError && (
         <HttpErrorModal
           httpError={upsertCompetitionError}
           isVisible={!!upsertCompetitionError}

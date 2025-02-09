@@ -67,8 +67,7 @@ export const useCompetitionStore = create<CompetitionState>()(
               httpClient.get<ListCompetitionsResponse>('/competitions'),
             onSuccess: ({ data }) =>
               set({
-                ...splitArchivedCompetitions(data.competitions),
-                fetchCompetitionsError: null,
+                ...splitArchivedCompetitions(data.competitions ?? []),
               }),
             onError: (error) =>
               set({
@@ -86,7 +85,6 @@ export const useCompetitionStore = create<CompetitionState>()(
             onSuccess: ({ data }) =>
               set({
                 selectedCompetition: data,
-                fetchCompetitionError: null,
               }),
             onError: (error) =>
               set({ selectedCompetition: null, fetchCompetitionError: error }),
@@ -100,7 +98,6 @@ export const useCompetitionStore = create<CompetitionState>()(
             onSuccess: ({ data }) =>
               set({
                 competitions: sortedCompetitionAdd(get().competitions, data),
-                upsertCompetitionError: null,
               }),
             onError: (error) => set({ upsertCompetitionError: error }),
             onFinally: () => set({ isUpsertCompetitionLoading: false }),
@@ -116,7 +113,6 @@ export const useCompetitionStore = create<CompetitionState>()(
             onSuccess: ({ data }) =>
               set({
                 competitions: sortedCompetitionUpdate(get().competitions, data),
-                upsertCompetitionError: null,
               }),
             onError: (error) => set({ upsertCompetitionError: error }),
             onFinally: () => set({ isUpsertCompetitionLoading: false }),
@@ -129,7 +125,6 @@ export const useCompetitionStore = create<CompetitionState>()(
             onSuccess: () =>
               set({
                 competitions: removeCompetition(get().competitions, id),
-                upsertCompetitionError: null,
               }),
             onError: (error) => set({ upsertCompetitionError: error }),
             onFinally: () => set({ isUpsertCompetitionLoading: false }),
@@ -144,16 +139,14 @@ export const useCompetitionStore = create<CompetitionState>()(
                   ...get().selectedCompetition!,
                   acts: [...(get().selectedCompetition?.acts ?? []), data],
                 },
-                isUpsertActLoading: false,
-                upsertActError: null,
               }));
               httpClient.post('/participations', {
                 competition_id: get().selectedCompetition!.id,
                 act_id: data.id,
               });
             },
-            onError: (error) =>
-              set({ isUpsertActLoading: false, upsertActError: error }),
+            onError: (error) => set({ upsertActError: error }),
+            onFinally: () => set({ isUpsertActLoading: false }),
           }),
         updateAct: (request: UpdateActRequest) =>
           callApi({
@@ -168,11 +161,9 @@ export const useCompetitionStore = create<CompetitionState>()(
                     act.id === data.id ? data : act,
                   ),
                 },
-                isUpsertActLoading: false,
-                upsertActError: null,
               })),
-            onError: (error) =>
-              set({ isUpsertActLoading: false, upsertActError: error }),
+            onError: (error) => set({ upsertActError: error }),
+            onFinally: () => set({ isUpsertActLoading: false }),
           }),
         createParticipation: (act: ActResponse, order: number) =>
           callApi({
@@ -217,6 +208,11 @@ export const useCompetitionStore = create<CompetitionState>()(
       {
         name: 'competition-store',
         storage: createJSONStorage(() => storage),
+        partialize: (state) => ({
+          competitions: state.competitions,
+          archivedCompetitions: state.archivedCompetitions,
+          selectedCompetition: state.selectedCompetition,
+        }),
       },
     ),
   ),

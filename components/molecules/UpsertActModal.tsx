@@ -175,14 +175,14 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
           />
         </View>
       </Modal>
-      {fetchActsError && (
+      {!!fetchActsError && (
         <HttpErrorModal
           httpError={fetchActsError}
           isVisible={!!fetchActsError}
           onClose={confirmFetchActsError}
         />
       )}
-      {upsertActError && (
+      {!!upsertActError && (
         <HttpErrorModal
           httpError={upsertActError}
           isVisible={!!upsertActError}

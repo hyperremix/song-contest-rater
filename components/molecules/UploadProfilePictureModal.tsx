@@ -162,14 +162,14 @@ export const UploadProfilePictureModal = ({
           />
         </View>
       </Modal>
-      {uploadProfilePictureError && (
+      {!!uploadProfilePictureError && (
         <HttpErrorModal
           httpError={uploadProfilePictureError}
           isVisible={!!uploadProfilePictureError}
           onClose={confirmUploadProfilePictureError}
         />
       )}
-      {updateUserError && (
+      {!!updateUserError && (
         <HttpErrorModal
           httpError={updateUserError}
           isVisible={!!updateUserError}

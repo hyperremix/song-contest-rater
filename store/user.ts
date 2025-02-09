@@ -138,6 +138,12 @@ export const useUserStore = create<UserState>()(
       {
         name: 'user-store',
         storage: createJSONStorage(() => storage),
+        partialize: (state) => ({
+          appUser: state.appUser,
+          authData: state.authData,
+          isAuthenticated: state.isAuthenticated,
+          selectedUser: state.selectedUser,
+        }),
       },
     ),
   ),

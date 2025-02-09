@@ -90,7 +90,7 @@ export const Header = ({
           />
         )}
       </View>
-      {fetchAppUserError && (
+      {!!fetchAppUserError && (
         <HttpErrorModal
           httpError={fetchAppUserError}
           isVisible={!!fetchAppUserError}
