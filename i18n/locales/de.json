@@ -115,5 +115,20 @@
     "profilePictureSourceLibrary": "Fotos",
     "profilePictureSourceNone": "Wähle eine Quelle",
     "personalInformationTitle": "Persönliche Informationen"
+  },
+  "statistics": {
+    "ratingsCountLabel": "Bewertungen abgegeben",
+    "ratingAvgLabel": "Dein Durchschnitt",
+    "globalRatingAvgLabel": "Globaler Durchschnitt",
+    "ratingBiasLabel": "Tendenz",
+    "criticTypeTitle": "Kritiker-Typ",
+    "criticType": {
+      "0": "Undefiniert",
+      "1": "Harsch",
+      "2": "Leicht kritisch",
+      "3": "Ausgewogen",
+      "4": "Leicht zu begeistern",
+      "5": "Großzügig"
+    }
   }
 }

@@ -114,5 +114,20 @@
     "profilePictureSourceLibrary": "Library",
     "profilePictureSourceNone": "Choose a source",
     "personalInformationTitle": "Personal Information"
+  },
+  "statistics": {
+    "ratingsCountLabel": "Ratings Submitted",
+    "ratingAvgLabel": "Your Average",
+    "globalRatingAvgLabel": "Global Average",
+    "ratingBiasLabel": "Tendency",
+    "criticTypeTitle": "Critic Type",
+    "criticType": {
+      "0": "Undefined",
+      "1": "Harsh",
+      "2": "Slightly Critical",
+      "3": "Balanced",
+      "4": "Easy to Please",
+      "5": "Generous"
+    }
   }
 }

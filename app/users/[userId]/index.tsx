@@ -8,12 +8,14 @@ import { Text } from '../../../components/atoms/Text';
 import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
 import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
 import { LoadingCard } from '../../../components/molecules/LoadingCard';
+import { StatisticsCard } from '../../../components/molecules/StatisticsCard';
 import { UpdateUserModal } from '../../../components/molecules/UpdateUserModal';
 import { UploadProfilePictureModal } from '../../../components/molecules/UploadProfilePictureModal';
 import { color } from '../../../constants/color';
 import { t, translations } from '../../../i18n';
 import { toImagekitUrl } from '../../../imagekit';
 import { useUserStore } from '../../../store';
+import { useStatsStore } from '../../../store/stats';
 import { Permission } from '../../../utils/auth';
 
 const UserScreen = () => {
@@ -32,6 +34,29 @@ const UserScreen = () => {
   const isFetchSelectedUserLoading = useUserStore(
     (state) => state.isFetchSelectedUserLoading,
   );
+  const appUserStats = useStatsStore((state) => state.appUserStats);
+  const fetchAppUserStats = useStatsStore((state) => state.fetchAppUserStats);
+  const isFetchAppUserStatsLoading = useStatsStore(
+    (state) => state.isFetchAppUserStatsLoading,
+  );
+  const fetchAppUserStatsError = useStatsStore(
+    (state) => state.fetchAppUserStatsError,
+  );
+  const confirmFetchAppUserStatsError = useStatsStore(
+    (state) => state.confirmFetchAppUserStatsError,
+  );
+
+  const globalStats = useStatsStore((state) => state.globalStats);
+  const fetchGlobalStats = useStatsStore((state) => state.fetchGlobalStats);
+  const isFetchGlobalStatsLoading = useStatsStore(
+    (state) => state.isFetchGlobalStatsLoading,
+  );
+  const fetchGlobalStatsError = useStatsStore(
+    (state) => state.fetchGlobalStatsError,
+  );
+  const confirmFetchGlobalStatsError = useStatsStore(
+    (state) => state.confirmFetchGlobalStatsError,
+  );
 
   const [isUpdateUserModalVisible, setIsUpdateUserModalVisible] =
     useState(false);
@@ -47,6 +72,8 @@ const UserScreen = () => {
 
   useEffect(() => {
     fetchSelectedUser(params.userId as string);
+    fetchAppUserStats();
+    fetchGlobalStats();
   }, []);
 
   return (
@@ -144,6 +171,17 @@ const UserScreen = () => {
                   />
                 )}
               </Card>
+              {isFetchAppUserStatsLoading || isFetchGlobalStatsLoading ? (
+                <LoadingCard />
+              ) : (
+                <StatisticsCard
+                  userAvgRating={appUserStats?.user_rating_avg ?? 0}
+                  totalRatings={appUserStats?.total_ratings ?? 0}
+                  globalAvgRating={globalStats?.global_rating_avg ?? 0}
+                  criticType={appUserStats?.critic_type ?? 0}
+                  ratingBias={appUserStats?.rating_bias ?? 0}
+                />
+              )}
             </View>
           )}
         </ScrollView>
@@ -153,6 +191,20 @@ const UserScreen = () => {
           httpError={fetchSelectedUserError}
           isVisible={!!fetchSelectedUserError}
           onClose={confirmFetchSelectedUserError}
+        />
+      )}
+      {fetchAppUserStatsError && (
+        <HttpErrorModal
+          httpError={fetchAppUserStatsError}
+          isVisible={!!fetchAppUserStatsError}
+          onClose={confirmFetchAppUserStatsError}
+        />
+      )}
+      {fetchGlobalStatsError && (
+        <HttpErrorModal
+          httpError={fetchGlobalStatsError}
+          isVisible={!!fetchGlobalStatsError}
+          onClose={confirmFetchGlobalStatsError}
         />
       )}
       {isUploadProfilePictureModalVisible && selectedUser && (
