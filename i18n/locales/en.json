@@ -123,12 +123,12 @@
     "ratingBiasLabel": "Rating Bias",
     "criticTypeLabel": "Critic Type",
     "criticType": {
-      "0": "Rate your first act to find out 🕵️",
-      "1": "Harsh 😤",
-      "2": "Slightly Critical 🤔",
-      "3": "Balanced 😑",
-      "4": "Easy to Please 😊",
-      "5": "Generous 🥰"
+      "0": "Undefined",
+      "1": "Harsh",
+      "2": "Slightly Critical",
+      "3": "Balanced",
+      "4": "Easy to Please",
+      "5": "Generous"
     }
   }
 }

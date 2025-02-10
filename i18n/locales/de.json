@@ -124,12 +124,12 @@
     "ratingBiasLabel": "Bewertungsbias",
     "criticTypeLabel": "Kritiker-Typ",
     "criticType": {
-      "0": "Bewerte deinen ersten Auftritt, um herauszufinden 🕵️",
-      "1": "Harsch 😤",
-      "2": "Leicht kritisch 🤔",
-      "3": "Ausgewogen 😑",
-      "4": "Leicht zu begeistern 😊",
-      "5": "Großzügig 🥰"
+      "0": "Undefiniert",
+      "1": "Harsch",
+      "2": "Leicht kritisch",
+      "3": "Ausgewogen",
+      "4": "Leicht zu begeistern",
+      "5": "Großzügig"
     }
   }
 }

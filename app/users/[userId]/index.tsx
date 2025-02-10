@@ -8,6 +8,7 @@ import { Text } from '../../../components/atoms/Text';
 import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
 import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
 import { LoadingCard } from '../../../components/molecules/LoadingCard';
+import { StatisticsCard } from '../../../components/molecules/StatisticsCard';
 import { UpdateUserModal } from '../../../components/molecules/UpdateUserModal';
 import { UploadProfilePictureModal } from '../../../components/molecules/UploadProfilePictureModal';
 import { color } from '../../../constants/color';
@@ -171,51 +172,14 @@ const UserScreen = () => {
                 )}
               </Card>
               {isFetchAppUserStatsLoading || isFetchGlobalStatsLoading ? (
-                <View className="flex flex-col gap-2">
-                  <LoadingCard />
-                </View>
+                <LoadingCard />
               ) : (
-                <Card className="flex flex-col gap-2 p-4">
-                  <Text className="text-lg font-bold">
-                    {t(translations.statistics.statisticsTitle)}
-                  </Text>
-                  <View className="flex flex-row gap-2">
-                    <Text className="font-bold">
-                      {t(translations.statistics.ratingsCountLabel)}:
-                    </Text>
-                    <Text>{appUserStats?.total_ratings ?? 0}</Text>
-                  </View>
-                  <View className="flex flex-row gap-2">
-                    <Text className="font-bold">
-                      {t(translations.statistics.ratingAvgLabel)}:
-                    </Text>
-                    <Text>{appUserStats?.user_rating_avg ?? 0}</Text>
-                  </View>
-                  <View className="flex flex-row gap-2">
-                    <Text className="font-bold">
-                      {t(translations.statistics.globalRatingAvgLabel)}:
-                    </Text>
-                    <Text>{globalStats?.global_rating_avg ?? 0}</Text>
-                  </View>
-                  <View className="flex flex-row gap-2">
-                    <Text className="font-bold">
-                      {t(translations.statistics.ratingBiasLabel)}:
-                    </Text>
-                    <Text>{appUserStats?.rating_bias ?? 0}</Text>
-                  </View>
-                  <View className="flex flex-row gap-2">
-                    <Text className="font-bold">
-                      {t(translations.statistics.criticTypeLabel)}:
-                    </Text>
-                    <Text>
-                      {t(
-                        `statistics.criticType.${
-                          appUserStats?.critic_type ?? 0
-                        }`,
-                      )}
-                    </Text>
-                  </View>
-                </Card>
+                <StatisticsCard
+                  userAvgRating={appUserStats?.user_rating_avg ?? 0}
+                  totalRatings={appUserStats?.total_ratings ?? 0}
+                  globalAvgRating={globalStats?.global_rating_avg ?? 0}
+                  criticType={appUserStats?.critic_type ?? 0}
+                />
               )}
             </View>
           )}
