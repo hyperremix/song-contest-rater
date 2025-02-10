@@ -116,12 +116,11 @@
     "personalInformationTitle": "Personal Information"
   },
   "statistics": {
-    "statisticsTitle": "Statistics",
-    "ratingsCountLabel": "Ratings",
-    "ratingAvgLabel": "Rating Average",
-    "globalRatingAvgLabel": "Global Rating Average",
-    "ratingBiasLabel": "Rating Bias",
-    "criticTypeLabel": "Critic Type",
+    "ratingsCountLabel": "Ratings Submitted",
+    "ratingAvgLabel": "Your Average",
+    "globalRatingAvgLabel": "Global Average",
+    "ratingBiasLabel": "Tendency",
+    "criticTypeTitle": "Critic Type",
     "criticType": {
       "0": "Undefined",
       "1": "Harsh",

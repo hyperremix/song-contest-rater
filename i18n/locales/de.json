@@ -117,12 +117,11 @@
     "personalInformationTitle": "Persönliche Informationen"
   },
   "statistics": {
-    "statisticsTitle": "Statistiken",
-    "ratingsCountLabel": "Bewertungen",
-    "ratingAvgLabel": "Bewertungsmittelwert",
-    "globalRatingAvgLabel": "Globale Bewertungsmittelwert",
-    "ratingBiasLabel": "Bewertungsbias",
-    "criticTypeLabel": "Kritiker-Typ",
+    "ratingsCountLabel": "Bewertungen abgegeben",
+    "ratingAvgLabel": "Dein Durchschnitt",
+    "globalRatingAvgLabel": "Globaler Durchschnitt",
+    "ratingBiasLabel": "Tendenz",
+    "criticTypeTitle": "Kritiker-Typ",
     "criticType": {
       "0": "Undefiniert",
       "1": "Harsch",

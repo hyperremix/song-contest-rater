@@ -179,6 +179,7 @@ const UserScreen = () => {
                   totalRatings={appUserStats?.total_ratings ?? 0}
                   globalAvgRating={globalStats?.global_rating_avg ?? 0}
                   criticType={appUserStats?.critic_type ?? 0}
+                  ratingBias={appUserStats?.rating_bias ?? 0}
                 />
               )}
             </View>
