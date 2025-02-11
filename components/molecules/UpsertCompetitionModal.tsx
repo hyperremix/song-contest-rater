@@ -55,6 +55,15 @@ export const UpsertCompetitionModal = ({
         .toISOString(),
   );
   const [imageUrl, setImageUrl] = useState(competition?.image_url ?? '');
+  const isSaveDisabled = useMemo(
+    () =>
+      heat === 0 ||
+      city === '' ||
+      country === '' ||
+      startTime === '' ||
+      imageUrl === '',
+    [heat, city, country, startTime, imageUrl],
+  );
 
   const competitionHeatData = useMemo(
     () =>
@@ -150,6 +159,7 @@ export const UpsertCompetitionModal = ({
             onPress={handleSave}
             isLoading={isUpsertCompetitionLoading}
             className="grow"
+            disabled={isSaveDisabled}
           />
         </View>
       </Modal>

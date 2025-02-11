@@ -41,6 +41,7 @@ export const Button = ({
   label,
   variant = 'filled',
   isLoading = false,
+  disabled = false,
   className,
   ...props
 }: Props) => {
@@ -51,10 +52,13 @@ export const Button = ({
           <ActivityIndicator color="white" size="small" />
         </View>
       )}
+      {disabled && (
+        <View className="absolute w-full h-full rounded-md flex items-center justify-center bg-black/50 z-10" />
+      )}
       <TouchableOpacity
         className={`rounded-md border-2 ${touchableStyles[variant]}`}
         {...props}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
       >
         <View className="flex flex-row justify-center items-center gap-2 py-3 px-6">
           {leftIcon && (

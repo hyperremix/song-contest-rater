@@ -9,6 +9,7 @@ import { useActStore, useCompetitionStore } from '../../store';
 import { getComplementSet } from '../../utils/getComplementSet';
 import { Button } from '../atoms/Button';
 import { Input } from '../atoms/Input';
+import { NumberInput } from '../atoms/NumberInput';
 import { Picker } from '../atoms/Picker';
 import { Text } from '../atoms/Text';
 import { HttpErrorModal } from './HttpErrorModal';
@@ -71,19 +72,36 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
   const [artistName, setArtistName] = useState(act?.artist_name || '');
   const [songName, setSongName] = useState(act?.song_name || '');
   const [imageUrl, setImageUrl] = useState(act?.image_url ?? '');
+  const [order, setOrder] = useState<number | undefined>(
+    act?.order !== undefined
+      ? act.order
+      : (selectedCompetition?.acts.length ?? 0) + 1,
+  );
+  const isSaveDisabled = useMemo(
+    () =>
+      order === undefined ||
+      artistName === '' ||
+      songName === '' ||
+      imageUrl === '',
+    [order, artistName, songName, imageUrl],
+  );
 
   const handleSave = () => {
+    if (order === undefined) {
+      return;
+    }
+
     if (selectedActId !== 'new') {
-      createParticipation(
-        acts.find((a) => a.id === selectedActId)!,
-        selectedCompetition?.acts.length ?? 0,
-      );
+      createParticipation(acts.find((a) => a.id === selectedActId)!, order);
     } else if (!act) {
-      createAct({
-        artist_name: artistName,
-        song_name: songName,
-        image_url: imageUrl,
-      });
+      createAct(
+        {
+          artist_name: artistName,
+          song_name: songName,
+          image_url: imageUrl,
+        },
+        order,
+      );
     } else {
       updateAct({
         id: act.id,
@@ -136,6 +154,11 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
             onChangeText={setSongName}
           />
         )}
+        <NumberInput
+          label={t(translations.act.orderLabel)}
+          value={order}
+          onChange={setOrder}
+        />
         {selectedActId === 'new' && (
           <Input
             label={t(translations.act.imageUrlInputLabel)}
@@ -172,6 +195,7 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
             onPress={handleSave}
             isLoading={isUpsertActLoading}
             className="grow"
+            disabled={isSaveDisabled}
           />
         </View>
       </Modal>

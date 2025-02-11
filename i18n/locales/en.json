@@ -88,7 +88,8 @@
     "songNameInputLabel": "Song Name",
     "imageUrlInputLabel": "Image URL",
     "ratedActsTitle": "Results",
-    "unratedActsTitle": "Participants"
+    "unratedActsTitle": "Participants",
+    "orderLabel": "Order"
   },
   "countries": {
     "sweden": "Sweden",
