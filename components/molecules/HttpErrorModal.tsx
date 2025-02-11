@@ -14,11 +14,16 @@ export const HttpErrorModal = ({ httpError, ...props }: Props) => {
   const message = httpError?.message || translations.error.default.message;
 
   return (
-    <Modal {...props}>
+    <Modal {...props} className="flex flex-col gap-2">
       <Text className="text-3xl font-bold">
         {httpError?.status} {t(title)}
       </Text>
-      <Text className="text-gray-700 dark:text-gray-500">{t(message)}</Text>
+      <Text>{t(message)}</Text>
+      {httpError?.cause && (
+        <Text className="text-sm text-zinc-700 dark:text-zinc-500">
+          {httpError.cause}
+        </Text>
+      )}
       <View className="flex flex-row justify-end">
         <Button
           onPress={props.onClose}

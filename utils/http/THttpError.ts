@@ -5,6 +5,7 @@ export type THttpError = {
   status: number;
   title: string;
   message: string;
+  cause?: string;
 };
 
 export const toHttpError = (error: unknown): THttpError => {
@@ -14,6 +15,7 @@ export const toHttpError = (error: unknown): THttpError => {
       status,
       title: `error.${status}.title`,
       message: `error.${status}.message`,
+      cause: error.response.data.message,
     };
   }
 
