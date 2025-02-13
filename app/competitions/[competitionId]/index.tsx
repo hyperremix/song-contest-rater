@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Image,
   RefreshControl,
   SectionList,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { Button } from '../../../components/atoms/Button';
@@ -12,6 +12,7 @@ import { Text } from '../../../components/atoms/Text';
 import { HeaderLayout } from '../../../components/Layouts/HeaderLayout';
 import { ActCard } from '../../../components/molecules/ActCard';
 import { HttpErrorModal } from '../../../components/molecules/HttpErrorModal';
+import { ImageViewer } from '../../../components/molecules/ImageViewer';
 import { LoadingCard } from '../../../components/molecules/LoadingCard';
 import { UpsertActModal } from '../../../components/molecules/UpsertActModal';
 import { UpsertCompetitionModal } from '../../../components/molecules/UpsertCompetitionModal';
@@ -68,6 +69,8 @@ const CompetitionScreen = () => {
     setIsRefreshing(false);
   };
 
+  const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
+
   return (
     <>
       <HeaderLayout
@@ -84,14 +87,22 @@ const CompetitionScreen = () => {
               className={`flex flex-col items-center ${isFetchSelectedCompetitionLoading ? 'opacity-0' : ''}`}
             >
               {selectedCompetition?.image_url && (
-                <Image
-                  className="object-contain rounded-lg h-32 w-32"
-                  source={{
-                    uri: toImagekitUrl(selectedCompetition.image_url, [
+                <TouchableOpacity
+                  onPress={() => setIsImageViewerVisible(true)}
+                  className="rounded-lg h-32 w-32"
+                >
+                  <ImageViewer
+                    baseUri={toImagekitUrl(selectedCompetition.image_url, [
                       { height: '256', width: '256', focus: 'auto' },
-                    ]),
-                  }}
-                />
+                    ])}
+                    zoomableImageUri={toImagekitUrl(
+                      selectedCompetition.image_url,
+                      [{ width: '1024' }],
+                    )}
+                    isVisible={isImageViewerVisible}
+                    onClose={() => setIsImageViewerVisible(false)}
+                  />
+                </TouchableOpacity>
               )}
               <Text className="text-2xl font-bold">
                 {t(`competition.heat.${selectedCompetition?.heat}`)}

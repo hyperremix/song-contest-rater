@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@improbable-eng/grpc-web": "^0.15.0",
+    "@likashefqet/react-native-image-zoom": "^4.3.0",
     "@react-native-community/slider": "^4.5.5",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/drawer": "^7.0.0",

@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { FlatList, Image, RefreshControl, View } from 'react-native';
+import { FlatList, RefreshControl, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../../../components/atoms/Button';
 import { IconButton } from '../../../../components/atoms/IconButton';
 import { Text } from '../../../../components/atoms/Text';
 import { HeaderLayout } from '../../../../components/Layouts/HeaderLayout';
 import { HttpErrorModal } from '../../../../components/molecules/HttpErrorModal';
+import { ImageViewer } from '../../../../components/molecules/ImageViewer';
 import { RatingCard } from '../../../../components/molecules/RatingCard';
 import { UpsertActModal } from '../../../../components/molecules/UpsertActModal';
 import { UpsertRatingModal } from '../../../../components/molecules/UpsertRatingModal';
@@ -60,20 +61,29 @@ const ActScreen = () => {
     setIsRefreshing(false);
   };
 
+  const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
+
   return (
     <>
       <HeaderLayout
         headerContent={
           <View className="flex flex-col items-center">
             {selectedAct?.image_url && (
-              <Image
-                className="object-contain rounded-lg h-32 w-32 aspect-square"
-                source={{
-                  uri: toImagekitUrl(selectedAct.image_url, [
+              <TouchableOpacity
+                onPress={() => setIsImageViewerVisible(true)}
+                className="rounded-lg h-32 w-32"
+              >
+                <ImageViewer
+                  baseUri={toImagekitUrl(selectedAct.image_url, [
                     { height: '256', width: '256', cropMode: 'pad_resize' },
-                  ]),
-                }}
-              />
+                  ])}
+                  zoomableImageUri={toImagekitUrl(selectedAct.image_url, [
+                    { width: '512' },
+                  ])}
+                  isVisible={isImageViewerVisible}
+                  onClose={() => setIsImageViewerVisible(false)}
+                />
+              </TouchableOpacity>
             )}
             <Text className="text-2xl font-bold">{selectedAct?.song_name}</Text>
             <Text>{selectedAct?.artist_name}</Text>
