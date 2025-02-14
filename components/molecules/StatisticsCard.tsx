@@ -5,14 +5,13 @@ import colors from 'tailwindcss/colors';
 import { color } from '../../constants/color';
 import { t } from '../../i18n';
 import { translations } from '../../i18n/translations';
+import { GlobalStatsResponse, UserStatsResponse } from '../../protos/stat';
+import { Avatar } from '../atoms/Avatar';
 import { Text } from '../atoms/Text';
 
 type Props = {
-  userAvgRating: number;
-  totalRatings: number;
-  globalAvgRating: number;
-  criticType: number;
-  ratingBias: number;
+  userStats: UserStatsResponse;
+  globalStats: GlobalStatsResponse | null;
 };
 
 const criticTypeToIconMap: Record<number, ReactNode> = {
@@ -120,26 +119,23 @@ const criticTypeToTendencyDisplayMap: Record<
   ),
 };
 
-export const StatisticsCard = ({
-  userAvgRating,
-  totalRatings,
-  globalAvgRating,
-  criticType,
-  ratingBias,
-}: Props) => {
+export const StatisticsCard = ({ userStats, globalStats }: Props) => {
   return (
     <View className="flex flex-col gap-2 bg-white dark:bg-zinc-900 rounded-xl p-4">
       <View className="flex flex-row justify-between">
-        <Text className="text-lg font-bold mb-2">
-          {t(translations.statistics.criticTypeTitle)}
-        </Text>
         <View className="flex flex-row justify-between items-center">
-          {criticTypeToIconMap[criticType]}
+          {criticTypeToIconMap[userStats.critic_type]}
+        </View>
+        <View className="flex flex-row items-center gap-2">
+          <Text className="text-sm">
+            {userStats.user?.firstname} {userStats.user?.lastname}
+          </Text>
+          <Avatar src={userStats.user?.image_url} />
         </View>
       </View>
-      <View className="flex flex-row justify-end">
-        {criticTypeToTendencyDisplayMap[criticType](ratingBias)}
-      </View>
+      {criticTypeToTendencyDisplayMap[userStats.critic_type](
+        userStats.rating_bias ?? 0,
+      )}
       <View className="flex flex-row gap-6">
         <View className="flex flex-col gap-2 mt-1">
           <Text className="text-sm opacity-70">
@@ -147,7 +143,7 @@ export const StatisticsCard = ({
           </Text>
           <View className="py-3 px-3 bg-zinc-100 dark:bg-zinc-700 rounded-lg">
             <Text className="text-center text-2xl font-bold">
-              {totalRatings}
+              {userStats.total_ratings}
             </Text>
           </View>
         </View>
@@ -157,12 +153,14 @@ export const StatisticsCard = ({
               <Text className="text-sm opacity-70">
                 {t(translations.statistics.ratingAvgLabel)}
               </Text>
-              <Text className="text-xl font-bold">{userAvgRating}</Text>
+              <Text className="text-xl font-bold">
+                {userStats.user_rating_avg}
+              </Text>
             </View>
             <View className="h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full mt-1">
               <View
                 className="flex flex-row items-center justify-center h-full bg-blue-500 rounded-full"
-                style={{ width: `${(userAvgRating / 75) * 100}%` }}
+                style={{ width: `${(userStats.user_rating_avg / 75) * 100}%` }}
               />
             </View>
           </View>
@@ -171,12 +169,16 @@ export const StatisticsCard = ({
               <Text className="text-sm opacity-70">
                 {t(translations.statistics.globalRatingAvgLabel)}
               </Text>
-              <Text className="text-xl font-bold">{globalAvgRating}</Text>
+              <Text className="text-xl font-bold">
+                {globalStats?.global_rating_avg}
+              </Text>
             </View>
             <View className="h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full mt-1">
               <View
                 className="h-full bg-purple-500 rounded-full"
-                style={{ width: `${(globalAvgRating / 75) * 100}%` }}
+                style={{
+                  width: `${((globalStats?.global_rating_avg ?? 0) / 75) * 100}%`,
+                }}
               />
             </View>
           </View>

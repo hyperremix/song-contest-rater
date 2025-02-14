@@ -119,7 +119,7 @@
   },
   "statistics": {
     "ratingsCountLabel": "Bewertungen abgegeben",
-    "ratingAvgLabel": "Dein Durchschnitt",
+    "ratingAvgLabel": "Nutzer Durchschnitt",
     "globalRatingAvgLabel": "Globaler Durchschnitt",
     "ratingBiasLabel": "Tendenz",
     "criticTypeTitle": "Kritiker-Typ",
@@ -130,6 +130,7 @@
       "3": "Ausgewogen",
       "4": "Leicht zu begeistern",
       "5": "Großzügig"
-    }
+    },
+    "statsScreenTitle": "Statistiken"
   }
 }

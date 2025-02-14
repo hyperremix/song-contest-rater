@@ -54,7 +54,7 @@ export const Header = ({
         <View className="flex flex-row items-start">
           {withBackButton ? (
             <IconButton
-              icon="arrow-back"
+              icon="arrow-left"
               variant="text"
               onPress={handleBack}
               color={colorScheme === 'dark' ? 'white' : 'black'}

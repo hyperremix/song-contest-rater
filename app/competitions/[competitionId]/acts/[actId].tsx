@@ -93,7 +93,7 @@ const ActScreen = () => {
         rightActionsContent={
           canEditAct && (
             <IconButton
-              icon="pencil"
+              icon="pen"
               variant="text"
               onPress={() => setIsUpsertActModalVisible(true)}
             />

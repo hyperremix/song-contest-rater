@@ -118,7 +118,7 @@ const CompetitionScreen = () => {
         rightActionsContent={
           canEditCompetition && (
             <IconButton
-              icon="pencil"
+              icon="pen"
               variant="text"
               onPress={() => setIsUpsertCompetitionModalVisible(true)}
             />

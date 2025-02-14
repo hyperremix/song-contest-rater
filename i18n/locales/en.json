@@ -118,7 +118,7 @@
   },
   "statistics": {
     "ratingsCountLabel": "Ratings Submitted",
-    "ratingAvgLabel": "Your Average",
+    "ratingAvgLabel": "User Average",
     "globalRatingAvgLabel": "Global Average",
     "ratingBiasLabel": "Tendency",
     "criticTypeTitle": "Critic Type",
@@ -129,6 +129,7 @@
       "3": "Balanced",
       "4": "Easy to Please",
       "5": "Generous"
-    }
+    },
+    "statsScreenTitle": "Statistics"
   }
 }

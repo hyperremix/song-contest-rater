@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
-import { GlobalStatsResponse, UserStatsResponse } from '../protos/stat';
+import {
+  GlobalStatsResponse,
+  ListUserStatsResponse,
+  UserStatsResponse,
+} from '../protos/stat';
 import { httpClient, THttpError } from '../utils/http';
 import { storage } from '../utils/storage';
 import { callApi } from './common';
@@ -16,6 +20,11 @@ type StatsState = {
   fetchGlobalStatsError: THttpError | null;
   fetchGlobalStats: () => Promise<void>;
   confirmFetchGlobalStatsError: () => void;
+  userStats: UserStatsResponse[] | null;
+  isFetchUserStatsLoading: boolean;
+  fetchUserStatsError: THttpError | null;
+  fetchUserStats: () => Promise<void>;
+  confirmFetchUserStatsError: () => void;
 };
 
 export const useStatsStore = create<StatsState>()(
@@ -48,6 +57,18 @@ export const useStatsStore = create<StatsState>()(
           }),
         confirmFetchGlobalStatsError: () =>
           set({ fetchGlobalStatsError: null }),
+        userStats: null,
+        isFetchUserStatsLoading: false,
+        fetchUserStatsError: null,
+        fetchUserStats: async () =>
+          callApi({
+            onPreCall: () => set({ isFetchUserStatsLoading: true }),
+            call: () => httpClient.get<ListUserStatsResponse>(`/stats/users`),
+            onSuccess: ({ data }) => set({ userStats: data.stats }),
+            onError: (error) => set({ fetchUserStatsError: error }),
+            onFinally: () => set({ isFetchUserStatsLoading: false }),
+          }),
+        confirmFetchUserStatsError: () => set({ fetchUserStatsError: null }),
       }),
       {
         name: 'stats-store',

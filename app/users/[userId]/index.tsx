@@ -121,10 +121,10 @@ const UserScreen = () => {
             </View>
           ) : (
             <View className="flex flex-col gap-2">
+              <Text className="text-lg font-bold">
+                {t(translations.user.personalInformationTitle)}
+              </Text>
               <Card className="flex flex-col gap-2 p-4">
-                <Text className="text-lg font-bold">
-                  {t(translations.user.personalInformationTitle)}
-                </Text>
                 <View className="flex flex-row gap-2">
                   <Text className="font-bold">
                     {t(translations.user.firstNameInputLabel)}:
@@ -151,10 +151,10 @@ const UserScreen = () => {
                   />
                 )}
               </Card>
+              <Text className="text-lg font-bold">
+                {t(translations.user.profilePictureLabel)}
+              </Text>
               <Card className="flex flex-col gap-2 p-4">
-                <Text className="text-lg font-bold">
-                  {t(translations.user.profilePictureLabel)}
-                </Text>
                 <Image
                   className="object-contain rounded-lg h-32 w-32"
                   source={{
@@ -171,16 +171,18 @@ const UserScreen = () => {
                   />
                 )}
               </Card>
-              {isFetchAppUserStatsLoading || isFetchGlobalStatsLoading ? (
-                <LoadingCard />
-              ) : (
-                <StatisticsCard
-                  userAvgRating={appUserStats?.user_rating_avg ?? 0}
-                  totalRatings={appUserStats?.total_ratings ?? 0}
-                  globalAvgRating={globalStats?.global_rating_avg ?? 0}
-                  criticType={appUserStats?.critic_type ?? 0}
-                  ratingBias={appUserStats?.rating_bias ?? 0}
-                />
+              {isFetchAppUserStatsLoading ||
+                (isFetchGlobalStatsLoading && <LoadingCard />)}
+              {appUserStats && globalStats && (
+                <>
+                  <Text className="text-lg font-bold">
+                    {t(translations.statistics.criticTypeTitle)}
+                  </Text>
+                  <StatisticsCard
+                    userStats={appUserStats}
+                    globalStats={globalStats}
+                  />
+                </>
               )}
             </View>
           )}

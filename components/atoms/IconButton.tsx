@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { color } from '../../constants/color';
@@ -6,7 +6,7 @@ import { color } from '../../constants/color';
 type Variant = 'filled' | 'outlined' | 'text';
 
 export type Props = TouchableOpacityProps & {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: keyof typeof FontAwesome6.glyphMap;
   variant?: Variant;
   color?: string;
   size?: number;
@@ -28,16 +28,16 @@ export const IconButton = ({
   icon,
   variant = 'filled',
   color,
-  size = 32,
+  size = 30,
   className,
   ...props
 }: Props) => {
   return (
     <TouchableOpacity
-      className={`rounded-full p-3 border ${touchableStyles[variant]} ${className}`}
+      className={`rounded-full size-12 p-2 border ${touchableStyles[variant]} ${className}`}
       {...props}
     >
-      <Ionicons
+      <FontAwesome6
         name={icon}
         size={size}
         color={color ? color : colors[variant]}

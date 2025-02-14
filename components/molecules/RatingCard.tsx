@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
 import { TouchableOpacity, View, ViewProps } from 'react-native';
@@ -49,8 +49,8 @@ export const RatingCard = ({ rating, ...props }: Props) => {
               </Text>
             </View>
             {user?.id === rating.user?.id && (
-              <Ionicons
-                name="pencil"
+              <FontAwesome6
+                name="pen"
                 className="p-2"
                 size={20}
                 color={colorScheme === 'dark' ? 'white' : 'black'}

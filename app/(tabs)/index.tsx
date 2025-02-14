@@ -5,17 +5,17 @@ import {
   SectionList,
   View,
 } from 'react-native';
-import { Button } from '../components/atoms/Button';
-import { Text } from '../components/atoms/Text';
-import { HeaderLayout } from '../components/Layouts/HeaderLayout';
-import { CompetitionCard } from '../components/molecules/CompetitionCard';
-import { HttpErrorModal } from '../components/molecules/HttpErrorModal';
-import { UpsertCompetitionModal } from '../components/molecules/UpsertCompetitionModal';
-import { LoginContent } from '../components/organisms/LoginContent';
-import { color } from '../constants/color';
-import { t, translations } from '../i18n';
-import { useCompetitionStore, useUserStore } from '../store';
-import { Permission } from '../utils/auth';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { HeaderLayout } from '../../components/Layouts/HeaderLayout';
+import { CompetitionCard } from '../../components/molecules/CompetitionCard';
+import { HttpErrorModal } from '../../components/molecules/HttpErrorModal';
+import { UpsertCompetitionModal } from '../../components/molecules/UpsertCompetitionModal';
+import { LoginContent } from '../../components/organisms/LoginContent';
+import { color } from '../../constants/color';
+import { t, translations } from '../../i18n';
+import { useCompetitionStore, useUserStore } from '../../store';
+import { Permission } from '../../utils/auth';
 
 const Index = () => {
   const fetchCompetitions = useCompetitionStore(

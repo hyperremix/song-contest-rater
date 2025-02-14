@@ -29,7 +29,7 @@ export const Modal = ({
     >
       <Card className="p-4 w-full max-w-2xl" {...props}>
         <View className="absolute top-0 right-0 z-10">
-          <IconButton icon="close" onPress={onClose} variant="text" />
+          <IconButton icon="xmark" onPress={onClose} variant="text" />
         </View>
         <View className={`min-w-full flex flex-col gap-4 ${className}`}>
           {children}

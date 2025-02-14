@@ -40,7 +40,7 @@ const RootLayout = () => {
         drawerContent={DrawerContent}
         screenOptions={{ headerShown: false }}
       >
-        <Drawer.Screen name="index" options={{ headerShown: false }} />
+        <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
       </Drawer>
     </BaseLayout>
   );
