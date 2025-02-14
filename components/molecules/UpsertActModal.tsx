@@ -75,7 +75,7 @@ export const UpsertActModal = ({ act, onClose, ...props }: Props) => {
   const [order, setOrder] = useState<number | undefined>(
     act?.order !== undefined
       ? act.order
-      : (selectedCompetition?.acts.length ?? 0) + 1,
+      : (selectedCompetition?.acts?.length ?? 0) + 1,
   );
   const isSaveDisabled = useMemo(
     () =>
