@@ -42,7 +42,7 @@ export const UpsertCompetitionModal = ({
     (state) => state.isUpsertCompetitionLoading,
   );
 
-  const [heat, setHeat] = useState(competition?.heat ?? 0);
+  const [heat, setHeat] = useState(competition?.heat ?? 1);
   const [city, setCity] = useState(competition?.city ?? '');
   const [country, setCountry] = useState(competition?.country ?? '');
   const [startTime, setStartTime] = useState(
