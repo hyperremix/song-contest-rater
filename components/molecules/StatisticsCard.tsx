@@ -124,7 +124,7 @@ export const StatisticsCard = ({ userStats, globalStats }: Props) => {
     <View className="flex flex-col gap-2 bg-white dark:bg-zinc-900 rounded-xl p-4">
       <View className="flex flex-row justify-between">
         <View className="flex flex-row justify-between items-center">
-          {criticTypeToIconMap[userStats.critic_type]}
+          {criticTypeToIconMap[userStats.critic_type ?? 0]}
         </View>
         <View className="flex flex-row items-center gap-2">
           <Text className="text-sm">
@@ -133,7 +133,7 @@ export const StatisticsCard = ({ userStats, globalStats }: Props) => {
           <Avatar src={userStats.user?.image_url} />
         </View>
       </View>
-      {criticTypeToTendencyDisplayMap[userStats.critic_type](
+      {criticTypeToTendencyDisplayMap[userStats.critic_type ?? 0](
         userStats.rating_bias ?? 0,
       )}
       <View className="flex flex-row gap-6">
