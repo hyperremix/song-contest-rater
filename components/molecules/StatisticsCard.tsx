@@ -83,37 +83,37 @@ const criticTypeToTendencyDisplayMap: Record<
 > = {
   0: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <View className="w-2 h-2 rounded-full bg-zinc-500" />
     </View>
   ),
   1: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <Ionicons name="trending-down" size={20} color={colors.red[500]} />
     </View>
   ),
   2: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <Ionicons name="trending-down" size={20} color={colors.amber[500]} />
     </View>
   ),
   3: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <FontAwesome6 name="equals" size={20} color={colors.zinc[500]} />
     </View>
   ),
   4: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <Ionicons name="trending-up" size={20} color={colors.green[500]} />
     </View>
   ),
   5: (ratingBias: number) => (
     <View className="flex flex-row items-center gap-2">
-      <Text className="text-xl font-bold">{ratingBias}</Text>
+      <Text className="text-xl font-bold">{ratingBias.toFixed(2)}</Text>
       <Ionicons name="trending-up" size={20} color={color.primary} />
     </View>
   ),
