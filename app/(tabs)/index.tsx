@@ -1,3 +1,5 @@
+import { useAuth } from '@clerk/clerk-expo';
+import { Redirect } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -11,7 +13,6 @@ import { HeaderLayout } from '../../components/Layouts/HeaderLayout';
 import { CompetitionCard } from '../../components/molecules/CompetitionCard';
 import { HttpErrorModal } from '../../components/molecules/HttpErrorModal';
 import { UpsertCompetitionModal } from '../../components/molecules/UpsertCompetitionModal';
-import { LoginContent } from '../../components/organisms/LoginContent';
 import { color } from '../../constants/color';
 import { t, translations } from '../../i18n';
 import { useCompetitionStore, useUserStore } from '../../store';
@@ -26,7 +27,6 @@ const Index = () => {
     (state) => state.archivedCompetitions,
   );
   const authData = useUserStore((state) => state.authData);
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
   const hasPermission = useUserStore((state) => state.hasPermission);
   const isFetchCompetitionsLoading = useCompetitionStore(
     (state) => state.isFetchCompetitionsLoading,
@@ -73,14 +73,16 @@ const Index = () => {
     setIsRefreshing(false);
   };
 
+  const { isSignedIn } = useAuth();
+
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isSignedIn) {
       fetchCompetitions();
     }
-  }, [isAuthenticated]);
+  }, [isSignedIn]);
 
-  if (!isAuthenticated) {
-    return <LoginContent />;
+  if (isSignedIn) {
+    return <Redirect href={'/'} />;
   }
 
   return (

@@ -6,4 +6,6 @@ export const environment = {
   backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL ?? 'not-set',
   imagekitUrlEndpoint:
     process.env.EXPO_PUBLIC_IMAGEKIT_URL_ENDPOINT ?? 'not-set',
+  clerkPublishableKey:
+    process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? 'not-set',
 };

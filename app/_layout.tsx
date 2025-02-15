@@ -1,3 +1,4 @@
+import { ClerkLoaded, ClerkProvider } from '@clerk/clerk-expo';
 import * as NavigationBar from 'expo-navigation-bar';
 import { SplashScreen } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
@@ -5,7 +6,9 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useCallback, useEffect } from 'react';
 import { BaseLayout } from '../components/Layouts/BaseLayout';
 import { DrawerContent } from '../components/organisms/DrawerContent';
+import { environment } from '../environment';
 import { useAppSetup } from '../hooks/useAppSetup';
+import { tokenCache } from '../utils/cache';
 
 import 'react-native-url-polyfill/auto';
 import '../style/global.css';
@@ -35,14 +38,21 @@ const RootLayout = () => {
   }
 
   return (
-    <BaseLayout onLayout={onLayoutRootView}>
-      <Drawer
-        drawerContent={DrawerContent}
-        screenOptions={{ headerShown: false }}
-      >
-        <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Drawer>
-    </BaseLayout>
+    <ClerkProvider
+      tokenCache={tokenCache}
+      publishableKey={environment.clerkPublishableKey}
+    >
+      <ClerkLoaded>
+        <BaseLayout onLayout={onLayoutRootView}>
+          <Drawer
+            drawerContent={DrawerContent}
+            screenOptions={{ headerShown: false }}
+          >
+            <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Drawer>
+        </BaseLayout>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 };
 

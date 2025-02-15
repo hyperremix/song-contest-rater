@@ -15,6 +15,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^2.7.7",
     "@expo/vector-icons": "^14.0.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@likashefqet/react-native-image-zoom": "^4.3.0",
@@ -66,6 +67,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@clerk/types": "^4.46.0",
     "@eslint/js": "^9.14.0",
     "@hyperremix/song-contest-rater-proto": "1.0.34",
     "@types/qs": "^6.9.17",
