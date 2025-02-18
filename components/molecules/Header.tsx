@@ -78,7 +78,7 @@ export const Header = ({
           </View>
         ) : withBackButton ? (
           <IconButton
-            icon="arrow-back"
+            icon="arrow-left"
             variant="text"
             onPress={handleBack}
             className="opacity-0"

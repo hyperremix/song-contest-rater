@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { BaseLayout } from '../../../components/Layouts/BaseLayout';
+import { BaseLayout } from '../../../../components/Layouts/BaseLayout';
 
 const CompetitionLayout = () => (
   <BaseLayout>
