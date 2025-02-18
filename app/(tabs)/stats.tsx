@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
 import { RefreshControl, SectionList, View } from 'react-native';
 import { Text } from '../../components/atoms/Text';
 import { HeaderLayout } from '../../components/Layouts/HeaderLayout';
@@ -40,10 +41,12 @@ const StatsScreen = () => {
 
   const statsSections = useMemo(() => splitStats(userStats), [userStats]);
 
-  useEffect(() => {
+  const onFocus = useCallback(() => {
     fetchUserStats();
     fetchGlobalStats();
   }, []);
+
+  useFocusEffect(onFocus);
 
   const onRefresh = async () => {
     setIsRefreshing(true);
