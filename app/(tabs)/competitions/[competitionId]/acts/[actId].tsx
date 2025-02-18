@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../../../../components/atoms/Button';
 import { IconButton } from '../../../../../components/atoms/IconButton';
@@ -60,6 +60,10 @@ const ActScreen = () => {
     await fetchRatings(selectedAct!.id);
     setIsRefreshing(false);
   };
+
+  useEffect(() => {
+    fetchRatings(selectedAct!.id);
+  }, []);
 
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
 

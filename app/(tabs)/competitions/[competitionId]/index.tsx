@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -68,6 +68,10 @@ const CompetitionScreen = () => {
     await fetchSelectedCompetition(selectedCompetition!.id);
     setIsRefreshing(false);
   };
+
+  useEffect(() => {
+    fetchSelectedCompetition(selectedCompetition!.id);
+  }, []);
 
   const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
 

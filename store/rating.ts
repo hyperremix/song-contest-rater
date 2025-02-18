@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import {
   CreateRatingRequest,
+  ListRatingsResponse,
   RatingResponse,
   UpdateRatingRequest,
 } from '../protos/rating';
@@ -38,10 +39,10 @@ export const useRatingStore = create<RatingState>()(
           callApi({
             onPreCall: () => set({ isFetchRatingsLoading: true }),
             call: () =>
-              httpClient.get<RatingResponse[]>(`/acts/${actId}/ratings`),
+              httpClient.get<ListRatingsResponse>(`/acts/${actId}/ratings`),
             onSuccess: ({ data }) =>
               set({
-                ratings: data ?? [],
+                ratings: data.ratings,
               }),
             onError: (error) => set({ ratings: [], fetchRatingsError: error }),
             onFinally: () => set({ isFetchRatingsLoading: false }),
