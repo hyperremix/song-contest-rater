@@ -2,4 +2,4 @@ export type ConvertedToObjectType<T> = {
   [P in keyof T]: T[P] extends string ? string : ConvertedToObjectType<T[P]>;
 };
 
-export type TranslationJsonType = typeof import('./locales/en.json');
+export type TranslationJsonType = typeof import('./messages/en.json');

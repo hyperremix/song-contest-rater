@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
+
+import en from './messages/en.json';
 import { ConvertedToObjectType, TranslationJsonType } from './types';
 
 export const translations: ConvertedToObjectType<TranslationJsonType> =
   {} as any;
 
-export const convertLanguageJsonToObject = (
+const convertLanguageJsonToObject = (
   json: any,
   objToConvertTo = translations,
   current?: string,
@@ -23,3 +27,5 @@ export const convertLanguageJsonToObject = (
     }
   });
 };
+
+convertLanguageJsonToObject(en);

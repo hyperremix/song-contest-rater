@@ -1,33 +1,18 @@
+import { auth } from '@clerk/nextjs/server';
 import axios from 'axios';
-import { Platform } from 'react-native';
-import { environment } from '../../environment';
-import { auth0Client } from '../auth';
+import { enviroment } from '../../environment';
 
 export const httpClient = axios.create({
-  baseURL:
-    Platform.OS === 'web' && environment.stage === 'local'
-      ? 'http://localhost:8080'
-      : environment.backendUrl,
+  baseURL: enviroment.public.backendUrl,
 });
 
 httpClient.interceptors.request.use(async (config) => {
-  const authData = await auth0Client.getValidAuthData();
-  if (!authData) {
+  const { getToken } = await auth();
+  const token = await getToken();
+  if (!token) {
     return config;
   }
 
-  config.headers.Authorization = authData
-    ? `Bearer ${authData.accessToken}`
-    : '';
+  config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
-
-httpClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      await auth0Client.logout();
-    }
-    return Promise.reject(error);
-  },
-);

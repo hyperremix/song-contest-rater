@@ -1,1 +1,1 @@
-yarn run ts:check && yarn run lint-staged
+pnpm ts:check && pnpm lint-staged

@@ -1,0 +1,143 @@
+{
+  "error": {
+    "network": {
+      "title": "Netzwerkfehler",
+      "message": "Bitte versuchen Sie es erneut, wenn Sie eine bessere Internetverbindung haben."
+    },
+    "500": {
+      "title": "Interner Serverfehler",
+      "message": "Ein Fehler ist aufgetreten. Bitte kontaktieren Sie den Support oder versuchen Sie es später erneut."
+    },
+    "404": {
+      "title": "Nicht gefunden",
+      "message": "Die angeforderte Ressource konnte nicht gefunden werden."
+    },
+    "403": {
+      "title": "Verboten",
+      "message": "Sie haben keine Berechtigung, auf diese Ressource zuzugreifen."
+    },
+    "400": {
+      "title": "Schlechte Anfrage",
+      "message": "Die Anfrage war ungültig. Bitte versuchen Sie es erneut mit gültiger Eingabe."
+    },
+    "401": {
+      "title": "Nicht autorisiert",
+      "message": "Sie sind nicht berechtigt, auf diese Ressource zuzugreifen."
+    },
+    "default": {
+      "title": "Fehler",
+      "message": "Ein Fehler ist aufgetreten. Bitte kontaktieren Sie den Support oder versuchen Sie es später erneut."
+    }
+  },
+  "auth": {
+    "loginButtonLabel": "Anmelden",
+    "logoutButtonLabel": "Abmelden",
+    "loggedInAsHeader": "Angemeldet als:"
+  },
+  "buttonLabelOkay": "Okay",
+  "buttonLabelCancel": "Abbrechen",
+  "buttonLabelRetry": "Erneut versuchen",
+  "buttonLabelBack": "Zurück",
+  "buttonLabelHome": "Zur Startseite",
+  "homeScreenTitle": "Wettbewerbe",
+  "addRatingButtonLabel": "Bewertung hinzufügen",
+  "rating": {
+    "song": "Lied",
+    "singing": "Gesang",
+    "show": "Show",
+    "looks": "Aussehen",
+    "clothes": "Kleidung",
+    "addRatingButtonLabel": "Bewertung hinzufügen",
+    "editRatingModalButtonLabel": "Speichern",
+    "editRatingModalTitle": "Bewertung bearbeiten",
+    "addRatingModalTitle": "Bewertung hinzufügen"
+  },
+  "contest": {
+    "screenTitle": "Wettbewerbe",
+    "addContestButtonLabel": "Wettbewerb hinzufügen",
+    "editContestModalButtonLabel": "Speichern",
+    "deleteContestModalButtonLabel": "Löschen",
+    "editContestModalTitle": "Wettbewerb bearbeiten",
+    "addContestModalTitle": "Wettbewerb hinzufügen",
+    "heatInputLabel": "Wettbewerbsrunde",
+    "cityInputLabel": "Stadt",
+    "countryInputLabel": "Land",
+    "startTimeInputLabel": "Startzeit",
+    "imageUrlInputLabel": "Bild URL",
+    "contestNotYetStartedText": "Der Wettbewerb hat noch nicht begonnen.",
+    "contestLiveText": "Live",
+    "archivedContestsTitle": "Archiv",
+    "upcomingContestsTitle": "Kommende",
+    "heat": {
+      "0": "Unspezifizierte Runde",
+      "1": "Semi-Finale",
+      "2": "Finale",
+      "3": "Teilwettbewerb 1",
+      "4": "Teilwettbewerb 2",
+      "5": "Teilwettbewerb 3",
+      "6": "Teilwettbewerb 4",
+      "7": "Teilwettbewerb 5",
+      "8": "Finalqualifikation"
+    },
+    "noContestsFound": "Es wurden keine Wettbewerbe gefunden. 🫣"
+  },
+  "act": {
+    "addActButtonLabel": "Akt hinzufügen",
+    "editActModalButtonLabel": "Speichern",
+    "deleteParticipationModalButtonLabel": "Teilnahme Löschen",
+    "editActModalTitle": "Akt bearbeiten",
+    "addActModalTitle": "Akt hinzufügen",
+    "createNewActItemLabel": "Neuen Akt erstellen",
+    "chooseActPickerLabel": "Akt auswählen",
+    "artistNameInputLabel": "Künstlername",
+    "songNameInputLabel": "Liedname",
+    "imageUrlInputLabel": "Bild URL",
+    "ratedActsTitle": "Ergebnisse",
+    "unratedActsTitle": "Teilnehmer",
+    "orderLabel": "Reihenfolge"
+  },
+  "countries": {
+    "sweden": "Schweden",
+    "switzerland": "Schweiz",
+    "germany": "Deutschland"
+  },
+  "drawer": {
+    "viewProfileButtonLabel": "Dein Profil"
+  },
+  "user": {
+    "firstNameInputLabel": "Vorname",
+    "lastNameInputLabel": "Nachname",
+    "emailInputLabel": "Email",
+    "imageUrlInputLabel": "Bild URL",
+    "profilePictureLabel": "Profilbild",
+    "editProfileButtonLabel": "Ändern",
+    "updateProfileButtonLabel": "Speichern",
+    "updateProfilePictureModalTitle": "Profilbild aktualisieren",
+    "chooseProfilePictureButtonLabel": "Profilbild auswählen",
+    "useProfilePictureButtonLabel": "Profilbild nutzen",
+    "profilePicturePreviewLabel": "Vorschau:",
+    "profilePictureSourceImageUrl": "Bild URL",
+    "profilePictureSourceLibrary": "Fotos",
+    "profilePictureSourceNone": "Wähle eine Quelle",
+    "personalInformationTitle": "Persönliche Informationen"
+  },
+  "statistics": {
+    "ratingsCountLabel": "Bewertungen abgegeben",
+    "ratingAvgLabel": "Nutzer Durchschnitt",
+    "globalRatingAvgLabel": "Globaler Durchschnitt",
+    "ratingBiasLabel": "Tendenz",
+    "criticTypeTitle": "Kritiker-Typ",
+    "criticType": {
+      "0": "Undefiniert",
+      "1": "Harsch",
+      "2": "Leicht kritisch",
+      "3": "Ausgewogen",
+      "4": "Leicht zu begeistern",
+      "5": "Großzügig"
+    },
+    "statsScreenTitle": "Statistiken"
+  },
+  "admin": {
+    "screenTitle": "Admin"
+  }
+}

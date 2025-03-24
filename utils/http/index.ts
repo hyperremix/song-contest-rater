@@ -1,2 +1,3 @@
+export * from './callApi';
 export * from './client';
-export * from './THttpError';
+export * from './HttpError';
