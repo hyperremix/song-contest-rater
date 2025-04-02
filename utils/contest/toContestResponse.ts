@@ -1,11 +1,11 @@
 'use client';
 
-import { ActResponse } from '@/protos/act';
+import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
 import {
   CompetitionResponse,
   CreateCompetitionRequest,
   UpdateCompetitionRequest,
-} from '@/protos/competition';
+} from '@hyperremix/song-contest-rater-proto/competition';
 
 export const toContestResponse = (
   request: CreateCompetitionRequest | UpdateCompetitionRequest,

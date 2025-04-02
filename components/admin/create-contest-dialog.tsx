@@ -1,9 +1,9 @@
 'use client';
 
 import { translations } from '@/i18n';
-import { CreateCompetitionRequest } from '@/protos/competition';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CreateCompetitionRequest } from '@hyperremix/song-contest-rater-proto/competition';
 import { CalendarIcon } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import Image from 'next/image';

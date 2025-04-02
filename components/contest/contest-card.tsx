@@ -2,8 +2,8 @@
 
 import { translations } from '@/i18n';
 import { Link } from '@/i18n/routing';
-import { CompetitionResponse } from '@/protos/competition';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import { CompetitionResponse } from '@hyperremix/song-contest-rater-proto/competition';
 import { endOfDay, isBefore, isFuture, isPast } from 'date-fns';
 import { ClockAlert } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';

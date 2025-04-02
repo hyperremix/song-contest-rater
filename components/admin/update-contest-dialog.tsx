@@ -2,12 +2,12 @@
 
 import { translations } from '@/i18n';
 import { cn } from '@/lib/utils';
+import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CompetitionResponse,
   UpdateCompetitionRequest,
-} from '@/protos/competition';
-import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { zodResolver } from '@hookform/resolvers/zod';
+} from '@hyperremix/song-contest-rater-proto/competition';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';

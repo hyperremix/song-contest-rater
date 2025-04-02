@@ -4,7 +4,7 @@ import {
   CreateRatingRequest,
   RatingResponse,
   UpdateRatingRequest,
-} from '@/protos/rating';
+} from '@hyperremix/song-contest-rater-proto/rating';
 
 type User = {
   id: string;

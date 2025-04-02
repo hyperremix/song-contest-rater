@@ -1,5 +1,5 @@
-import { CompetitionResponse } from '@/protos/competition';
-import { Timestamp } from '@/protos/google/protobuf/timestamp';
+import { CompetitionResponse } from '@hyperremix/song-contest-rater-proto/competition';
+import { Timestamp } from '@hyperremix/song-contest-rater-proto/google/protobuf/timestamp';
 import { addDays, isBefore, setHours, startOfDay } from 'date-fns';
 import { useMemo } from 'react';
 

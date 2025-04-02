@@ -10,12 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  CompetitionResponse,
-  CreateCompetitionRequest,
-  ListCompetitionsResponse,
-  UpdateCompetitionRequest,
-} from '@/protos/competition';
 import { toContestResponse } from '@/utils/contest/toContestResponse';
 import {
   createContest,
@@ -24,6 +18,12 @@ import {
   updateContest,
 } from '@/utils/http/contest';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import {
+  CompetitionResponse,
+  CreateCompetitionRequest,
+  ListCompetitionsResponse,
+  UpdateCompetitionRequest,
+} from '@hyperremix/song-contest-rater-proto/competition';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,

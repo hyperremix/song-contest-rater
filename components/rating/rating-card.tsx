@@ -1,7 +1,7 @@
 'use client';
 
-import { RatingResponse } from '@/protos/rating';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import { RatingResponse } from '@hyperremix/song-contest-rater-proto/rating';
 import { Eye, Mic, Music, Pen, Shirt, Star } from 'lucide-react';
 import { Typography } from '../custom/typography';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';

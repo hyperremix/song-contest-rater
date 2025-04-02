@@ -1,4 +1,4 @@
-import { RatingResponse } from '../../protos/rating';
+import { RatingResponse } from '@hyperremix/song-contest-rater-proto/rating';
 
 export const sortedRatingUpdate = (
   ratings: RatingResponse[],

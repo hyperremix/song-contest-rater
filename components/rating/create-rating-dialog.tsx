@@ -1,7 +1,7 @@
 'use client';
 
 import { translations } from '@/i18n';
-import { CreateRatingRequest } from '@/protos/rating';
+import { CreateRatingRequest } from '@hyperremix/song-contest-rater-proto/rating';
 import { Eye, Mic, Music, Shirt, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

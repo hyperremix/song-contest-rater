@@ -4,11 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "pnpm proto:generate && next build",
+    "build": "next build",
     "start": "next start",
     "ts:check": "tsc --noEmit",
     "lint": "next lint",
-    "proto:generate": "protoc -I=./node_modules/@hyperremix/song-contest-rater-proto --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=useDate=false --ts_proto_opt=snakeToCamel=false --ts_proto_opt=unrecognizedEnum=false --ts_proto_opt=useNumericEnumForJson=true --ts_proto_out=./protos  ./node_modules/@hyperremix/song-contest-rater-proto/*.proto",
     "prepare": "husky"
   },
   "dependencies": {
@@ -48,7 +47,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@hyperremix/song-contest-rater-proto": "^1.0.35",
+    "@hyperremix/song-contest-rater-proto": "^2.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -60,7 +59,6 @@
     "prettier": "^3.5.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.1",
-    "ts-proto": "^2.6.1",
     "typescript": "^5"
   },
   "lint-staged": {

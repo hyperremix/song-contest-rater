@@ -2,17 +2,17 @@
 
 import { getQueryClient } from '@/app/get-query-client';
 import { useRatingEvents } from '@/hooks/useRatingEvents';
-import { ActResponse } from '@/protos/act';
-import {
-  CreateRatingRequest,
-  RatingResponse,
-  UpdateRatingRequest,
-} from '@/protos/rating';
 import { HttpError } from '@/utils/http';
 import { getAct } from '@/utils/http/act';
 import { createRating, updateRating } from '@/utils/http/rating';
 import { toRatingResponse } from '@/utils/rating/toRatingResponse';
 import { useUser } from '@clerk/nextjs';
+import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
+import {
+  CreateRatingRequest,
+  RatingResponse,
+  UpdateRatingRequest,
+} from '@hyperremix/song-contest-rater-proto/rating';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';

@@ -10,14 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { createAct, deleteAct, listActs, updateAct } from '@/utils/http/act';
+import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
   ActResponse,
   CreateActRequest,
   ListActsResponse,
   UpdateActRequest,
-} from '@/protos/act';
-import { createAct, deleteAct, listActs, updateAct } from '@/utils/http/act';
-import { toImagekitUrl } from '@/utils/toImagekitUrl';
+} from '@hyperremix/song-contest-rater-proto/act';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,

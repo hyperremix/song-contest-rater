@@ -5,7 +5,7 @@ import {
   CreateActRequest,
   ListActsResponse,
   UpdateActRequest,
-} from '@/protos/act';
+} from '@hyperremix/song-contest-rater-proto/act';
 import { callApi, httpClient } from '.';
 
 export const listActs = async (): Promise<ListActsResponse> =>

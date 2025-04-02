@@ -1,9 +1,12 @@
 'use client';
 
 import { translations } from '@/i18n';
-import { ActResponse, UpdateActRequest } from '@/protos/act';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  ActResponse,
+  UpdateActRequest,
+} from '@hyperremix/song-contest-rater-proto/act';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect } from 'react';

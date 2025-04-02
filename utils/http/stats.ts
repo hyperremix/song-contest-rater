@@ -1,6 +1,9 @@
 'use server';
 
-import { GlobalStatsResponse, ListUserStatsResponse } from '@/protos/stat';
+import {
+  GlobalStatsResponse,
+  ListUserStatsResponse,
+} from '@hyperremix/song-contest-rater-proto/stat';
 import { callApi, httpClient } from '.';
 
 export const listUserStats = async (): Promise<ListUserStatsResponse> =>

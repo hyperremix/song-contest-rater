@@ -5,6 +5,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
+  GlobalStatsResponse,
+  UserStatsResponse,
+} from '@hyperremix/song-contest-rater-proto/stat';
+import {
   Angry,
   CircleHelp,
   Frown,
@@ -18,7 +22,6 @@ import {
 import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';
 import { translations } from '../../i18n/translations';
-import { GlobalStatsResponse, UserStatsResponse } from '../../protos/stat';
 
 type Props = {
   userStats: UserStatsResponse;

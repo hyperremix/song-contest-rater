@@ -1,4 +1,4 @@
-import { ActResponse } from '@/protos/act';
+import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
 import { useMemo } from 'react';
 import { sortRatedActs, sortUnratedActs } from '../utils/act';
 import { ratingSum } from '../utils/rating';

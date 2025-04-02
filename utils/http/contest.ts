@@ -5,7 +5,7 @@ import {
   CreateCompetitionRequest,
   ListCompetitionsResponse,
   UpdateCompetitionRequest,
-} from '@/protos/competition';
+} from '@hyperremix/song-contest-rater-proto/competition';
 import { callApi, httpClient } from '.';
 
 export const listContests = async (): Promise<ListCompetitionsResponse> =>

@@ -4,7 +4,7 @@ import {
   CreateRatingRequest,
   RatingResponse,
   UpdateRatingRequest,
-} from '@/protos/rating';
+} from '@hyperremix/song-contest-rater-proto/rating';
 import { callApi, httpClient } from '.';
 
 export const createRating = async (rating: CreateRatingRequest) =>

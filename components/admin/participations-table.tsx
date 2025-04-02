@@ -18,11 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Heat } from '@/protos/competition';
-import {
-  CreateParticipationRequest,
-  ListParticipationsResponse,
-} from '@/protos/participation';
 import { listActs } from '@/utils/http/act';
 import { listContests } from '@/utils/http/contest';
 import {
@@ -30,6 +25,11 @@ import {
   deleteParticipation,
   listParticipations,
 } from '@/utils/http/participation';
+import { Heat } from '@hyperremix/song-contest-rater-proto/competition';
+import {
+  CreateParticipationRequest,
+  ListParticipationsResponse,
+} from '@hyperremix/song-contest-rater-proto/participation';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
