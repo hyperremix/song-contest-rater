@@ -112,8 +112,8 @@ importers:
         specifier: ^3
         version: 3.2.0
       '@hyperremix/song-contest-rater-proto':
-        specifier: ^2.0.6
-        version: 2.0.6
+        specifier: ^2.1.2
+        version: 2.1.2
       '@types/node':
         specifier: ^20
         version: 20.17.19
@@ -294,8 +294,8 @@ packages:
     resolution: {integrity: sha512-c7hNEllBlenFTHBky65mhq8WD2kbN9Q6gk0bTk8lSBvc554jpXSkST1iePudpt7+A/AQvuHs9EMqjHDXMY1lrA==}
     engines: {node: '>=18.18'}
 
-  '@hyperremix/song-contest-rater-proto@2.0.6':
-    resolution: {integrity: sha512-Zw9iSGYUeniNbp63IOsCcyBbpZHK0PWoYRctwd2L6XdYVnULBTuyHSYE4ie/DeIrgR8hSquaxRLZQv6xo74TZQ==, tarball: https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/2.0.6/101d878c550704d674f5b443b8e93dbae02be378}
+  '@hyperremix/song-contest-rater-proto@2.1.2':
+    resolution: {integrity: sha512-0mN+0K21FNEA78o41rvgN7EByKd0rdGF0yva+g6h4p12Vjq9pnltwz+MdU1bdUvsRuaIwmn2hQyd6spYIw9j3Q==, tarball: https://npm.pkg.github.com/download/@hyperremix/song-contest-rater-proto/2.1.2/4b84353190066ed1fe8165bcbd80b08f9b2ffdde}
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -2891,7 +2891,9 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.1': {}
 
-  '@hyperremix/song-contest-rater-proto@2.0.6': {}
+  '@hyperremix/song-contest-rater-proto@2.1.2':
+    dependencies:
+      '@bufbuild/protobuf': 2.2.5
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
