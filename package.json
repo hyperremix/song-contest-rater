@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "pnpm proto:generate && next build",
     "start": "next start",
     "ts:check": "tsc --noEmit",
     "lint": "next lint",
