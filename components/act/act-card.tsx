@@ -2,10 +2,12 @@
 
 import { Link } from '@/i18n/routing';
 import { ActResponse } from '@/protos/act';
+import { ratingSum } from '@/utils/rating';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import Image from 'next/image';
 import { Typography } from '../custom/typography';
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';
+
 type Props = {
   contestId: string;
   act: ActResponse;
@@ -35,6 +37,11 @@ export const ActCard = ({ contestId, act }: Props) => {
             placeholder="blur"
           />
         )}
+        <div className="absolute right-0 top-0 flex w-11 flex-col items-center rounded-bl-md rounded-tr-md bg-primary-500 p-2">
+          <Typography variant="h6" className="text-white">
+            {ratingSum(act.ratings)}
+          </Typography>
+        </div>
         <CardHeader>
           <CardTitle>{act.song_name}</CardTitle>
           <CardDescription>

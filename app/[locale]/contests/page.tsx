@@ -43,7 +43,7 @@ export default async function ContestListPage() {
         </Typography>
       </AppBar>
       <Tabs defaultValue="contests" className="w-full">
-        <TabsContent value="contests">
+        <TabsContent value="contests" className="pb-20">
           <div className="mx-auto h-full w-full max-w-3xl px-2 pt-2">
             <HydrationBoundary state={dehydrate(queryClient)}>
               <Suspense fallback={<LoadingCardList />}>
