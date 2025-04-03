@@ -3,7 +3,7 @@
 import {
   GlobalStatsResponse,
   ListUserStatsResponse,
-} from '@hyperremix/song-contest-rater-proto/stat';
+} from '@hyperremix/song-contest-rater-protos/stat';
 import { callApi, httpClient } from '.';
 
 export const listUserStats = async (): Promise<ListUserStatsResponse> =>

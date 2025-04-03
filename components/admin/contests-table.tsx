@@ -23,15 +23,15 @@ import {
   CreateCompetitionRequest,
   ListCompetitionsResponse,
   UpdateCompetitionRequest,
-} from '@hyperremix/song-contest-rater-proto/competition';
+} from '@hyperremix/song-contest-rater-protos/competition';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import { Edit, Trash } from 'lucide-react';

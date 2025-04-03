@@ -3,7 +3,7 @@
 import {
   CreateParticipationRequest,
   ListParticipationsResponse,
-} from '@hyperremix/song-contest-rater-proto/participation';
+} from '@hyperremix/song-contest-rater-protos/participation';
 import { httpClient } from '.';
 import { callApi } from './callApi';
 

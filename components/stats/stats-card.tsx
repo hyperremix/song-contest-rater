@@ -7,7 +7,7 @@ import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
   GlobalStatsResponse,
   UserStatsResponse,
-} from '@hyperremix/song-contest-rater-proto/stat';
+} from '@hyperremix/song-contest-rater-protos/stat';
 import {
   Angry,
   CircleHelp,

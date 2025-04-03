@@ -3,7 +3,7 @@
 import { translations } from '@/i18n';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateCompetitionRequest } from '@hyperremix/song-contest-rater-proto/competition';
+import { CreateCompetitionRequest } from '@hyperremix/song-contest-rater-protos/competition';
 import { CalendarIcon } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import Image from 'next/image';

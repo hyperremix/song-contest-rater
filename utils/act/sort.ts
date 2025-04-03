@@ -1,4 +1,4 @@
-import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
+import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
 import { ratingSum } from '../rating';
 
 export const sortUnratedActs = (acts?: ActResponse[]): ActResponse[] =>

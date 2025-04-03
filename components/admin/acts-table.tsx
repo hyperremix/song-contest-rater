@@ -17,15 +17,15 @@ import {
   CreateActRequest,
   ListActsResponse,
   UpdateActRequest,
-} from '@hyperremix/song-contest-rater-proto/act';
+} from '@hyperremix/song-contest-rater-protos/act';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import { Edit, Trash } from 'lucide-react';

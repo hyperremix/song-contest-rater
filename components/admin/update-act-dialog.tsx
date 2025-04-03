@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActResponse,
   UpdateActRequest,
-} from '@hyperremix/song-contest-rater-proto/act';
+} from '@hyperremix/song-contest-rater-protos/act';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect } from 'react';

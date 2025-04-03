@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CompetitionResponse,
   UpdateCompetitionRequest,
-} from '@hyperremix/song-contest-rater-proto/competition';
+} from '@hyperremix/song-contest-rater-protos/competition';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';

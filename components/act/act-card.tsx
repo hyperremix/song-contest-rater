@@ -3,7 +3,7 @@
 import { Link } from '@/i18n/routing';
 import { ratingSum } from '@/utils/rating';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
+import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
 import Image from 'next/image';
 import { Typography } from '../custom/typography';
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';

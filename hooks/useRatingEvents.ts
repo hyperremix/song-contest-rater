@@ -3,8 +3,8 @@
 import { getQueryClient } from '@/app/get-query-client';
 import { enviroment } from '@/environment';
 import { useAuth } from '@clerk/nextjs';
-import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
-import { RatingResponse } from '@hyperremix/song-contest-rater-proto/rating';
+import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
+import { RatingResponse } from '@hyperremix/song-contest-rater-protos/rating';
 import { useEffect, useRef } from 'react';
 import {
   removeRating,

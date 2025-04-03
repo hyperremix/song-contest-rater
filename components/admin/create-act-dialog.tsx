@@ -3,7 +3,7 @@
 import { translations } from '@/i18n';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateActRequest } from '@hyperremix/song-contest-rater-proto/act';
+import { CreateActRequest } from '@hyperremix/song-contest-rater-protos/act';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';

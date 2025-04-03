@@ -25,19 +25,19 @@ import {
   deleteParticipation,
   listParticipations,
 } from '@/utils/http/participation';
-import { Heat } from '@hyperremix/song-contest-rater-proto/competition';
+import { Heat } from '@hyperremix/song-contest-rater-protos/competition';
 import {
   CreateParticipationRequest,
   ListParticipationsResponse,
-} from '@hyperremix/song-contest-rater-proto/participation';
+} from '@hyperremix/song-contest-rater-protos/participation';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import { ArrowUpDown, Plus, Trash } from 'lucide-react';

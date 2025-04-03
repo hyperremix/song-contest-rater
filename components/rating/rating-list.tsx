@@ -7,12 +7,12 @@ import { getAct } from '@/utils/http/act';
 import { createRating, updateRating } from '@/utils/http/rating';
 import { toRatingResponse } from '@/utils/rating/toRatingResponse';
 import { useUser } from '@clerk/nextjs';
-import { ActResponse } from '@hyperremix/song-contest-rater-proto/act';
+import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
 import {
   CreateRatingRequest,
   RatingResponse,
   UpdateRatingRequest,
-} from '@hyperremix/song-contest-rater-proto/rating';
+} from '@hyperremix/song-contest-rater-protos/rating';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
