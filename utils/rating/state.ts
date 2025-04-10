@@ -1,15 +1,14 @@
-import { RatingResponse } from '@hyperremix/song-contest-rater-protos/rating';
+import { Rating } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/rating_pb';
 
 export const sortedRatingUpdate = (
-  ratings: RatingResponse[],
-  rating: RatingResponse,
-): RatingResponse[] =>
-  sortedRatingAdd(removeRating(ratings, rating.id), rating);
+  ratings: Rating[],
+  rating: Rating,
+): Rating[] => sortedRatingAdd(removeRating(ratings, rating.id), rating);
 
 export const sortedRatingAdd = (
-  ratings: RatingResponse[] | undefined,
-  rating: RatingResponse,
-): RatingResponse[] => {
+  ratings: Rating[] | undefined,
+  rating: Rating,
+): Rating[] => {
   if (!ratings) {
     return [rating];
   }
@@ -22,7 +21,5 @@ export const sortedRatingAdd = (
   return [...ratings.slice(0, index), rating, ...ratings.slice(index)];
 };
 
-export const removeRating = (
-  ratings: RatingResponse[],
-  ratingId: string,
-): RatingResponse[] => ratings.filter((r) => r.id !== ratingId);
+export const removeRating = (ratings: Rating[], ratingId: string): Rating[] =>
+  ratings.filter((r) => r.id !== ratingId);

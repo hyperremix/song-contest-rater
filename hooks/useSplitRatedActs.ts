@@ -1,18 +1,18 @@
-import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
+import { Act } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import { useMemo } from 'react';
 import { sortRatedActs, sortUnratedActs } from '../utils/act';
 import { ratingSum } from '../utils/rating';
 
-type SplitActs = { ratedActs: ActResponse[]; unratedActs: ActResponse[] };
+type SplitActs = { ratedActs: Act[]; unratedActs: Act[] };
 
-export const useSplitRatedActs = (acts?: ActResponse[]): SplitActs =>
+export const useSplitRatedActs = (acts?: Act[]): SplitActs =>
   useMemo(() => {
     if (!acts) {
       return { ratedActs: [], unratedActs: [] };
     }
 
     const splitActs = acts.reduce(
-      (acc: SplitActs, act: ActResponse) => {
+      (acc: SplitActs, act: Act) => {
         if (isRatedAct(act)) {
           acc.ratedActs.unshift(act);
         } else {
@@ -29,4 +29,4 @@ export const useSplitRatedActs = (acts?: ActResponse[]): SplitActs =>
     return splitActs;
   }, [acts]);
 
-const isRatedAct = (act: ActResponse): boolean => ratingSum(act.ratings) !== 0;
+const isRatedAct = (act: Act): boolean => ratingSum(act.ratings) !== 0;

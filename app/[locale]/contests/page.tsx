@@ -1,4 +1,5 @@
 import { getQueryClient } from '@/app/get-query-client';
+import { getServerTransport } from '@/app/get-server-transport';
 import { AdminTab } from '@/components/admin/admin-tab';
 import { ContestList } from '@/components/contest/contest-list';
 import { AppBar } from '@/components/custom/app-bar';
@@ -7,9 +8,16 @@ import { Typography } from '@/components/custom/typography';
 import { StatsList } from '@/components/stats/stats-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { translations } from '@/i18n';
-import { listContests } from '@/utils/http/contest';
-import { getGlobalStats, listUserStats } from '@/utils/http/stats';
+import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import {
+  getGlobalStats,
+  listUserStats,
+} from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/stat_service-StatService_connectquery';
 import { currentUser } from '@clerk/nextjs/server';
+import {
+  callUnaryMethod,
+  createConnectQueryKey,
+} from '@connectrpc/connect-query';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { ChartLine, Music, Shield } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
@@ -18,21 +26,37 @@ import { Suspense } from 'react';
 export default async function ContestListPage() {
   const t = await getTranslations();
   const queryClient = getQueryClient();
+  const transport = await getServerTransport();
   const user = await currentUser();
 
   queryClient.prefetchQuery({
-    queryKey: ['listContests'],
-    queryFn: listContests,
+    queryKey: createConnectQueryKey({
+      schema: listContests,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, listContests, {}),
   });
 
   queryClient.prefetchQuery({
-    queryKey: ['listUserStats'],
-    queryFn: listUserStats,
+    queryKey: createConnectQueryKey({
+      schema: listUserStats,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, listUserStats, {}),
   });
 
   queryClient.prefetchQuery({
-    queryKey: ['getGlobalStats'],
-    queryFn: getGlobalStats,
+    queryKey: createConnectQueryKey({
+      schema: getGlobalStats,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, getGlobalStats, {}),
   });
 
   return (

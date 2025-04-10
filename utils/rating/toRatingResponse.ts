@@ -2,11 +2,15 @@
 
 import {
   CreateRatingRequest,
-  RatingResponse,
+  Rating,
+  RatingSchema,
   UpdateRatingRequest,
-} from '@hyperremix/song-contest-rater-protos/rating';
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/rating_pb';
+import { UserSchema } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/user_pb';
+import { create } from '@bufbuild/protobuf';
+import { TimestampSchema } from '@bufbuild/protobuf/wkt';
 
-type User = {
+type ClerkUser = {
   id: string;
   email: string;
   image_url: string;
@@ -14,32 +18,34 @@ type User = {
   lastname: string;
 };
 
-export const toRatingResponse = (
-  request: CreateRatingRequest | UpdateRatingRequest,
-  user: User,
-): RatingResponse => {
-  const nowTimestamp = {
-    seconds: new Date().getTime() / 1000,
+export const toRating = (
+  request:
+    | Omit<CreateRatingRequest, '$typeName'>
+    | Omit<UpdateRatingRequest, '$typeName'>,
+  user: ClerkUser,
+): Rating => {
+  const nowTimestamp = create(TimestampSchema, {
+    seconds: BigInt(new Date().getTime() / 1000),
     nanos: 0,
-  };
+  });
 
-  return {
+  return create(RatingSchema, {
     ...request,
     id: 'new-id',
-    competition_id: 'competition-id',
-    act_id: 'act-id',
+    contestId: 'contest-id',
+    actId: 'act-id',
     total:
       request.song +
       request.singing +
       request.show +
       request.looks +
       request.clothes,
-    user: {
+    user: create(UserSchema, {
       ...user,
-      created_at: nowTimestamp,
-      updated_at: nowTimestamp,
-    },
-    created_at: nowTimestamp,
-    updated_at: nowTimestamp,
-  };
+      createdAt: nowTimestamp,
+      updatedAt: nowTimestamp,
+    }),
+    createdAt: nowTimestamp,
+    updatedAt: nowTimestamp,
+  });
 };

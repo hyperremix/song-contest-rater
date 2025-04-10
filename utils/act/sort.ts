@@ -1,7 +1,7 @@
-import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
+import { Act } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import { ratingSum } from '../rating';
 
-export const sortUnratedActs = (acts?: ActResponse[]): ActResponse[] =>
+export const sortUnratedActs = (acts?: Act[]): Act[] =>
   acts
     ? acts.sort((a, b) => {
         if (a.order === undefined && b.order === undefined) {
@@ -20,7 +20,7 @@ export const sortUnratedActs = (acts?: ActResponse[]): ActResponse[] =>
       })
     : [];
 
-export const sortRatedActs = (acts?: ActResponse[]): ActResponse[] =>
+export const sortRatedActs = (acts?: Act[]): Act[] =>
   acts
     ? acts.sort((a, b) => {
         if (ratingSum(a.ratings) !== 0 && ratingSum(b.ratings) === 0) {

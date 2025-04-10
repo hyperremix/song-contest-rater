@@ -3,14 +3,16 @@
 import { translations } from '@/i18n';
 import { cn } from '@/lib/utils';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  CompetitionResponse,
-  UpdateCompetitionRequest,
-} from '@hyperremix/song-contest-rater-protos/competition';
-import { format } from 'date-fns';
+  Contest,
+  UpdateContestRequest,
+  UpdateContestRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
+import { create } from '@bufbuild/protobuf';
+import { TimestampSchema } from '@bufbuild/protobuf/wkt';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CalendarIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -35,12 +37,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-
 type Props = {
-  contest: CompetitionResponse | null;
+  contest: Contest | null;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (updateContestRequest: UpdateCompetitionRequest) => void;
+  onSave: (updateContestRequest: UpdateContestRequest) => void;
 };
 
 const formSchema = z.object({
@@ -58,6 +59,7 @@ export const UpdateContestDialog = ({
   onSave,
 }: Props) => {
   const t = useTranslations();
+  const formatter = useFormatter();
 
   const contestHeatData = Object.entries(translations.contest.heat)
     .filter(([key]) => key !== '0' && key !== '-1')
@@ -72,22 +74,22 @@ export const UpdateContestDialog = ({
       heat: contest?.heat ?? 0,
       city: contest?.city ?? '',
       country: contest?.country ?? '',
-      startDate: contest?.start_time
+      startDate: contest?.startTime
         ? new Date(
-            (contest.start_time.seconds || 0) * 1000 +
-              (contest.start_time.nanos || 0) / 1000000,
+            Number(contest.startTime.seconds) * 1000 +
+              (contest.startTime.nanos || 0) / 1000000,
           )
         : new Date(),
-      imageUrl: contest?.image_url ?? '',
+      imageUrl: contest?.imageUrl ?? '',
     },
   });
 
   useEffect(() => {
     if (contest) {
-      const startDate = contest.start_time
+      const startDate = contest.startTime
         ? new Date(
-            (contest.start_time.seconds || 0) * 1000 +
-              (contest.start_time.nanos || 0) / 1000000,
+            Number(contest.startTime.seconds) * 1000 +
+              (contest.startTime.nanos || 0) / 1000000,
           )
         : new Date();
 
@@ -96,7 +98,7 @@ export const UpdateContestDialog = ({
         city: contest.city,
         country: contest.country,
         startDate,
-        imageUrl: contest.image_url,
+        imageUrl: contest.imageUrl,
       });
     }
   }, [contest, form]);
@@ -106,17 +108,19 @@ export const UpdateContestDialog = ({
       const seconds = Math.floor(values.startDate.getTime() / 1000);
       const nanos = (values.startDate.getTime() % 1000) * 1000000;
 
-      onSave({
-        id: contest.id,
-        heat: values.heat,
-        city: values.city,
-        country: values.country,
-        start_time: {
-          seconds,
-          nanos,
-        },
-        image_url: values.imageUrl,
-      });
+      onSave(
+        create(UpdateContestRequestSchema, {
+          id: contest.id,
+          heat: values.heat,
+          city: values.city,
+          country: values.country,
+          startTime: create(TimestampSchema, {
+            seconds: BigInt(seconds),
+            nanos,
+          }),
+          imageUrl: values.imageUrl,
+        }),
+      );
 
       onOpenChange(false);
     }
@@ -203,7 +207,13 @@ export const UpdateContestDialog = ({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP p')
+                            formatter.dateTime(field.value, {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: 'numeric',
+                              weekday: 'short',
+                            })
                           ) : (
                             <span>Pick a date</span>
                           )}

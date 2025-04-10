@@ -3,7 +3,7 @@
 import { translations } from '@/i18n';
 import { Link } from '@/i18n/routing';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { CompetitionResponse } from '@hyperremix/song-contest-rater-protos/competition';
+import { Contest } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
 import { endOfDay, isBefore, isFuture, isPast } from 'date-fns';
 import { ClockAlert } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
@@ -13,7 +13,7 @@ import { Typography } from '../custom/typography';
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';
 
 type Props = {
-  contest: CompetitionResponse;
+  contest: Contest;
 };
 
 export const ContestCard = ({ contest }: Props) => {
@@ -21,15 +21,15 @@ export const ContestCard = ({ contest }: Props) => {
   const formatter = useFormatter();
 
   const isCompetitionInFuture = useMemo(
-    () => isFuture(contest.start_time?.seconds ?? 0),
+    () => isFuture(Number(contest.startTime?.seconds ?? 0)),
     [contest],
   );
 
   const isCompetitionLive = useMemo(
     () =>
-      contest.start_time?.seconds &&
-      isPast(contest.start_time.seconds) &&
-      isBefore(new Date(), endOfDay(contest.start_time.seconds)),
+      contest.startTime?.seconds &&
+      isPast(Number(contest.startTime.seconds)) &&
+      isBefore(new Date(), endOfDay(Number(contest.startTime.seconds))),
     [contest],
   );
 
@@ -62,16 +62,16 @@ export const ContestCard = ({ contest }: Props) => {
             </Typography>
           </div>
         )}
-        {contest.image_url && (
+        {contest.imageUrl && (
           <Image
             className="min-h-fit w-32 rounded-l-lg object-contain"
-            src={toImagekitUrl(contest.image_url, [
+            src={toImagekitUrl(contest.imageUrl, [
               { height: '256', width: '256', focus: 'auto' },
             ])}
             width={128}
             height={128}
             alt=""
-            blurDataURL={toImagekitUrl(contest.image_url, [
+            blurDataURL={toImagekitUrl(contest.imageUrl, [
               { height: '1', width: '1', focus: 'auto' },
             ])}
             placeholder="blur"
@@ -84,13 +84,16 @@ export const ContestCard = ({ contest }: Props) => {
               {contest.city}, {t(`countries.${contest.country.toLowerCase()}`)}
             </Typography>
             <Typography>
-              {formatter.dateTime((contest.start_time?.seconds ?? 0) * 1000, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                weekday: 'short',
-              })}
+              {formatter.dateTime(
+                Number(contest.startTime?.seconds ?? 0) * 1000,
+                {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  weekday: 'short',
+                },
+              )}
             </Typography>
           </CardDescription>
         </CardHeader>

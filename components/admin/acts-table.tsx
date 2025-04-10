@@ -1,5 +1,6 @@
 'use client';
 
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,15 +11,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { createAct, deleteAct, listActs, updateAct } from '@/utils/http/act';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
-  ActResponse,
-  CreateActRequest,
+  Act,
   ListActsResponse,
-  UpdateActRequest,
-} from '@hyperremix/song-contest-rater-protos/act';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
+import {
+  createAct,
+  deleteAct,
+  listActs,
+  updateAct,
+} from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import {
+  createConnectQueryKey,
+  useMutation,
+  useSuspenseQuery,
+} from '@connectrpc/connect-query';
 import {
   ColumnDef,
   SortingState,
@@ -39,33 +47,37 @@ import { UpdateActDialog } from './update-act-dialog';
 export const ActsTable = () => {
   const formatter = useFormatter();
   const queryClient = getQueryClient();
+  const transport = getBrowserTransport();
+  const listActsQueryKey = createConnectQueryKey({
+    schema: listActs,
+    transport,
+    input: {},
+    cardinality: 'finite',
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-  const [selectedAct, setSelectedAct] = useState<ActResponse | null>(null);
+  const [selectedAct, setSelectedAct] = useState<Act | null>(null);
 
-  const { data } = useSuspenseQuery({
-    queryKey: ['listActs'],
-    queryFn: listActs,
-  });
+  const {
+    data: { acts },
+  } = useSuspenseQuery(listActs, {}, { transport });
 
-  const createMutation = useMutation({
-    mutationFn: (createActRequest: CreateActRequest) =>
-      createAct(createActRequest),
-    onMutate: async (createActRequest: CreateActRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listActs'] });
+  const createMutation = useMutation(createAct, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
-        'listActs',
+        listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(['listActs'], (old: ListActsResponse) => ({
+      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
         ...old,
         acts: [
           ...old.acts,
           {
             id: 'temp-id',
-            ...createActRequest,
+            ...variables,
             created_at: undefined,
             updated_at: undefined,
           },
@@ -75,70 +87,65 @@ export const ActsTable = () => {
       return { previousActsList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listActs'], context?.previousActsList);
+      queryClient.setQueryData(listActsQueryKey, context?.previousActsList);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listActs'] });
+      queryClient.invalidateQueries({ queryKey: listActsQueryKey });
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: (updateActRequest: UpdateActRequest) =>
-      updateAct(updateActRequest),
-    onMutate: async (updateActRequest: UpdateActRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listActs'] });
+  const updateMutation = useMutation(updateAct, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
-        'listActs',
+        listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(['listActs'], (old: ListActsResponse) => ({
+      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
         ...old,
         acts: old.acts.map((act) =>
-          act.id === updateActRequest.id
-            ? { ...act, ...updateActRequest }
-            : act,
+          act.id === variables.id ? { ...act, ...variables } : act,
         ),
       }));
 
       return { previousActsList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listActs'], context?.previousActsList);
+      queryClient.setQueryData(listActsQueryKey, context?.previousActsList);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listActs'] });
+      queryClient.invalidateQueries({ queryKey: listActsQueryKey });
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteAct(id),
-    onMutate: async (id: string) => {
-      await queryClient.cancelQueries({ queryKey: ['listActs'] });
+  const deleteMutation = useMutation(deleteAct, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
-        'listActs',
+        listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(['listActs'], (old: ListActsResponse) => ({
+      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
         ...old,
-        acts: old.acts.filter((act) => act.id !== id),
+        acts: old.acts.filter((act) => act.id !== variables.id),
       }));
 
       return { previousActsList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listActs'], context?.previousActsList);
+      queryClient.setQueryData(listActsQueryKey, context?.previousActsList);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listActs'] });
+      queryClient.invalidateQueries({ queryKey: listActsQueryKey });
     },
   });
 
-  const handleEditAct = (act: ActResponse) => {
+  const handleEditAct = (act: Act) => {
     setSelectedAct(act);
     setIsUpdateDialogOpen(true);
   };
 
-  const columns: ColumnDef<ActResponse>[] = [
+  const columns: ColumnDef<Act>[] = [
     {
       accessorKey: 'image_url',
       header: 'Image',
@@ -169,11 +176,12 @@ export const ActsTable = () => {
       accessorKey: 'created_at',
       header: 'Created',
       cell: ({ row }) => {
-        const createdAt = row.original.created_at;
+        const createdAt = row.original.createdAt;
         if (!createdAt) return 'N/A';
 
         const date = new Date(
-          (createdAt.seconds || 0) * 1000 + (createdAt.nanos || 0) / 1000000,
+          Number(createdAt.seconds || 0) * 1000 +
+            Number(createdAt.nanos || 0) / 1000000,
         );
         return formatter.dateTime(date, {
           year: 'numeric',
@@ -198,7 +206,7 @@ export const ActsTable = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => deleteMutation.mutate(row.original.id)}
+            onClick={() => deleteMutation.mutate({ id: row.original.id })}
           >
             <Trash className="h-4 w-4 text-red-500" />
           </Button>
@@ -208,7 +216,7 @@ export const ActsTable = () => {
   ];
 
   const table = useReactTable({
-    data: data?.acts || [],
+    data: acts || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

@@ -1,7 +1,11 @@
 'use client';
 
 import { translations } from '@/i18n';
-import { CreateRatingRequest } from '@hyperremix/song-contest-rater-protos/rating';
+import {
+  CreateRatingRequest,
+  CreateRatingRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/rating_pb';
+import { create } from '@bufbuild/protobuf';
 import { Eye, Mic, Music, Shirt, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -39,15 +43,17 @@ export const CreateRatingDialog = ({
   const [clothes, setClothes] = useState(1);
 
   const handleSave = () => {
-    onSave({
-      competition_id: contestId,
-      act_id: actId,
-      song,
-      singing,
-      show,
-      looks,
-      clothes,
-    });
+    onSave(
+      create(CreateRatingRequestSchema, {
+        contestId,
+        actId,
+        song,
+        singing,
+        show,
+        looks,
+        clothes,
+      }),
+    );
     onOpenChange(false);
   };
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,19 +19,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { listActs } from '@/utils/http/act';
-import { listContests } from '@/utils/http/contest';
+import { Heat } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
+import { ListParticipationsResponse } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/participation_pb';
+import { listActs } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
 import {
   createParticipation,
   deleteParticipation,
   listParticipations,
-} from '@/utils/http/participation';
-import { Heat } from '@hyperremix/song-contest-rater-protos/competition';
+} from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/participation_service-ParticipationService_connectquery';
 import {
-  CreateParticipationRequest,
-  ListParticipationsResponse,
-} from '@hyperremix/song-contest-rater-protos/participation';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+  createConnectQueryKey,
+  useMutation,
+  useSuspenseQuery,
+} from '@connectrpc/connect-query';
 import {
   ColumnDef,
   SortingState,
@@ -45,16 +47,11 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Input } from '../ui/input';
 
-type DeleteParticipationRequest = {
-  contest_id: string;
-  act_id: string;
-};
-
 type ParticipationData = {
-  competitionId: string;
-  competitionCity: string;
-  competitionCountry: string;
-  competitionHeat: Heat;
+  contestId: string;
+  contestCity: string;
+  contestCountry: string;
+  contestHeat: Heat;
   actId: string;
   actArtist: string;
   actSong: string;
@@ -64,45 +61,52 @@ type ParticipationData = {
 export const ParticipationsTable = () => {
   const t = useTranslations();
   const queryClient = getQueryClient();
+  const transport = getBrowserTransport();
+
+  const listParticipationsQueryKey = createConnectQueryKey({
+    schema: listParticipations,
+    transport,
+    input: {},
+    cardinality: 'finite',
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedContestId, setSelectedContestId] = useState<string>('');
   const [selectedActId, setSelectedActId] = useState<string>('');
   const [order, setOrder] = useState<number>(1);
 
-  const { data: contestsData } = useSuspenseQuery({
-    queryKey: ['listContests'],
-    queryFn: listContests,
-  });
+  const { data: contestsData } = useSuspenseQuery(
+    listContests,
+    {},
+    { transport },
+  );
 
-  const { data: actsData } = useSuspenseQuery({
-    queryKey: ['listActs'],
-    queryFn: listActs,
-  });
+  const { data: actsData } = useSuspenseQuery(listActs, {}, { transport });
 
-  const { data: participationsData } = useSuspenseQuery({
-    queryKey: ['listParticipations'],
-    queryFn: listParticipations,
-  });
+  const { data: participationsData } = useSuspenseQuery(
+    listParticipations,
+    {},
+    { transport },
+  );
 
   const participations: ParticipationData[] = useMemo(
     () =>
       participationsData?.participations.map((participation) => {
-        const competition = contestsData?.competitions.find(
-          (competition) => competition.id === participation.competition_id,
+        const contest = contestsData?.contests.find(
+          (contest) => contest.id === participation.contestId,
         );
         const act = actsData?.acts.find(
-          (act) => act.id === participation.act_id,
+          (act) => act.id === participation.actId,
         );
 
         return {
-          competitionId: participation.competition_id,
-          competitionCity: competition?.city ?? '',
-          competitionCountry: competition?.country ?? '',
-          competitionHeat: competition?.heat ?? 1,
-          actId: participation.act_id,
-          actArtist: act?.artist_name ?? '',
-          actSong: act?.song_name ?? '',
+          contestId: contest?.id ?? '',
+          contestCity: contest?.city ?? '',
+          contestCountry: contest?.country ?? '',
+          contestHeat: contest?.heat ?? 1,
+          actId: act?.id ?? '',
+          actArtist: act?.artistName ?? '',
+          actSong: act?.songName ?? '',
           order: participation.order,
         };
       }),
@@ -113,21 +117,21 @@ export const ParticipationsTable = () => {
     return actsData?.acts.filter(
       (act) =>
         !participations.some(
-          (p) => p.actId === act.id && p.competitionId === selectedContestId,
+          (p) => p.actId === act.id && p.contestId === selectedContestId,
         ),
     );
   }, [actsData, participations, selectedContestId]);
 
   useEffect(() => {
     setOrder(
-      participations.filter((p) => p.competitionId === selectedContestId)
-        .length + 1,
+      participations.filter((p) => p.contestId === selectedContestId).length +
+        1,
     );
   }, [selectedContestId, participations]);
 
   const columns: ColumnDef<ParticipationData>[] = [
     {
-      accessorKey: 'competitionCity',
+      accessorKey: 'contestCity',
       header: ({ column }) => (
         <div className="flex items-center">
           Contest City
@@ -139,13 +143,13 @@ export const ParticipationsTable = () => {
       ),
     },
     {
-      accessorKey: 'competitionCountry',
+      accessorKey: 'contestCountry',
       header: 'Country',
     },
     {
-      accessorKey: 'competitionHeat',
+      accessorKey: 'contestHeat',
       header: 'Heat',
-      cell: ({ row }) => t(`contest.heat.${row.getValue('competitionHeat')}`),
+      cell: ({ row }) => t(`contest.heat.${row.getValue('contestHeat')}`),
     },
     {
       accessorKey: 'actArtist',
@@ -186,8 +190,8 @@ export const ParticipationsTable = () => {
           size="icon"
           onClick={() =>
             deleteMutation.mutate({
-              contest_id: row.original.competitionId,
-              act_id: row.original.actId,
+              contestId: row.original.contestId,
+              actId: row.original.actId,
             })
           }
         >
@@ -209,26 +213,24 @@ export const ParticipationsTable = () => {
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: (createRequest: CreateParticipationRequest) =>
-      createParticipation(createRequest),
-    onMutate: async (createRequest: CreateParticipationRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listParticipations'] });
+  const createMutation = useMutation(createParticipation, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listParticipationsQueryKey });
       const previousList = queryClient.getQueryData<ListParticipationsResponse>(
-        ['listParticipations'],
+        listParticipationsQueryKey,
       );
 
       queryClient.setQueryData(
-        ['listParticipations'],
+        listParticipationsQueryKey,
         (old: ListParticipationsResponse) => ({
           ...old,
           participations: [
             ...old.participations,
             {
               id: 'temp-id',
-              ...createRequest,
-              created_at: undefined,
-              updated_at: undefined,
+              ...variables,
+              createdAt: undefined,
+              updatedAt: undefined,
             },
           ],
         }),
@@ -237,34 +239,35 @@ export const ParticipationsTable = () => {
       return { previousList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listParticipations'], context?.previousList);
+      queryClient.setQueryData(
+        listParticipationsQueryKey,
+        context?.previousList,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listParticipations'] });
+      queryClient.invalidateQueries({ queryKey: listParticipationsQueryKey });
       setSelectedContestId('');
       setSelectedActId('');
       setOrder(1);
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (deleteRequest: DeleteParticipationRequest) =>
-      deleteParticipation(deleteRequest.contest_id, deleteRequest.act_id),
-    onMutate: async (deleteRequest: DeleteParticipationRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listParticipations'] });
+  const deleteMutation = useMutation(deleteParticipation, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listParticipationsQueryKey });
       const previousList = queryClient.getQueryData<ListParticipationsResponse>(
-        ['listParticipations'],
+        listParticipationsQueryKey,
       );
 
       queryClient.setQueryData(
-        ['listParticipations'],
+        listParticipationsQueryKey,
         (old: ListParticipationsResponse) => ({
           ...old,
           participations: old.participations.filter(
             (participation) =>
               !(
-                participation.competition_id === deleteRequest.contest_id &&
-                participation.act_id === deleteRequest.act_id
+                participation.contestId === variables.contestId &&
+                participation.actId === variables.actId
               ),
           ),
         }),
@@ -273,10 +276,13 @@ export const ParticipationsTable = () => {
       return { previousList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listParticipations'], context?.previousList);
+      queryClient.setQueryData(
+        listParticipationsQueryKey,
+        context?.previousList,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listParticipations'] });
+      queryClient.invalidateQueries({ queryKey: listParticipationsQueryKey });
     },
   });
 
@@ -284,8 +290,8 @@ export const ParticipationsTable = () => {
     if (!selectedContestId || !selectedActId) return;
 
     createMutation.mutate({
-      competition_id: selectedContestId,
-      act_id: selectedActId,
+      contestId: selectedContestId,
+      actId: selectedActId,
       order: order,
     });
   }, [createMutation, selectedContestId, selectedActId, order]);
@@ -311,7 +317,7 @@ export const ParticipationsTable = () => {
                   <SelectValue placeholder="Select contest" />
                 </SelectTrigger>
                 <SelectContent>
-                  {contestsData?.competitions.map((contest) => (
+                  {contestsData?.contests.map((contest) => (
                     <SelectItem key={contest.id} value={contest.id}>
                       {contest.city}, {contest.country} (
                       {t(`contest.heat.${contest.heat}`)})
@@ -330,7 +336,7 @@ export const ParticipationsTable = () => {
                 <SelectContent>
                   {availableActs?.map((act) => (
                     <SelectItem key={act.id} value={act.id}>
-                      {act.artist_name} - {act.song_name}
+                      {act.artistName} - {act.songName}
                     </SelectItem>
                   ))}
                 </SelectContent>

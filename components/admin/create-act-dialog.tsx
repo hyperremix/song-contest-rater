@@ -2,8 +2,12 @@
 
 import { translations } from '@/i18n';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import {
+  CreateActRequest,
+  CreateActRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
+import { create } from '@bufbuild/protobuf';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateActRequest } from '@hyperremix/song-contest-rater-protos/act';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -45,11 +49,13 @@ export const CreateActDialog = ({ isOpen, onOpenChange, onSave }: Props) => {
   });
 
   const handleSave = (values: z.infer<typeof formSchema>) => {
-    onSave({
-      artist_name: values.artistName,
-      song_name: values.songName,
-      image_url: values.imageUrl,
-    });
+    onSave(
+      create(CreateActRequestSchema, {
+        artistName: values.artistName,
+        songName: values.songName,
+        imageUrl: values.imageUrl,
+      }),
+    );
 
     onOpenChange(false);
     form.reset();

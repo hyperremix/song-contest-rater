@@ -2,11 +2,13 @@
 
 import { translations } from '@/i18n';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  ActResponse,
+  Act,
   UpdateActRequest,
-} from '@hyperremix/song-contest-rater-protos/act';
+  UpdateActRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
+import { create } from '@bufbuild/protobuf';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect } from 'react';
@@ -23,9 +25,8 @@ import {
 } from '../ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
 import { Input } from '../ui/input';
-
 type Props = {
-  act: ActResponse | null;
+  act: Act | null;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onSave: (updateActRequest: UpdateActRequest) => void;
@@ -57,21 +58,23 @@ export const UpdateActDialog = ({
   useEffect(() => {
     if (act) {
       form.reset({
-        artistName: act.artist_name,
-        songName: act.song_name,
-        imageUrl: act.image_url,
+        artistName: act.artistName,
+        songName: act.songName,
+        imageUrl: act.imageUrl,
       });
     }
   }, [act, form]);
 
   const handleSave = (values: z.infer<typeof formSchema>) => {
     if (act) {
-      onSave({
-        id: act.id,
-        artist_name: values.artistName,
-        song_name: values.songName,
-        image_url: values.imageUrl,
-      });
+      onSave(
+        create(UpdateActRequestSchema, {
+          id: act.id,
+          artistName: values.artistName,
+          songName: values.songName,
+          imageUrl: values.imageUrl,
+        }),
+      );
       onOpenChange(false);
     }
   };

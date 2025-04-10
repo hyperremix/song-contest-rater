@@ -2,9 +2,11 @@
 
 import { translations } from '@/i18n';
 import {
-  RatingResponse,
+  Rating,
   UpdateRatingRequest,
-} from '@hyperremix/song-contest-rater-protos/rating';
+  UpdateRatingRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/rating_pb';
+import { create } from '@bufbuild/protobuf';
 import { Eye, Mic, Music, Shirt, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -19,7 +21,7 @@ import {
 import { RatingInput } from './rating-input';
 
 type Props = {
-  rating: RatingResponse | null;
+  rating: Rating | null;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onSave: (updateRatingRequest: UpdateRatingRequest) => void;
@@ -41,14 +43,16 @@ export const UpdateRatingDialog = ({
 
   const handleSave = () => {
     if (rating) {
-      onSave({
-        id: rating.id,
-        song,
-        singing,
-        show,
-        looks,
-        clothes,
-      });
+      onSave(
+        create(UpdateRatingRequestSchema, {
+          id: rating.id,
+          song,
+          singing,
+          show,
+          looks,
+          clothes,
+        }),
+      );
     }
     onOpenChange(false);
   };

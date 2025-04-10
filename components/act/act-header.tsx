@@ -1,8 +1,9 @@
 'use client';
 
-import { getAct } from '@/utils/http/act';
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { getAct } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import { useSuspenseQuery } from '@connectrpc/connect-query';
 import { ImageViewer } from '../custom/image-viewer';
 import { Typography } from '../custom/typography';
 
@@ -11,24 +12,25 @@ type Props = {
 };
 
 export const ActHeader = ({ id }: Props) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ['getAct', id],
-    queryFn: () => getAct(id),
-  });
+  const transport = getBrowserTransport();
+
+  const {
+    data: { act },
+  } = useSuspenseQuery(getAct, { id }, { transport });
 
   return (
     <div className="flex flex-col items-center">
-      {data?.image_url && (
+      {act?.imageUrl && (
         <ImageViewer
-          baseUri={toImagekitUrl(data.image_url, [
+          baseUri={toImagekitUrl(act.imageUrl, [
             { height: '256', width: '256', focus: 'auto' },
           ])}
-          zoomableImageUri={toImagekitUrl(data.image_url, [{ width: '1024' }])}
+          zoomableImageUri={toImagekitUrl(act.imageUrl, [{ width: '1024' }])}
         />
       )}
-      <Typography variant="h2">{data?.song_name}</Typography>
+      <Typography variant="h2">{act?.songName}</Typography>
       <Typography variant="span" className="text-zinc-500">
-        {data?.artist_name}
+        {act?.artistName}
       </Typography>
     </div>
   );

@@ -1,9 +1,10 @@
 'use client';
 
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { useSplitRatedActs } from '@/hooks/useSplitRatedActs';
 import { translations } from '@/i18n';
-import { getContest } from '@/utils/http/contest';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { getContest } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import { useSuspenseQuery } from '@connectrpc/connect-query';
 import { useTranslations } from 'next-intl';
 import { Typography } from '../custom/typography';
 import { ActCard } from './act-card';
@@ -14,13 +15,13 @@ type Props = {
 
 export const ActList = ({ contestId }: Props) => {
   const t = useTranslations();
+  const transport = getBrowserTransport();
 
-  const { data } = useSuspenseQuery({
-    queryKey: ['getContest', contestId],
-    queryFn: () => getContest(contestId),
-  });
+  const {
+    data: { contest },
+  } = useSuspenseQuery(getContest, { id: contestId }, { transport });
 
-  const { ratedActs, unratedActs } = useSplitRatedActs(data?.acts);
+  const { ratedActs, unratedActs } = useSplitRatedActs(contest?.acts);
 
   return (
     <>

@@ -1,19 +1,27 @@
 'use client';
 
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { useRatingEvents } from '@/hooks/useRatingEvents';
-import { HttpError } from '@/utils/http';
-import { getAct } from '@/utils/http/act';
-import { createRating, updateRating } from '@/utils/http/rating';
-import { toRatingResponse } from '@/utils/rating/toRatingResponse';
-import { useUser } from '@clerk/nextjs';
-import { ActResponse } from '@hyperremix/song-contest-rater-protos/act';
+import { toRating } from '@/utils/rating/toRatingResponse';
+import { GetActResponse } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import {
-  CreateRatingRequest,
-  RatingResponse,
-  UpdateRatingRequest,
-} from '@hyperremix/song-contest-rater-protos/rating';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+  CreateRatingRequestSchema,
+  Rating,
+  UpdateRatingRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/rating_pb';
+import { getAct } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import {
+  createRating,
+  updateRating,
+} from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/rating_service-RatingService_connectquery';
+import { create } from '@bufbuild/protobuf';
+import { useUser } from '@clerk/nextjs';
+import {
+  createConnectQueryKey,
+  useMutation,
+  useSuspenseQuery,
+} from '@connectrpc/connect-query';
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { HttpErrorDialog } from '../dialog/http-error-dialog';
@@ -30,53 +38,57 @@ type Props = {
 export const RatingList = ({ contestId, actId }: Props) => {
   const { user } = useUser();
   const queryClient = getQueryClient();
+  const transport = getBrowserTransport();
 
-  const { data: act } = useSuspenseQuery({
-    queryKey: ['getAct', actId],
-    queryFn: () => getAct(actId),
+  const getActQueryKey = createConnectQueryKey({
+    schema: getAct,
+    transport,
+    input: { id: actId },
+    cardinality: 'finite',
   });
+
+  const {
+    data: { act },
+  } = useSuspenseQuery(getAct, { id: actId }, { transport });
 
   useRatingEvents(actId);
 
-  const createMutation = useMutation({
-    mutationFn: (createRatingRequest: CreateRatingRequest) =>
-      createRating(createRatingRequest),
+  const createMutation = useMutation(createRating, {
     onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ['getAct', actId] }),
+      await queryClient.invalidateQueries({ queryKey: getActQueryKey }),
   });
 
-  const updateMutation = useMutation({
-    mutationFn: (updateRatingRequest: UpdateRatingRequest) =>
-      updateRating(updateRatingRequest),
-    onMutate: async (updateRatingRequest: UpdateRatingRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['getAct', actId] });
-      const previousAct = queryClient.getQueryData<ActResponse>([
-        'getAct',
-        actId,
-      ]);
+  const updateMutation = useMutation(updateRating, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: getActQueryKey });
+      const previousAct =
+        queryClient.getQueryData<GetActResponse>(getActQueryKey);
 
-      queryClient.setQueryData(['getAct', actId], (old: ActResponse) => ({
+      queryClient.setQueryData(getActQueryKey, (old: GetActResponse) => ({
         ...old,
-        ratings: old.ratings.map((rating) =>
-          rating.id === updateRatingRequest.id
-            ? toRatingResponse(updateRatingRequest, {
-                id: (user?.publicMetadata.id as string) ?? '',
-                email: user?.primaryEmailAddress?.emailAddress ?? '',
-                image_url: user?.imageUrl ?? '',
-                firstname: user?.firstName ?? '',
-                lastname: user?.lastName ?? '',
-              })
-            : rating,
-        ),
+        act: {
+          ...old.act,
+          ratings: old.act?.ratings.map((rating) =>
+            rating.id === variables.id
+              ? toRating(create(UpdateRatingRequestSchema, variables), {
+                  id: (user?.publicMetadata.id as string) ?? '',
+                  email: user?.primaryEmailAddress?.emailAddress ?? '',
+                  image_url: user?.imageUrl ?? '',
+                  firstname: user?.firstName ?? '',
+                  lastname: user?.lastName ?? '',
+                })
+              : rating,
+          ),
+        },
       }));
 
       return { previousAct };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['getAct', actId], context?.previousAct);
+      queryClient.setQueryData(getActQueryKey, context?.previousAct);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['getAct', actId] });
+      queryClient.invalidateQueries({ queryKey: getActQueryKey });
     },
   });
 
@@ -84,9 +96,7 @@ export const RatingList = ({ contestId, actId }: Props) => {
     useState(false);
   const [isEditRatingDialogOpen, setIsEditRatingDialogOpen] = useState(false);
 
-  const [selectedRating, setSelectedRating] = useState<RatingResponse | null>(
-    null,
-  );
+  const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
   const canCreateRating = useMemo(
     () =>
       !act?.ratings.some(
@@ -111,13 +121,16 @@ export const RatingList = ({ contestId, actId }: Props) => {
         ))}
         {createMutation.isPending && (
           <RatingCard
-            rating={toRatingResponse(createMutation.variables, {
-              id: (user?.publicMetadata.id as string) ?? '',
-              email: user?.primaryEmailAddress?.emailAddress ?? '',
-              image_url: user?.imageUrl ?? '',
-              firstname: user?.firstName ?? '',
-              lastname: user?.lastName ?? '',
-            })}
+            rating={toRating(
+              create(CreateRatingRequestSchema, createMutation.variables),
+              {
+                id: (user?.publicMetadata.id as string) ?? '',
+                email: user?.primaryEmailAddress?.emailAddress ?? '',
+                image_url: user?.imageUrl ?? '',
+                firstname: user?.firstName ?? '',
+                lastname: user?.lastName ?? '',
+              },
+            )}
             isEditable={false}
           />
         )}
@@ -154,14 +167,14 @@ export const RatingList = ({ contestId, actId }: Props) => {
         <HttpErrorDialog
           isOpen={createMutation.isError}
           onOpenChange={setIsCreateRatingDialogOpen}
-          error={createMutation.error as unknown as HttpError}
+          error={createMutation.error as unknown}
         />
       )}
       {updateMutation.isError && (
         <HttpErrorDialog
           isOpen={updateMutation.isError}
           onOpenChange={setIsEditRatingDialogOpen}
-          error={updateMutation.error as unknown as HttpError}
+          error={updateMutation.error as unknown}
         />
       )}
     </div>

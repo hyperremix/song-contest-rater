@@ -2,8 +2,13 @@
 
 import { translations } from '@/i18n';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import {
+  CreateContestRequest,
+  CreateContestRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
+import { create } from '@bufbuild/protobuf';
+import { TimestampSchema } from '@bufbuild/protobuf/wkt';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateCompetitionRequest } from '@hyperremix/song-contest-rater-protos/competition';
 import { CalendarIcon } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -31,10 +36,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+
 type Props = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (createContestRequest: CreateCompetitionRequest) => void;
+  onSave: (createContestRequest: CreateContestRequest) => void;
 };
 
 const formSchema = z.object({
@@ -101,16 +107,18 @@ export const CreateContestDialog = ({
     const seconds = Math.floor(values.startDate.getTime() / 1000);
     const nanos = (values.startDate.getTime() % 1000) * 1000000;
 
-    onSave({
-      heat: values.heat,
-      city: values.city,
-      country: values.country,
-      start_time: {
-        seconds,
-        nanos,
-      },
-      image_url: values.imageUrl,
-    });
+    onSave(
+      create(CreateContestRequestSchema, {
+        heat: values.heat,
+        city: values.city,
+        country: values.country,
+        startTime: create(TimestampSchema, {
+          seconds: BigInt(seconds),
+          nanos,
+        }),
+        imageUrl: values.imageUrl,
+      }),
+    );
 
     onOpenChange(false);
     form.reset();

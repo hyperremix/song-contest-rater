@@ -1,9 +1,14 @@
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { Typography } from '@/components/custom/typography';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { listActs } from '@/utils/http/act';
-import { listContests } from '@/utils/http/contest';
-import { listParticipations } from '@/utils/http/participation';
+import { listActs } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import { listParticipations } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/participation_service-ParticipationService_connectquery';
+import {
+  callUnaryMethod,
+  createConnectQueryKey,
+} from '@connectrpc/connect-query';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { ActsTable } from './acts-table';
@@ -12,20 +17,36 @@ import { ParticipationsTable } from './participations-table';
 
 export const AdminTab = async () => {
   const queryClient = getQueryClient();
+  const transport = getBrowserTransport();
 
   await queryClient.prefetchQuery({
-    queryKey: ['listContests'],
-    queryFn: listContests,
+    queryKey: createConnectQueryKey({
+      schema: listContests,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, listContests, {}),
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ['listActs'],
-    queryFn: listActs,
+    queryKey: createConnectQueryKey({
+      schema: listActs,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, listActs, {}),
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ['listParticipations'],
-    queryFn: listParticipations,
+    queryKey: createConnectQueryKey({
+      schema: listParticipations,
+      transport,
+      input: {},
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, listParticipations, {}),
   });
 
   return (

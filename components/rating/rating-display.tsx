@@ -9,7 +9,11 @@ type RatingProps = {
   className?: string;
 };
 
-export const Rating = ({ rating, icon, className = '' }: RatingProps) => (
+export const RatingDisplay = ({
+  rating,
+  icon,
+  className = '',
+}: RatingProps) => (
   <div
     className={`flex flex-col items-center gap-0.5 rounded-md p-2 ${className}`}
   >

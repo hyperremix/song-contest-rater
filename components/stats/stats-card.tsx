@@ -5,9 +5,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
-  GlobalStatsResponse,
-  UserStatsResponse,
-} from '@hyperremix/song-contest-rater-protos/stat';
+  GlobalStats,
+  UserStats,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/stat_pb';
 import {
   Angry,
   CircleHelp,
@@ -24,8 +24,8 @@ import { ReactNode } from 'react';
 import { translations } from '../../i18n/translations';
 
 type Props = {
-  userStats: UserStatsResponse;
-  globalStats: GlobalStatsResponse | null;
+  userStats: UserStats;
+  globalStats: GlobalStats | null;
 };
 
 type NextIntlT = ReturnType<typeof useTranslations>;
@@ -154,14 +154,14 @@ export const StatsCard = ({ userStats, globalStats }: Props) => {
     <Card className="flex flex-col gap-2">
       <CardHeader className="space-y-2 p-4 pb-0">
         <div className="flex justify-between">
-          <div>{criticTypeToIconMap[userStats.critic_type ?? 0](t)}</div>
+          <div>{criticTypeToIconMap[userStats.criticType ?? 0](t)}</div>
           <div className="flex items-center gap-2">
             <Typography variant="span">
               {userStats.user?.firstname} {userStats.user?.lastname}
             </Typography>
             <Avatar>
               <AvatarImage
-                src={toImagekitUrl(userStats.user?.image_url ?? '', [
+                src={toImagekitUrl(userStats.user?.imageUrl ?? '', [
                   { height: '128', width: '128', focus: 'auto' },
                 ])}
               />
@@ -170,8 +170,8 @@ export const StatsCard = ({ userStats, globalStats }: Props) => {
           </div>
         </div>
         <div>
-          {criticTypeToTendencyDisplayMap[userStats.critic_type ?? 0](
-            userStats.rating_bias ?? 0,
+          {criticTypeToTendencyDisplayMap[userStats.criticType ?? 0](
+            userStats.ratingBias ?? 0,
           )}
         </div>
       </CardHeader>
@@ -183,7 +183,7 @@ export const StatsCard = ({ userStats, globalStats }: Props) => {
             </Typography>
             <div className="rounded-lg bg-zinc-100 px-3 py-3 dark:bg-zinc-700">
               <Typography variant="h3" className="text-center">
-                {userStats.total_ratings}
+                {userStats.totalRatings}
               </Typography>
             </div>
           </div>
@@ -193,15 +193,13 @@ export const StatsCard = ({ userStats, globalStats }: Props) => {
                 <Typography variant="span" className="opacity-70">
                   {t(translations.statistics.ratingAvgLabel)}
                 </Typography>
-                <Typography variant="h4">
-                  {userStats.user_rating_avg}
-                </Typography>
+                <Typography variant="h4">{userStats.userRatingAvg}</Typography>
               </div>
               <div className="mt-1 h-2 rounded-full bg-zinc-200 dark:bg-zinc-700">
                 <div
                   className="h-full rounded-full bg-blue-500"
                   style={{
-                    width: `${(userStats.user_rating_avg / 75) * 100}%`,
+                    width: `${(userStats.userRatingAvg / 75) * 100}%`,
                   }}
                 />
               </div>
@@ -212,14 +210,14 @@ export const StatsCard = ({ userStats, globalStats }: Props) => {
                   {t(translations.statistics.globalRatingAvgLabel)}
                 </Typography>
                 <Typography variant="h4">
-                  {globalStats?.global_rating_avg}
+                  {globalStats?.globalRatingAvg}
                 </Typography>
               </div>
               <div className="mt-1 h-2 rounded-full bg-zinc-200 dark:bg-zinc-700">
                 <div
                   className="h-full rounded-full bg-purple-500"
                   style={{
-                    width: `${((globalStats?.global_rating_avg ?? 0) / 75) * 100}%`,
+                    width: `${((globalStats?.globalRatingAvg ?? 0) / 75) * 100}%`,
                   }}
                 />
               </div>

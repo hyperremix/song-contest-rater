@@ -11,8 +11,13 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@buf/hyperremix_song-contest-rater-protos.bufbuild_es": "2.2.5-20250409080607-573f52677895.1",
+    "@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es": "2.0.1-20250409080607-573f52677895.1",
     "@bufbuild/protobuf": "^2.2.5",
     "@clerk/nextjs": "^6.11.3",
+    "@connectrpc/connect": "^2.0.2",
+    "@connectrpc/connect-query": "^2.0.1",
+    "@connectrpc/connect-web": "^2.0.2",
     "@hookform/resolvers": "^4.1.3",
     "@next/env": "^15.1.7",
     "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -47,7 +52,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@hyperremix/song-contest-rater-protos": "^3.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

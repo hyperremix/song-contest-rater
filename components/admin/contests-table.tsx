@@ -1,5 +1,6 @@
 'use client';
 
+import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,21 +11,26 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { toContestResponse } from '@/utils/contest/toContestResponse';
+import { toContest } from '@/utils/contest/toContest';
+import { toImagekitUrl } from '@/utils/toImagekitUrl';
+import {
+  Contest,
+  CreateContestRequestSchema,
+  ListContestsResponse,
+  UpdateContestRequestSchema,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
 import {
   createContest,
   deleteContest,
   listContests,
   updateContest,
-} from '@/utils/http/contest';
-import { toImagekitUrl } from '@/utils/toImagekitUrl';
+} from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import { create } from '@bufbuild/protobuf';
 import {
-  CompetitionResponse,
-  CreateCompetitionRequest,
-  ListCompetitionsResponse,
-  UpdateCompetitionRequest,
-} from '@hyperremix/song-contest-rater-protos/competition';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+  createConnectQueryKey,
+  useMutation,
+  useSuspenseQuery,
+} from '@connectrpc/connect-query';
 import {
   ColumnDef,
   SortingState,
@@ -41,37 +47,40 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { CreateContestDialog } from './create-contest-dialog';
 import { UpdateContestDialog } from './update-contest-dialog';
+
 export const ContestsTable = () => {
   const t = useTranslations();
   const formatter = useFormatter();
   const queryClient = getQueryClient();
+  const transport = getBrowserTransport();
+
+  const listContestsQueryKey = createConnectQueryKey({
+    schema: listContests,
+    transport,
+    input: {},
+    cardinality: 'finite',
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-  const [selectedContest, setSelectedContest] =
-    useState<CompetitionResponse | null>(null);
+  const [selectedContest, setSelectedContest] = useState<Contest | null>(null);
 
-  const { data } = useSuspenseQuery({
-    queryKey: ['listContests'],
-    queryFn: listContests,
-  });
+  const { data } = useSuspenseQuery(listContests, {}, { transport });
 
-  const createMutation = useMutation({
-    mutationFn: (createContestRequest: CreateCompetitionRequest) =>
-      createContest(createContestRequest),
-    onMutate: async (createContestRequest: CreateCompetitionRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listContests'] });
+  const createMutation = useMutation(createContest, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
-        queryClient.getQueryData<ListCompetitionsResponse>(['listContests']);
+        queryClient.getQueryData<ListContestsResponse>(listContestsQueryKey);
 
       queryClient.setQueryData(
-        ['listContests'],
-        (old: ListCompetitionsResponse) => ({
+        listContestsQueryKey,
+        (old: ListContestsResponse) => ({
           ...old,
-          competitions: [
-            ...old.competitions,
-            toContestResponse(createContestRequest, []),
+          contests: [
+            ...old.contests,
+            toContest(create(CreateContestRequestSchema, variables), []),
           ],
         }),
       );
@@ -79,29 +88,33 @@ export const ContestsTable = () => {
       return { previousContestList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listContests'], context?.previousContestList);
+      queryClient.setQueryData(
+        listContestsQueryKey,
+        context?.previousContestList,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listContests'] });
+      queryClient.invalidateQueries({ queryKey: listContestsQueryKey });
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: (updateContestRequest: UpdateCompetitionRequest) =>
-      updateContest(updateContestRequest),
-    onMutate: async (updateContestRequest: UpdateCompetitionRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['listContests'] });
+  const updateMutation = useMutation(updateContest, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
-        queryClient.getQueryData<ListCompetitionsResponse>(['listContests']);
+        queryClient.getQueryData<ListContestsResponse>(listContestsQueryKey);
 
       queryClient.setQueryData(
-        ['listContests'],
-        (old: ListCompetitionsResponse) => ({
+        listContestsQueryKey,
+        (old: ListContestsResponse) => ({
           ...old,
-          competitions: old.competitions.map((competition) =>
-            competition.id === updateContestRequest.id
-              ? toContestResponse(updateContestRequest, competition.acts)
-              : competition,
+          contests: old.contests.map((contest) =>
+            contest.id === variables.id
+              ? toContest(
+                  create(UpdateContestRequestSchema, variables),
+                  contest.acts,
+                )
+              : contest,
           ),
         }),
       );
@@ -109,26 +122,28 @@ export const ContestsTable = () => {
       return { previousContestList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listContests'], context?.previousContestList);
+      queryClient.setQueryData(
+        listContestsQueryKey,
+        context?.previousContestList,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listContests'] });
+      queryClient.invalidateQueries({ queryKey: listContestsQueryKey });
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteContest(id),
-    onMutate: async (id: string) => {
-      await queryClient.cancelQueries({ queryKey: ['listContests'] });
+  const deleteMutation = useMutation(deleteContest, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
-        queryClient.getQueryData<ListCompetitionsResponse>(['listContests']);
+        queryClient.getQueryData<ListContestsResponse>(listContestsQueryKey);
 
       queryClient.setQueryData(
-        ['listContests'],
-        (old: ListCompetitionsResponse) => ({
+        listContestsQueryKey,
+        (old: ListContestsResponse) => ({
           ...old,
-          competitions: old.competitions.filter(
-            (competition) => competition.id !== id,
+          contests: old.contests.filter(
+            (contest) => contest.id !== variables.id,
           ),
         }),
       );
@@ -136,19 +151,22 @@ export const ContestsTable = () => {
       return { previousContestList };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['listContests'], context?.previousContestList);
+      queryClient.setQueryData(
+        listContestsQueryKey,
+        context?.previousContestList,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['listContests'] });
+      queryClient.invalidateQueries({ queryKey: listContestsQueryKey });
     },
   });
 
-  const handleEditContest = (contest: CompetitionResponse) => {
+  const handleEditContest = (contest: Contest) => {
     setSelectedContest(contest);
     setIsUpdateDialogOpen(true);
   };
 
-  const columns: ColumnDef<CompetitionResponse>[] = [
+  const columns: ColumnDef<Contest>[] = [
     {
       accessorKey: 'image_url',
       header: 'Image',
@@ -181,14 +199,15 @@ export const ContestsTable = () => {
       header: 'Country',
     },
     {
-      accessorKey: 'start_time',
+      accessorKey: 'startTime',
       header: 'Start Time',
       cell: ({ row }) => {
-        const startTime = row.original.start_time;
+        const startTime = row.original.startTime;
         if (!startTime) return 'N/A';
 
         return formatter.dateTime(
-          (startTime.seconds || 0) * 1000 + (startTime.nanos || 0) / 1000000,
+          Number(startTime.seconds || 0) * 1000 +
+            Number(startTime.nanos || 0) / 1000000,
           {
             year: 'numeric',
             month: 'short',
@@ -215,7 +234,7 @@ export const ContestsTable = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => deleteMutation.mutate(row.original.id)}
+            onClick={() => deleteMutation.mutate({ id: row.original.id })}
           >
             <Trash className="h-4 w-4 text-red-500" />
           </Button>
@@ -225,7 +244,7 @@ export const ContestsTable = () => {
   ];
 
   const table = useReactTable({
-    data: data?.competitions || [],
+    data: data?.contests || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

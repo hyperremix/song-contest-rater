@@ -1,10 +1,15 @@
 import { getQueryClient } from '@/app/get-query-client';
+import { getServerTransport } from '@/app/get-server-transport';
 import { ActHeader } from '@/components/act/act-header';
 import { AppBar } from '@/components/custom/app-bar';
 import { LoadingCardList } from '@/components/custom/loading-card';
 import { LoadingHeader } from '@/components/custom/loading-header';
 import { RatingList } from '@/components/rating/rating-list';
-import { getAct } from '@/utils/http/act';
+import { getAct } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import {
+  callUnaryMethod,
+  createConnectQueryKey,
+} from '@connectrpc/connect-query';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Suspense } from 'react';
 
@@ -15,10 +20,16 @@ export default async function ActPage({
 }) {
   const { actId, contestId } = await params;
   const queryClient = getQueryClient();
+  const transport = await getServerTransport();
 
   queryClient.prefetchQuery({
-    queryKey: ['getAct', actId],
-    queryFn: () => getAct(actId),
+    queryKey: createConnectQueryKey({
+      schema: getAct,
+      transport,
+      input: { id: actId },
+      cardinality: 'finite',
+    }),
+    queryFn: () => callUnaryMethod(transport, getAct, { id: actId }),
   });
 
   return (
