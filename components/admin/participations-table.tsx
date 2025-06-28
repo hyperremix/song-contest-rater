@@ -28,6 +28,7 @@ import {
   deleteParticipation,
   listParticipations,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/participation_service-ParticipationService_connectquery';
+import { useAuth } from '@clerk/nextjs';
 import {
   createConnectQueryKey,
   useMutation,
@@ -61,7 +62,9 @@ type ParticipationData = {
 export const ParticipationsTable = () => {
   const t = useTranslations();
   const queryClient = getQueryClient();
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
 
   const listParticipationsQueryKey = createConnectQueryKey({
     schema: listParticipations,
@@ -214,6 +217,7 @@ export const ParticipationsTable = () => {
   });
 
   const createMutation = useMutation(createParticipation, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listParticipationsQueryKey });
       const previousList = queryClient.getQueryData<ListParticipationsResponse>(
@@ -253,6 +257,7 @@ export const ParticipationsTable = () => {
   });
 
   const deleteMutation = useMutation(deleteParticipation, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listParticipationsQueryKey });
       const previousList = queryClient.getQueryData<ListParticipationsResponse>(

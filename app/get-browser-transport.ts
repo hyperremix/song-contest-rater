@@ -2,15 +2,21 @@ import { Transport } from '@connectrpc/connect';
 import { addStaticKeyToTransport } from '@connectrpc/connect-query';
 import { createConnectTransport } from '@connectrpc/connect-web';
 
-let browserTransport: Transport | undefined = undefined;
-
-export const getBrowserTransport = (): Transport => {
-  if (!browserTransport)
-    browserTransport = addStaticKeyToTransport(
-      createConnectTransport({
-        baseUrl: 'http://localhost:8080',
-      }),
-      'scr',
-    );
-  return browserTransport;
-};
+export const getBrowserTransport = (
+  getToken: () => Promise<string | null>,
+): Transport =>
+  addStaticKeyToTransport(
+    createConnectTransport({
+      baseUrl: 'http://localhost:8080',
+      interceptors: [
+        (next) => async (req) => {
+          const token = await getToken();
+          if (token) {
+            req.header.set('Authorization', `Bearer ${token}`);
+          }
+          return next(req);
+        },
+      ],
+    }),
+    'scr',
+  );

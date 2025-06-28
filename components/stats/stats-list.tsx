@@ -5,11 +5,15 @@ import {
   getGlobalStats,
   listUserStats,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/stat_service-StatService_connectquery';
+import { useAuth } from '@clerk/nextjs';
 import { useSuspenseQuery } from '@connectrpc/connect-query';
+import { useMemo } from 'react';
 import { StatsCard } from './stats-card';
 
 export const StatsList = () => {
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
 
   const { data: userStats } = useSuspenseQuery(
     listUserStats,

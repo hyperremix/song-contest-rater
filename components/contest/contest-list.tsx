@@ -4,19 +4,23 @@ import { getBrowserTransport } from '@/app/get-browser-transport';
 import { useSplitArchivedContests } from '@/hooks/useSplitArchivedContests';
 import { translations } from '@/i18n';
 import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import { useAuth } from '@clerk/nextjs';
 import { useSuspenseQuery } from '@connectrpc/connect-query';
 import { useTranslations } from 'next-intl';
+import { useMemo } from 'react';
 import { Typography } from '../custom/typography';
 import { ContestCard } from './contest-card';
 
 export const ContestList = () => {
   const t = useTranslations();
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
 
   const { data } = useSuspenseQuery(listContests, {}, { transport });
 
   const { contests, archivedContests } = useSplitArchivedContests(
-    data.contests,
+    data?.contests || [],
   );
 
   return (

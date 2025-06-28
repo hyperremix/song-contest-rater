@@ -3,7 +3,7 @@
 import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { useRatingEvents } from '@/hooks/useRatingEvents';
-import { toRating } from '@/utils/rating/toRatingResponse';
+import { toRating } from '@/utils/rating/toRating';
 import { GetActResponse } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import {
   CreateRatingRequestSchema,
@@ -16,7 +16,7 @@ import {
   updateRating,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/rating_service-RatingService_connectquery';
 import { create } from '@bufbuild/protobuf';
-import { useUser } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import {
   createConnectQueryKey,
   useMutation,
@@ -38,7 +38,9 @@ type Props = {
 export const RatingList = ({ contestId, actId }: Props) => {
   const { user } = useUser();
   const queryClient = getQueryClient();
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
 
   const getActQueryKey = createConnectQueryKey({
     schema: getAct,
@@ -54,11 +56,13 @@ export const RatingList = ({ contestId, actId }: Props) => {
   useRatingEvents(actId);
 
   const createMutation = useMutation(createRating, {
+    transport,
     onSettled: async () =>
       await queryClient.invalidateQueries({ queryKey: getActQueryKey }),
   });
 
   const updateMutation = useMutation(updateRating, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: getActQueryKey });
       const previousAct =

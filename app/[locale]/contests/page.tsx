@@ -8,7 +8,9 @@ import { Typography } from '@/components/custom/typography';
 import { StatsList } from '@/components/stats/stats-list';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { translations } from '@/i18n';
+import { listActs } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
 import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
+import { listParticipations } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/participation_service-ParticipationService_connectquery';
 import {
   getGlobalStats,
   listUserStats,
@@ -59,6 +61,28 @@ export default async function ContestListPage() {
     queryFn: () => callUnaryMethod(transport, getGlobalStats, {}),
   });
 
+  if (user?.publicMetadata.role === 'admin') {
+    queryClient.prefetchQuery({
+      queryKey: createConnectQueryKey({
+        schema: listActs,
+        transport,
+        input: {},
+        cardinality: 'finite',
+      }),
+      queryFn: () => callUnaryMethod(transport, listActs, {}),
+    });
+
+    queryClient.prefetchQuery({
+      queryKey: createConnectQueryKey({
+        schema: listParticipations,
+        transport,
+        input: {},
+        cardinality: 'finite',
+      }),
+      queryFn: () => callUnaryMethod(transport, listParticipations, {}),
+    });
+  }
+
   return (
     <>
       <AppBar>
@@ -66,55 +90,51 @@ export default async function ContestListPage() {
           {t(translations.contest.screenTitle)}
         </Typography>
       </AppBar>
-      <Tabs defaultValue="contests" className="w-full">
-        <TabsContent value="contests" className="pb-20">
-          <div className="mx-auto h-full w-full max-w-3xl px-2 pt-2">
-            <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Tabs defaultValue="contests" className="w-full">
+          <TabsContent value="contests" className="pb-20">
+            <div className="mx-auto h-full w-full max-w-3xl px-2 pt-2">
               <Suspense fallback={<LoadingCardList />}>
                 <ContestList />
               </Suspense>
-            </HydrationBoundary>
-          </div>
-        </TabsContent>
-        <TabsContent value="stats" className="pb-20">
-          <div className="mx-auto h-full w-full max-w-3xl px-2 pt-2">
-            <HydrationBoundary state={dehydrate(queryClient)}>
+            </div>
+          </TabsContent>
+          <TabsContent value="stats" className="pb-20">
+            <div className="mx-auto h-full w-full max-w-3xl px-2 pt-2">
               <Suspense fallback={<LoadingCardList />}>
                 <StatsList />
               </Suspense>
-            </HydrationBoundary>
-          </div>
-        </TabsContent>
-        <TabsContent value="admin" className="pb-20">
-          <HydrationBoundary state={dehydrate(queryClient)}>
+            </div>
+          </TabsContent>
+          <TabsContent value="admin" className="pb-20">
             <Suspense fallback={<LoadingCardList />}>
               <AdminTab />
             </Suspense>
-          </HydrationBoundary>
-        </TabsContent>
-        <TabsList className="fixed bottom-0 left-0 right-0 z-50 h-16 w-full">
-          <TabsTrigger className="h-full flex-1 gap-2" value="contests">
-            <Music />
-            <Typography className="hidden md:block" variant="h3">
-              {t(translations.contest.screenTitle)}
-            </Typography>
-          </TabsTrigger>
-          <TabsTrigger className="h-full flex-1 gap-2" value="stats">
-            <ChartLine />
-            <Typography className="hidden md:block" variant="h3">
-              {t(translations.statistics.statsScreenTitle)}
-            </Typography>
-          </TabsTrigger>
-          {user?.publicMetadata.role === 'admin' && (
-            <TabsTrigger className="h-full flex-1 gap-2" value="admin">
-              <Shield />
+          </TabsContent>
+          <TabsList className="fixed bottom-0 left-0 right-0 z-50 h-16 w-full">
+            <TabsTrigger className="h-full flex-1 gap-2" value="contests">
+              <Music />
               <Typography className="hidden md:block" variant="h3">
-                {t(translations.admin.screenTitle)}
+                {t(translations.contest.screenTitle)}
               </Typography>
             </TabsTrigger>
-          )}
-        </TabsList>
-      </Tabs>
+            <TabsTrigger className="h-full flex-1 gap-2" value="stats">
+              <ChartLine />
+              <Typography className="hidden md:block" variant="h3">
+                {t(translations.statistics.statsScreenTitle)}
+              </Typography>
+            </TabsTrigger>
+            {user?.publicMetadata.role === 'admin' && (
+              <TabsTrigger className="h-full flex-1 gap-2" value="admin">
+                <Shield />
+                <Typography className="hidden md:block" variant="h3">
+                  {t(translations.admin.screenTitle)}
+                </Typography>
+              </TabsTrigger>
+            )}
+          </TabsList>
+        </Tabs>
+      </HydrationBoundary>
     </>
   );
 }

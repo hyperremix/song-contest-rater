@@ -3,7 +3,9 @@
 import { getBrowserTransport } from '@/app/get-browser-transport';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import { getAct } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import { useAuth } from '@clerk/nextjs';
 import { useSuspenseQuery } from '@connectrpc/connect-query';
+import { useMemo } from 'react';
 import { ImageViewer } from '../custom/image-viewer';
 import { Typography } from '../custom/typography';
 
@@ -12,25 +14,27 @@ type Props = {
 };
 
 export const ActHeader = ({ id }: Props) => {
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
 
-  const {
-    data: { act },
-  } = useSuspenseQuery(getAct, { id }, { transport });
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
+
+  const { data } = useSuspenseQuery(getAct, { id }, { transport });
 
   return (
     <div className="flex flex-col items-center">
-      {act?.imageUrl && (
+      {data?.act?.imageUrl && (
         <ImageViewer
-          baseUri={toImagekitUrl(act.imageUrl, [
+          baseUri={toImagekitUrl(data.act.imageUrl, [
             { height: '256', width: '256', focus: 'auto' },
           ])}
-          zoomableImageUri={toImagekitUrl(act.imageUrl, [{ width: '1024' }])}
+          zoomableImageUri={toImagekitUrl(data.act.imageUrl, [
+            { width: '1024' },
+          ])}
         />
       )}
-      <Typography variant="h2">{act?.songName}</Typography>
+      <Typography variant="h2">{data?.act?.songName}</Typography>
       <Typography variant="span" className="text-zinc-500">
-        {act?.artistName}
+        {data?.act?.artistName}
       </Typography>
     </div>
   );

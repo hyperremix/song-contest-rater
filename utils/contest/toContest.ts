@@ -17,7 +17,7 @@ export const toContest = (
   acts: Act[],
 ): Contest => {
   const nowTimestamp = create(TimestampSchema, {
-    seconds: BigInt(new Date().getTime() / 1000),
+    seconds: BigInt(Math.floor(new Date().getTime() / 1000)),
     nanos: 0,
   });
 

@@ -11,10 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { toAct } from '@/utils/act';
 import { toImagekitUrl } from '@/utils/toImagekitUrl';
 import {
   Act,
+  CreateActRequestSchema,
   ListActsResponse,
+  UpdateActRequestSchema,
 } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import {
   createAct,
@@ -22,6 +25,8 @@ import {
   listActs,
   updateAct,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
+import { create } from '@bufbuild/protobuf';
+import { useAuth } from '@clerk/nextjs';
 import {
   createConnectQueryKey,
   useMutation,
@@ -39,7 +44,7 @@ import {
 import { Edit, Trash } from 'lucide-react';
 import { useFormatter } from 'next-intl';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { CreateActDialog } from './create-act-dialog';
 import { UpdateActDialog } from './update-act-dialog';
@@ -47,7 +52,10 @@ import { UpdateActDialog } from './update-act-dialog';
 export const ActsTable = () => {
   const formatter = useFormatter();
   const queryClient = getQueryClient();
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
+
   const listActsQueryKey = createConnectQueryKey({
     schema: listActs,
     transport,
@@ -65,6 +73,7 @@ export const ActsTable = () => {
   } = useSuspenseQuery(listActs, {}, { transport });
 
   const createMutation = useMutation(createAct, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
@@ -73,15 +82,7 @@ export const ActsTable = () => {
 
       queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
         ...old,
-        acts: [
-          ...old.acts,
-          {
-            id: 'temp-id',
-            ...variables,
-            created_at: undefined,
-            updated_at: undefined,
-          },
-        ],
+        acts: [...old.acts, toAct(create(CreateActRequestSchema, variables))],
       }));
 
       return { previousActsList };
@@ -95,7 +96,9 @@ export const ActsTable = () => {
   });
 
   const updateMutation = useMutation(updateAct, {
+    transport,
     onMutate: async (variables) => {
+      console.log(variables);
       await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
         listActsQueryKey,
@@ -104,7 +107,9 @@ export const ActsTable = () => {
       queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
         ...old,
         acts: old.acts.map((act) =>
-          act.id === variables.id ? { ...act, ...variables } : act,
+          act.id === variables.id
+            ? toAct(create(UpdateActRequestSchema, variables))
+            : act,
         ),
       }));
 
@@ -119,6 +124,7 @@ export const ActsTable = () => {
   });
 
   const deleteMutation = useMutation(deleteAct, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listActsQueryKey });
       const previousActsList = queryClient.getQueryData<ListActsResponse>([
@@ -147,16 +153,16 @@ export const ActsTable = () => {
 
   const columns: ColumnDef<Act>[] = [
     {
-      accessorKey: 'image_url',
+      accessorKey: 'imageUrl',
       header: 'Image',
       size: 1,
       cell: ({ row }) => (
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           <Image
-            src={toImagekitUrl(row.getValue('image_url'), [
+            src={toImagekitUrl(row.getValue('imageUrl'), [
               { height: '40', width: '40', focus: 'auto' },
             ])}
-            alt={row.getValue('artist_name')}
+            alt={row.getValue('artistName')}
             fill
             className="object-cover"
             sizes="40px"
@@ -165,15 +171,15 @@ export const ActsTable = () => {
       ),
     },
     {
-      accessorKey: 'artist_name',
+      accessorKey: 'artistName',
       header: 'Artist',
     },
     {
-      accessorKey: 'song_name',
+      accessorKey: 'songName',
       header: 'Song',
     },
     {
-      accessorKey: 'created_at',
+      accessorKey: 'createdAt',
       header: 'Created',
       cell: ({ row }) => {
         const createdAt = row.original.createdAt;

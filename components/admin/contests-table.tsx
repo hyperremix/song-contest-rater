@@ -26,6 +26,7 @@ import {
   updateContest,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
 import { create } from '@bufbuild/protobuf';
+import { useAuth } from '@clerk/nextjs';
 import {
   createConnectQueryKey,
   useMutation,
@@ -43,7 +44,7 @@ import {
 import { Edit, Trash } from 'lucide-react';
 import { useFormatter, useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { CreateContestDialog } from './create-contest-dialog';
 import { UpdateContestDialog } from './update-contest-dialog';
@@ -52,7 +53,9 @@ export const ContestsTable = () => {
   const t = useTranslations();
   const formatter = useFormatter();
   const queryClient = getQueryClient();
-  const transport = getBrowserTransport();
+  const { getToken } = useAuth();
+
+  const transport = useMemo(() => getBrowserTransport(getToken), [getToken]);
 
   const listContestsQueryKey = createConnectQueryKey({
     schema: listContests,
@@ -69,6 +72,7 @@ export const ContestsTable = () => {
   const { data } = useSuspenseQuery(listContests, {}, { transport });
 
   const createMutation = useMutation(createContest, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
@@ -99,6 +103,7 @@ export const ContestsTable = () => {
   });
 
   const updateMutation = useMutation(updateContest, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
@@ -133,6 +138,7 @@ export const ContestsTable = () => {
   });
 
   const deleteMutation = useMutation(deleteContest, {
+    transport,
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: listContestsQueryKey });
       const previousContestList =
@@ -168,13 +174,13 @@ export const ContestsTable = () => {
 
   const columns: ColumnDef<Contest>[] = [
     {
-      accessorKey: 'image_url',
+      accessorKey: 'imageUrl',
       header: 'Image',
       size: 1,
       cell: ({ row }) => (
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           <Image
-            src={toImagekitUrl(row.getValue('image_url'), [
+            src={toImagekitUrl(row.getValue('imageUrl'), [
               { height: '40', width: '40', focus: 'auto' },
             ])}
             alt={row.getValue('city')}
