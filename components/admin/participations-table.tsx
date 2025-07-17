@@ -19,8 +19,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { toParticipation } from '@/utils/participation/toRating';
 import { Heat } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/contest_pb';
-import { ListParticipationsResponse } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/participation_pb';
+import {
+  CreateParticipationRequestSchema,
+  ListParticipationsResponse,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/participation_pb';
 import { listActs } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/act_service-ActService_connectquery';
 import { listContests } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/contest_service-ContestService_connectquery';
 import {
@@ -28,6 +32,7 @@ import {
   deleteParticipation,
   listParticipations,
 } from '@buf/hyperremix_song-contest-rater-protos.connectrpc_query-es/songcontestrater/v5/participation_service-ParticipationService_connectquery';
+import { create } from '@bufbuild/protobuf';
 import { useAuth } from '@clerk/nextjs';
 import {
   createConnectQueryKey,
@@ -226,18 +231,18 @@ export const ParticipationsTable = () => {
 
       queryClient.setQueryData(
         listParticipationsQueryKey,
-        (old: ListParticipationsResponse) => ({
-          ...old,
-          participations: [
-            ...old.participations,
-            {
-              id: 'temp-id',
-              ...variables,
-              createdAt: undefined,
-              updatedAt: undefined,
-            },
-          ],
-        }),
+        (old: ListParticipationsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            participations: [
+              ...old.participations,
+              toParticipation(
+                create(CreateParticipationRequestSchema, variables),
+              ),
+            ],
+          };
+        },
       );
 
       return { previousList };
@@ -266,16 +271,19 @@ export const ParticipationsTable = () => {
 
       queryClient.setQueryData(
         listParticipationsQueryKey,
-        (old: ListParticipationsResponse) => ({
-          ...old,
-          participations: old.participations.filter(
-            (participation) =>
-              !(
-                participation.contestId === variables.contestId &&
-                participation.actId === variables.actId
-              ),
-          ),
-        }),
+        (old: ListParticipationsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            participations: old.participations.filter(
+              (participation) =>
+                !(
+                  participation.contestId === variables.contestId &&
+                  participation.actId === variables.actId
+                ),
+            ),
+          };
+        },
       );
 
       return { previousList };

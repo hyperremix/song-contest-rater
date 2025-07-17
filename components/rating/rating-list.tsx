@@ -4,7 +4,10 @@ import { getBrowserTransport } from '@/app/get-browser-transport';
 import { getQueryClient } from '@/app/get-query-client';
 import { useRatingEvents } from '@/hooks/useRatingEvents';
 import { toRating } from '@/utils/rating/toRating';
-import { GetActResponse } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
+import {
+  ActSchema,
+  GetActResponse,
+} from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/songcontestrater/v5/act_pb';
 import {
   CreateRatingRequestSchema,
   Rating,
@@ -53,7 +56,7 @@ export const RatingList = ({ contestId, actId }: Props) => {
     data: { act },
   } = useSuspenseQuery(getAct, { id: actId }, { transport });
 
-  useRatingEvents(actId);
+  useRatingEvents(getActQueryKey);
 
   const createMutation = useMutation(createRating, {
     transport,
@@ -68,23 +71,30 @@ export const RatingList = ({ contestId, actId }: Props) => {
       const previousAct =
         queryClient.getQueryData<GetActResponse>(getActQueryKey);
 
-      queryClient.setQueryData(getActQueryKey, (old: GetActResponse) => ({
-        ...old,
-        act: {
-          ...old.act,
-          ratings: old.act?.ratings.map((rating) =>
-            rating.id === variables.id
-              ? toRating(create(UpdateRatingRequestSchema, variables), {
-                  id: (user?.publicMetadata.id as string) ?? '',
-                  email: user?.primaryEmailAddress?.emailAddress ?? '',
-                  image_url: user?.imageUrl ?? '',
-                  firstname: user?.firstName ?? '',
-                  lastname: user?.lastName ?? '',
-                })
-              : rating,
-          ),
+      queryClient.setQueryData(
+        getActQueryKey,
+        (old: GetActResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            act: create(ActSchema, {
+              ...old.act,
+              $typeName: undefined,
+              ratings: old.act?.ratings.map((rating) =>
+                rating.id === variables.id
+                  ? toRating(create(UpdateRatingRequestSchema, variables), {
+                      id: (user?.publicMetadata.id as string) ?? '',
+                      email: user?.primaryEmailAddress?.emailAddress ?? '',
+                      image_url: user?.imageUrl ?? '',
+                      firstname: user?.firstName ?? '',
+                      lastname: user?.lastName ?? '',
+                    })
+                  : rating,
+              ),
+            }),
+          };
         },
-      }));
+      );
 
       return { previousAct };
     },

@@ -3,7 +3,7 @@ import { Rating } from '@buf/hyperremix_song-contest-rater-protos.bufbuild_es/so
 export const sortedRatingUpdate = (
   ratings: Rating[],
   rating: Rating,
-): Rating[] => sortedRatingAdd(removeRating(ratings, rating.id), rating);
+): Rating[] => sortedRatingAdd(removeRating(ratings, rating), rating);
 
 export const sortedRatingAdd = (
   ratings: Rating[] | undefined,
@@ -21,5 +21,5 @@ export const sortedRatingAdd = (
   return [...ratings.slice(0, index), rating, ...ratings.slice(index)];
 };
 
-export const removeRating = (ratings: Rating[], ratingId: string): Rating[] =>
-  ratings.filter((r) => r.id !== ratingId);
+export const removeRating = (ratings: Rating[], rating: Rating): Rating[] =>
+  ratings.filter((r) => r.id !== rating.id);

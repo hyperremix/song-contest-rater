@@ -80,13 +80,16 @@ export const ContestsTable = () => {
 
       queryClient.setQueryData(
         listContestsQueryKey,
-        (old: ListContestsResponse) => ({
-          ...old,
-          contests: [
-            ...old.contests,
-            toContest(create(CreateContestRequestSchema, variables), []),
-          ],
-        }),
+        (old: ListContestsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            contests: [
+              ...old.contests,
+              toContest(create(CreateContestRequestSchema, variables), []),
+            ],
+          };
+        },
       );
 
       return { previousContestList };
@@ -111,17 +114,20 @@ export const ContestsTable = () => {
 
       queryClient.setQueryData(
         listContestsQueryKey,
-        (old: ListContestsResponse) => ({
-          ...old,
-          contests: old.contests.map((contest) =>
-            contest.id === variables.id
-              ? toContest(
-                  create(UpdateContestRequestSchema, variables),
-                  contest.acts,
-                )
-              : contest,
-          ),
-        }),
+        (old: ListContestsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            contests: old.contests.map((contest) =>
+              contest.id === variables.id
+                ? toContest(
+                    create(UpdateContestRequestSchema, variables),
+                    contest.acts,
+                  )
+                : contest,
+            ),
+          };
+        },
       );
 
       return { previousContestList };
@@ -146,12 +152,15 @@ export const ContestsTable = () => {
 
       queryClient.setQueryData(
         listContestsQueryKey,
-        (old: ListContestsResponse) => ({
-          ...old,
-          contests: old.contests.filter(
-            (contest) => contest.id !== variables.id,
-          ),
-        }),
+        (old: ListContestsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            contests: old.contests.filter(
+              (contest) => contest.id !== variables.id,
+            ),
+          };
+        },
       );
 
       return { previousContestList };

@@ -80,10 +80,19 @@ export const ActsTable = () => {
         listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
-        ...old,
-        acts: [...old.acts, toAct(create(CreateActRequestSchema, variables))],
-      }));
+      queryClient.setQueryData(
+        listActsQueryKey,
+        (old: ListActsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            acts: [
+              ...old.acts,
+              toAct(create(CreateActRequestSchema, variables)),
+            ],
+          };
+        },
+      );
 
       return { previousActsList };
     },
@@ -104,14 +113,20 @@ export const ActsTable = () => {
         listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
-        ...old,
-        acts: old.acts.map((act) =>
-          act.id === variables.id
-            ? toAct(create(UpdateActRequestSchema, variables))
-            : act,
-        ),
-      }));
+      queryClient.setQueryData(
+        listActsQueryKey,
+        (old: ListActsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            acts: old.acts.map((act) =>
+              act.id === variables.id
+                ? toAct(create(UpdateActRequestSchema, variables))
+                : act,
+            ),
+          };
+        },
+      );
 
       return { previousActsList };
     },
@@ -131,10 +146,16 @@ export const ActsTable = () => {
         listActsQueryKey,
       ]);
 
-      queryClient.setQueryData(listActsQueryKey, (old: ListActsResponse) => ({
-        ...old,
-        acts: old.acts.filter((act) => act.id !== variables.id),
-      }));
+      queryClient.setQueryData(
+        listActsQueryKey,
+        (old: ListActsResponse | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            acts: old.acts.filter((act) => act.id !== variables.id),
+          };
+        },
+      );
 
       return { previousActsList };
     },
